@@ -3,11 +3,11 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![27 skills](https://img.shields.io/badge/skills-27-blue.svg)](#ce-que-contient-le-dépôt)
+[![37 skills](https://img.shields.io/badge/skills-37-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
-Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. 27 skills pour Claude Code, utilisés chaque semaine sur un vrai business, pour installer un second cerveau, faire tourner une machine de prospection de bout en bout, et aller chercher les skills des autres quand ils existent déjà.
+Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. 37 skills pour Claude Code, utilisés chaque semaine sur un vrai business, pour installer un second cerveau, faire tourner une machine de prospection de bout en bout, produire du contenu LinkedIn dans votre voix, et aller chercher les skills des autres quand ils existent déjà.
 
 Tout est en français, pensé pour un dirigeant ou un commercial qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
 
@@ -21,6 +21,7 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant :
 |---|---|---|
 | **L'IA installée en système** | Un second cerveau que Claude lit avant chaque tâche : qui vous êtes, votre offre, vos clients, votre voix. Sans ça, l'IA plafonne à 50 % de qualité. Avec, vous démarrez à 80 %. | `skills/setup-claude-infrastructure` |
 | **La vente** | Trouver des prospects, détecter des signaux, trier, enrichir, écrire dans votre voix, envoyer, suivre les réponses. En 7 phrases. | `os-gtm/` |
+| **Le marketing** | Une chaîne de production de contenu LinkedIn : veille, idéation, rédaction par format, hook, optimisation. Le contenu ouvre la porte que la vente franchit. | `skills/linkedin-*` |
 | **L'extension** | Ne jamais repartir de zéro : chercher et installer les skills open source qui résolvent déjà votre problème. | `skills/find-skills` |
 
 ## Ce que contient le dépôt
@@ -29,6 +30,16 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant :
 superfounder-os/
 ├── skills/
 │   ├── setup-claude-infrastructure/   le skill qui construit votre second cerveau (+ guide complet des prompts)
+│   ├── linkedin-system-installer/     personnalise les 8 skills de contenu à votre voix (interview + script)
+│   ├── linkedin-writing-core/         le socle éditorial : voix, formatage, système de hooks (+ 7 références)
+│   ├── linkedin-ideation/             veille et idéation, brief éditorial de la semaine
+│   ├── linkedin-educational/          posts qui enseignent : tutos, frameworks, listes d'outils
+│   ├── linkedin-storytelling/         posts narratifs : backstory, transformation, build in public
+│   ├── linkedin-hot-take/             posts d'opinion et prises de position
+│   ├── linkedin-lead-magnet/          posts de conversion : 10 hooks, 3 corps, 4 CTA
+│   ├── viral-hook-writer/             les 2 lignes avant le "voir plus"
+│   ├── linkedin-post-optimizer/       diagnostic et réécriture d'un post existant
+│   ├── linkedin-interview-2/          fouille votre vécu pour trouver la matière des posts
 │   └── find-skills/                   découverte et installation de skills depuis skills.sh
 ├── os-gtm/                            l'OS de prospection : à ouvrir tel quel dans Claude Code
 │   ├── CLAUDE.md                      le copilote GTM (lu automatiquement par Claude Code)
@@ -115,7 +126,29 @@ Ensuite, le parcours tient en 7 phrases :
 
 Le détail de chaque skill est dans [os-gtm/GUIDE.md](os-gtm/GUIDE.md) et dans le tableau "Quel skill pour quel besoin" de [os-gtm/CLAUDE.md](os-gtm/CLAUDE.md).
 
-### 3. Étendre avec find-skills
+### 3. Installer la machine de contenu
+
+Une fois les skills copiés, lancez l'installeur :
+
+```
+Personnalise mon système LinkedIn.
+```
+
+Le skill `linkedin-system-installer` vous propose deux modes. En mode Express, vous collez votre URL LinkedIn et 3 à 10 de vos meilleurs posts, il en déduit votre positionnement, votre ton, vos piliers et vos convictions, puis vous fait valider. En mode Manuel, il vous interviewe question par question. Il écrit ensuite un profil JSON et lance `apply_profile.py`, qui remplace tous les placeholders dans les 8 skills du pack.
+
+Ensuite, la chaîne tourne en cinq stations :
+
+| Station | Ce qui se passe | Skills |
+|---|---|---|
+| 1. Trouver quoi dire | Veille sur vos sources, brief éditorial, calendrier | `linkedin-ideation`, `linkedin-interview-2` |
+| 2. Le socle | Votre grammaire éditoriale, chargée en premier par tous les autres | `linkedin-writing-core` |
+| 3. Écrire dans le bon format | Un skill par intention : enseigner, raconter, trancher, convertir | `linkedin-educational`, `linkedin-storytelling`, `linkedin-hot-take`, `linkedin-lead-magnet` |
+| 4. Maximiser la portée | Les deux premières lignes, puis le contrôle qualité final | `viral-hook-writer`, `linkedin-post-optimizer` |
+| 5. Re-personnaliser | Relancer l'installeur quand votre positionnement bouge | `linkedin-system-installer` |
+
+Le script garde une copie `.template` de chaque fichier, donc vous pouvez relancer l'installeur autant de fois que vous voulez. `python3 apply_profile.py --restore` remet les placeholders.
+
+### 4. Étendre avec find-skills
 
 Demandez "y a-t-il un skill pour X ?" et le skill cherche sur [skills.sh](https://skills.sh/), vérifie la réputation de la source et le nombre d'installations, puis vous propose la commande d'installation. Vous ne réinventez que ce qui n'existe pas.
 
