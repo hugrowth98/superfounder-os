@@ -1,0 +1,15 @@
+# Cles API et fichiers locaux : ne jamais committer
+.env
+.env.*
+!.env.example
+
+# Etat local genere par les skills OS-GTM
+**/scripts/compteur.json
+**/scripts/baseline.json
+**/*.raw.json
+
+# Fichiers systeme et Python
+.DS_Store
+__MACOSX/
+__pycache__/
+*.pyc
