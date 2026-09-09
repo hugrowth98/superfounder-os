@@ -5,7 +5,7 @@
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
 [![27 skills](https://img.shields.io/badge/skills-27-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
-[![validate-skills](https://github.com/hugodollfus/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugodollfus/superfounder-os/actions/workflows/validate.yml)
+[![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
 Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. 27 skills pour Claude Code, utilisés chaque semaine sur un vrai business, pour installer un second cerveau, faire tourner une machine de prospection de bout en bout, et aller chercher les skills des autres quand ils existent déjà.
 
@@ -54,7 +54,7 @@ superfounder-os/
 ### Option A : en une commande (recommandé)
 
 ```bash
-git clone https://github.com/hugodollfus/superfounder-os.git
+git clone https://github.com/hugrowth98/superfounder-os.git
 cd superfounder-os
 ./install.sh --os-gtm ~/MonCerveauIA
 ```
@@ -64,7 +64,7 @@ cd superfounder-os
 ### Option B : avec le Skills CLI
 
 ```bash
-npx skills add hugodollfus/superfounder-os
+npx skills add hugrowth98/superfounder-os
 ```
 
 ### Option C : à la main
