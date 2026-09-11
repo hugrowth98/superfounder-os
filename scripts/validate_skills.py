@@ -5,6 +5,7 @@
 - `name` correspond au nom du dossier
 - aucun tiret cadratin (U+2014) ni demi-cadratin (U+2013) dans les .md du dépôt
 - aucune clé API en clair dans les fichiers versionnés
+- aucun placeholder {{TOKEN}} résiduel (les skills lisent le contexte à l'exécution)
 
 Usage : python3 scripts/validate_skills.py
 """
@@ -15,6 +16,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DASHES = ("—", "–")
 SECRET_RE = re.compile(r"(?i)(api[_-]?key|token|secret)\s*[=:]\s*['\"]?[A-Za-z0-9_\-]{24,}")
+PLACEHOLDER_RE = re.compile(r"\{\{[A-Z_\[\]0-9]+\}\}")
+# fichiers où {{...}} est légitime (gabarits de notes)
+PLACEHOLDER_OK = {"daily-note.md"}
+# le seul fichier où le tiret cadratin apparaît légitimement : comme exemple de ce qu'il faut bannir
+DASH_OK = {"anti-ai-voice.md"}
 TEXT_SUFFIXES = {".md", ".py", ".json", ".example", ".sh", ".yml", ".yaml"}
 
 
@@ -65,6 +71,8 @@ def main():
             errors.append(f"{rel}: champ `description` manquant")
 
     for path in iter_files({".md"}):
+        if path.name in DASH_OK:
+            continue
         text = path.read_text(encoding="utf-8")
         for dash in DASHES:
             if dash in text:
@@ -76,12 +84,21 @@ def main():
         text = path.read_text(encoding="utf-8", errors="ignore")
         if SECRET_RE.search(text):
             errors.append(f"{path.relative_to(ROOT)}: chaîne ressemblant à une clé API")
+        if path.suffix == ".md" and path.name not in PLACEHOLDER_OK and PLACEHOLDER_RE.search(text):
+            errors.append(f"{path.relative_to(ROOT)}: placeholder {{{{...}}}} résiduel")
+
+    for cm in ROOT.rglob("CLAUDE.md"):
+        if ".git" in cm.parts:
+            continue
+        n = len(cm.read_text(encoding="utf-8").splitlines())
+        if n > 200:
+            errors.append(f"{cm.relative_to(ROOT)}: {n} lignes, au-dessus des 200 recommandées")
 
     print(f"{len(skills)} skills vérifiés")
     if errors:
         print("\n".join(errors))
         sys.exit(1)
-    print("OK : frontmatter valide, aucun tiret cadratin, aucune clé détectée")
+    print("OK : frontmatter valide, aucun tiret cadratin, aucune clé, aucun placeholder, CLAUDE.md sous 200 lignes")
 
 
 if __name__ == "__main__":

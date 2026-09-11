@@ -3,177 +3,95 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![37 skills](https://img.shields.io/badge/skills-37-blue.svg)](#ce-que-contient-le-dépôt)
+[![45 skills](https://img.shields.io/badge/skills-45-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
-Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. 37 skills pour Claude Code, utilisés chaque semaine sur un vrai business, pour installer un second cerveau, faire tourner une machine de prospection de bout en bout, produire du contenu LinkedIn dans votre voix, et aller chercher les skills des autres quand ils existent déjà.
+Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 45 skills utilisés chaque semaine sur un vrai business : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
 
-Tout est en français, pensé pour un dirigeant ou un commercial qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
+Tout est en français, pensé pour un dirigeant qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
 
 ## Pourquoi ce dépôt
 
 La plupart des entreprises utilisent l'IA sur le produit : coder plus vite, faire de la recherche, livrer. Presque jamais sur la distribution. Le problème, c'est que créer un produit devient une commodité. Ce qui fait la différence, c'est votre capacité à le mettre devant les bonnes personnes et à le vendre.
 
-Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant :
+Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en trois jours :
 
-| Levier | Ce que ça fait | Brique du dépôt |
-|---|---|---|
-| **L'IA installée en système** | Un second cerveau que Claude lit avant chaque tâche : qui vous êtes, votre offre, vos clients, votre voix. Sans ça, l'IA plafonne à 50 % de qualité. Avec, vous démarrez à 80 %. | `skills/setup-claude-infrastructure` |
-| **La vente** | Trouver des prospects, détecter des signaux, trier, enrichir, écrire dans votre voix, envoyer, suivre les réponses. En 7 phrases. | `os-gtm/` |
-| **Le marketing** | Une chaîne de production de contenu LinkedIn : veille, idéation, rédaction par format, hook, optimisation. Le contenu ouvre la porte que la vente franchit. | `skills/linkedin-*` |
-| **L'extension** | Ne jamais repartir de zéro : chercher et installer les skills open source qui résolvent déjà votre problème. | `skills/find-skills` |
+| Jour | Ce que vous installez | La phrase à taper | Où |
+|---|---|---|---|
+| **1. Le second cerveau** | Qui vous êtes, votre offre, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
+| **2. La prospection** | Trouver, détecter un signal, trier, enrichir, écrire, envoyer, suivre. En 7 phrases, avec 25 skills. | `Installe ma prospection` | `Projects/Prospection/` |
+| **3. Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | `Projects/Contenu/` |
+
+Chaque jour lit ce que le précédent a produit et n'interviewe que sur ce qui manque. Le détail de chaque jour est dans [docs/](docs/).
+
+## Démarrer
+
+```bash
+git clone https://github.com/hugrowth98/superfounder-os.git MonOS
+cd MonOS
+claude
+```
+
+Puis, dans le chat : `Installe mon second cerveau`. Le dépôt est votre workspace. Il n'y a rien d'autre à installer.
+
+Prérequis : [Claude Code](https://www.anthropic.com/claude-code) et un abonnement Claude payant. Pour la prospection, selon vos canaux : Unipile (LinkedIn), Crustdata (recherche), FullEnrich (emails), Lemlist (campagnes), Apify (scraping). Python 3.10 ou plus pour les scripts de prospection.
+
+Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace` y ajoute les modules sans toucher à vos fichiers existants.
 
 ## Ce que contient le dépôt
 
 ```
-superfounder-os/
-├── skills/
-│   ├── setup-claude-infrastructure/   le skill qui construit votre second cerveau (+ guide complet des prompts)
-│   ├── linkedin-system-installer/     personnalise les 8 skills de contenu à votre voix (interview + script)
-│   ├── linkedin-writing-core/         le socle éditorial : voix, formatage, système de hooks (+ 7 références)
-│   ├── linkedin-ideation/             veille et idéation, brief éditorial de la semaine
-│   ├── linkedin-educational/          posts qui enseignent : tutos, frameworks, listes d'outils
-│   ├── linkedin-storytelling/         posts narratifs : backstory, transformation, build in public
-│   ├── linkedin-hot-take/             posts d'opinion et prises de position
-│   ├── linkedin-lead-magnet/          posts de conversion : 10 hooks, 3 corps, 4 CTA
-│   ├── viral-hook-writer/             les 2 lignes avant le "voir plus"
-│   ├── linkedin-post-optimizer/       diagnostic et réécriture d'un post existant
-│   ├── linkedin-interview-2/          fouille votre vécu pour trouver la matière des posts
-│   └── find-skills/                   découverte et installation de skills depuis skills.sh
-├── os-gtm/                            l'OS de prospection : à ouvrir tel quel dans Claude Code
-│   ├── CLAUDE.md                      le copilote GTM (lu automatiquement par Claude Code)
-│   ├── GUIDE.md                       le parcours en 7 étapes
-│   ├── contexte.md                    votre profil : offre, ICP, voix, garde-fous (rempli par l'installeur)
-│   ├── .env.example                   les clés API attendues (copié en .env à l'installation)
-│   └── .claude/skills/                25 skills de prospection
-├── install.sh                         installation en une commande
-├── scripts/validate_skills.py         contrôle qualité des skills (lancé en CI)
-├── CONTRIBUTING.md
-├── CHANGELOG.md
-└── LICENSE                            MIT
+superfounder-os/                  ← le dossier que Claude Code ouvre
+├── CLAUDE.md                     la carte : règles, diagnostic du premier message, routage, rituels
+├── ABOUT.ME/                     TOUJOURS chargé. Qui vous êtes. Change en années.
+│   ├── about-me.md  my-company.md  anti-ai-voice.md
+├── Contexte/                     À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
+├── Inbox/                        capture en vrac, vidée par inbox-processor
+├── Intelligence/                 daily logs, sources brutes, wiki de connaissance durable
+├── ressources-templates/         modèles transverses
+├── Projects/
+│   ├── Prospection/              jour 2 : CLAUDE.md copilote, contexte.md, GUIDE.md, 25 skills scopés
+│   ├── Contenu/                  jour 3 : CLAUDE.md copilote, ressources/ (stratégie, posts, swipe file), 10 skills scopés
+│   ├── Clients/  Strategie/      même patron : CLAUDE.md + input/ output/ ressources/
+├── .claude/skills/               les 10 skills transverses (jour 1)
+│   ├── installer-second-cerveau  done  daily-review  weekly-review  inbox-processor
+│   ├── import  map-process  notes-permanentes  connect-mcp  find-skills
+├── docs/                         jour-1, jour-2, jour-3
+├── install.sh                    pour un workspace existant seulement
+└── scripts/validate_skills.py    contrôle qualité, lancé en CI
 ```
 
-## Prérequis
+## Comment c'est construit (et pourquoi)
 
-- [Claude Code](https://www.anthropic.com/claude-code) installé, avec un abonnement Claude payant (Pro ou plus).
-- Python 3.10 ou plus pour les scripts de l'OS-GTM (`openpyxl` et `pandas` uniquement pour le tri Excel de `lead-qualifier`).
-- Pour l'OS-GTM, selon vos canaux : un compte [Unipile](https://www.unipile.com/) (LinkedIn), [Crustdata](https://crustdata.com/) (recherche d'entreprises et de personnes), [FullEnrich](https://fullenrich.com/) (emails et téléphones), [Lemlist](https://www.lemlist.com/) (campagnes email), [Apify](https://apify.com/) (scraping). Le skill `connecter-outils` vous guide pour brancher chacun depuis le chat.
+Le dépôt applique les pratiques documentées de Claude Code pour la gestion du contexte. Si vous voulez adapter l'OS, gardez ces cinq règles.
 
-## Installation
+1. **Une information vit à un seul endroit.** L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
+2. **Trois vitesses de changement, trois couches.** `ABOUT.ME/` change en années et est importé dans le contexte à chaque session (`@ABOUT.ME/...` dans le CLAUDE.md racine). `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'un domaine change en semaines et est réécrit par `/done`.
+3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et `ressources/` à chaque exécution. Pas de placeholders à remplacer, pas de recompilation quand votre positionnement bouge.
+4. **Le contexte vit près de son usage.** Les 25 skills de prospection sont dans `Projects/Prospection/.claude/skills/`, les 10 de contenu dans `Projects/Contenu/.claude/skills/`. Claude Code ne les charge que quand vous travaillez dans ce dossier : la liste reste courte partout, et chaque dossier a son `CLAUDE.md` copilote de moins de 200 lignes.
+5. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le bloc ETAT du domaine et dans son `_journal.md`. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 
-### Option A : en une commande (recommandé)
+## Une journée type, une fois les trois jours faits
 
-```bash
-git clone https://github.com/hugrowth98/superfounder-os.git
-cd superfounder-os
-./install.sh --os-gtm ~/MonCerveauIA
-```
+Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit les blocs ETAT de chaque domaine et propose. Vous travaillez dans un dossier, ses skills et son copilote se chargent seuls. Vous capturez en vrac dans `Inbox/`. Le soir, `/done` puis `/daily-review`. Le vendredi, `/weekly-review`. Une fois par trimestre, vous relisez `Contexte/`.
 
-`install.sh` copie les deux skills autonomes dans `~/.claude/skills` (disponibles dans tous vos projets) et dépose l'OS-GTM dans le workspace indiqué. Ajoutez `--local` pour installer les skills dans le projet courant plutôt que globalement.
-
-### Option B : avec le Skills CLI
-
-```bash
-npx skills add hugrowth98/superfounder-os
-```
-
-### Option C : à la main
-
-Copiez les dossiers de `skills/` dans `~/.claude/skills/` (ou `.claude/skills/` de votre projet). Copiez `os-gtm/` où vous voulez, renommez `.env.example` en `.env`, ouvrez le dossier dans Claude Code.
-
-## Parcours recommandé
-
-Les trois briques se branchent dans cet ordre. Chacune s'appuie sur la précédente.
-
-### 1. Construire le second cerveau (4 à 8 h, étalées sur quelques jours)
-
-Ouvrez Claude Code dans un dossier vide et tapez :
-
-```
-Construis mon infrastructure Claude.
-```
-
-Le skill fait un état des lieux, puis vous emmène étape par étape : l'arborescence, le `CLAUDE.md` (le GPS lu à chaque session), les trois fichiers `ABOUT.ME/` (qui vous êtes, votre entreprise, vos règles d'écriture anti-IA), puis les sept fichiers de `Contexte/` (identité, réalité de travail, objectifs, offre, clients et leurs mots exacts, standards, voix).
-
-Chaque fichier suit le même rituel en trois prompts : cadrage, interview, synthèse. Claude vous pose une question à la fois et vous pousse quand la réponse est vague. Conseil : faites les interviews à la voix, en marchant.
-
-Vous le faites une fois. Vous le réutilisez à vie. Tous les skills, y compris ceux de l'OS-GTM, viennent lire ce dossier avant d'agir.
-
-### 2. Installer et faire tourner l'OS-GTM
-
-Ouvrez le dossier `OS-GTM` dans Claude Code et écrivez :
-
-```
-Installe l'OS GTM.
-```
-
-Le skill `installer-gtm` lit votre second cerveau, pré-remplit votre profil (`contexte.md`), complète avec votre site web si besoin, vous fait valider, puis `connecter-outils` branche vos outils un par un. Vous ne touchez aucun fichier.
-
-Ensuite, le parcours tient en 7 phrases :
-
-| Étape | Vous écrivez | Skills déclenchés |
-|---|---|---|
-| 1. Trouver | "Trouve-moi 20 directeurs marketing de PME SaaS en France" | `trouver-personnes`, `trouver-entreprises`, `recherche-salesnav`, `export-salesnav`, `scraper-offres-emploi` |
-| 2. Détecter un signal | "Regarde qui a commenté ce post" | `scraper-post`, `commentaires-publication`, `reactions-publication`, `publications-entreprise`, `profil-linkedin`, `profil-entreprise-linkedin`, `trouver-url-linkedin` |
-| 3. Trier | "Qualifie cette liste selon mon ICP" | `qualifier-liste`, `lead-qualifier` |
-| 4. Enrichir | "Trouve les emails de ces prospects" | enrichissement FullEnrich via `connecter-outils` |
-| 5. Écrire | "Rédige un message pour chacun, dans ma voix" | `personnaliser-message`, `icebreaker-master` |
-| 6. Lancer | "Envoie les invitations à cette liste" ou "Crée une campagne Lemlist avec ces messages" | `envoyer-invitation`, `envoyer-dm`, `creer-campagne-lemlist`, `envoyer-vers-lemlist`, `lancer-sequence-lemlist` |
-| 7. Suivre | "Qui a répondu cette semaine ?" | `verifier-reponses`, `repondre-commentaires` |
-
-**Garde-fous intégrés, non négociables** : maximum 30 invitations LinkedIn par jour, jamais de relance à quelqu'un qui a déjà répondu, rien ne part sans votre validation explicite, séquence par défaut invitation puis 2 jours, message 1, puis 3 jours, message 2.
-
-Le détail de chaque skill est dans [os-gtm/GUIDE.md](os-gtm/GUIDE.md) et dans le tableau "Quel skill pour quel besoin" de [os-gtm/CLAUDE.md](os-gtm/CLAUDE.md).
-
-### 3. Installer la machine de contenu
-
-Une fois les skills copiés, lancez l'installeur :
-
-```
-Personnalise mon système LinkedIn.
-```
-
-Le skill `linkedin-system-installer` vous propose deux modes. En mode Express, vous collez votre URL LinkedIn et 3 à 10 de vos meilleurs posts, il en déduit votre positionnement, votre ton, vos piliers et vos convictions, puis vous fait valider. En mode Manuel, il vous interviewe question par question. Il écrit ensuite un profil JSON et lance `apply_profile.py`, qui remplace tous les placeholders dans les 8 skills du pack.
-
-Ensuite, la chaîne tourne en cinq stations :
-
-| Station | Ce qui se passe | Skills |
-|---|---|---|
-| 1. Trouver quoi dire | Veille sur vos sources, brief éditorial, calendrier | `linkedin-ideation`, `linkedin-interview-2` |
-| 2. Le socle | Votre grammaire éditoriale, chargée en premier par tous les autres | `linkedin-writing-core` |
-| 3. Écrire dans le bon format | Un skill par intention : enseigner, raconter, trancher, convertir | `linkedin-educational`, `linkedin-storytelling`, `linkedin-hot-take`, `linkedin-lead-magnet` |
-| 4. Maximiser la portée | Les deux premières lignes, puis le contrôle qualité final | `viral-hook-writer`, `linkedin-post-optimizer` |
-| 5. Re-personnaliser | Relancer l'installeur quand votre positionnement bouge | `linkedin-system-installer` |
-
-Le script garde une copie `.template` de chaque fichier, donc vous pouvez relancer l'installeur autant de fois que vous voulez. `python3 apply_profile.py --restore` remet les placeholders.
-
-### 4. Étendre avec find-skills
-
-Demandez "y a-t-il un skill pour X ?" et le skill cherche sur [skills.sh](https://skills.sh/), vérifie la réputation de la source et le nombre d'installations, puis vous propose la commande d'installation. Vous ne réinventez que ce qui n'existe pas.
+Le contenu nourrit la prospection (ceux qui commentent vos posts sont vos meilleurs prospects). La prospection nourrit les rendez-vous. Les rendez-vous nourrissent le contenu.
 
 ## Sécurité et données
 
-- Les clés API vivent dans `os-gtm/.env`, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
+- Les clés API vivent dans `Projects/Prospection/.env`, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
 - Aucun skill n'envoie d'invitation, de message ou de campagne sans un "oui" explicite de votre part.
-- Les fichiers d'état générés par les skills (compteurs, baselines, exports bruts) sont ignorés par git.
-- Le script `scripts/validate_skills.py` refuse tout commit contenant une chaîne qui ressemble à une clé API. Il tourne en CI sur chaque push.
-
-## Adapter les skills à votre voix
-
-En l'état, les skills produisent du travail propre mais générique : ils ne vous connaissent pas encore. C'est exactement pour ça que le second cerveau vient en premier. Une fois vos fichiers de contexte en place, chaque skill devient le vôtre.
-
-Pour aller plus loin, donnez vos fichiers de contexte à Claude et demandez-lui de relire chaque skill pour l'adapter à votre marché, votre offre et vos mots. Ne changez pas la méthode des skills. Modifiez uniquement ce qui les rend génériques.
+- Vos fichiers personnels (`ABOUT.ME/`, `Contexte/`, `ressources/`, `_journal.md`) sont à vous. Si vous versionnez votre workspace, faites-le dans un dépôt privé.
+- `scripts/validate_skills.py` tourne en CI sur chaque push : frontmatter des skills, absence de tirets cadratins, de clés API, de placeholders, taille des CLAUDE.md.
 
 ## Contribuer
 
-Les pull requests sont bienvenues, en particulier des skills de prospection pour d'autres outils ou d'autres canaux. Lisez [CONTRIBUTING.md](CONTRIBUTING.md) avant de proposer un changement, et lancez `python3 scripts/validate_skills.py` avant d'envoyer.
+Les pull requests sont bienvenues, en particulier des skills pour d'autres canaux ou d'autres outils. Lisez [CONTRIBUTING.md](CONTRIBUTING.md) et lancez le validateur avant d'envoyer.
 
 ## Auteur
 
-Construit par [Hugo Dollfus](https://www.linkedin.com/in/hugo-dollfus/), fondateur de [Superfounder](https://www.superfounder.fr/). Chaque skill est utilisé sur son propre business et chez ses clients avant d'atterrir ici.
-
-Pour suivre les évolutions et les tutos qui vont avec : [Les Tutos d'Hugo](https://hugodollfus.substack.com/), la newsletter.
+Construit par [Hugo Dollfus](https://www.linkedin.com/in/hugo-dollfus/), fondateur de [Superfounder](https://www.superfounder.fr/). Chaque skill est utilisé sur son propre business et chez ses clients avant d'atterrir ici. Pour suivre les évolutions et les tutos : [Les Tutos d'Hugo](https://hugodollfus.substack.com/).
 
 ## Licence
 

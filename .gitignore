@@ -3,7 +3,7 @@
 .env.*
 !.env.example
 
-# Etat local genere par les skills OS-GTM
+# Etat local genere par les skills de prospection
 **/scripts/compteur.json
 **/scripts/baseline.json
 **/*.raw.json
@@ -13,3 +13,11 @@
 __MACOSX/
 __pycache__/
 *.pyc
+
+# Donnees personnelles d'un utilisateur qui forke : a versionner dans un depot PRIVE seulement
+# (decommentez si vous publiez votre fork)
+# ABOUT.ME/
+# Contexte/
+# Projects/*/ressources/
+# Projects/*/_journal.md
+# Intelligence/Daily logs/

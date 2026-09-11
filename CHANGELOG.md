@@ -3,6 +3,26 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [2.0.0] - 2026-09-11
+
+Refonte complète : le dépôt devient un workspace Claude Code prêt à ouvrir, structuré selon les pratiques documentées de gestion du contexte (skills scopés par dossier, CLAUDE.md imbriqués, imports, une vérité par information, lecture du contexte à l'exécution).
+
+### Changé (rupture avec 1.x)
+- Le dépôt EST le workspace : `git clone`, ouvrir, "Installe mon second cerveau". Plus de copie de skills dans `~/.claude`.
+- Les trois installeurs partagent la même nomenclature et la même phrase : `installer-second-cerveau` (ex setup-claude-infrastructure), `installer-prospection` (ex installer-gtm), `installer-contenu` (ex linkedin-system-installer). Chacun lit ce que le précédent a produit.
+- L'OS-GTM devient `Projects/Prospection/`, ses 25 skills sont scopés à ce dossier. `contexte.md` ne contient plus que ce qui est propre à la prospection et pointe vers `Contexte/` pour l'offre, la cible et la voix.
+- Le pack LinkedIn devient `Projects/Contenu/`, ses 10 skills sont scopés à ce dossier. Le mécanisme de placeholders (`apply_profile.py` et jetons entre doubles accolades) est supprimé : les skills lisent `Contexte/` et `ressources/` à chaque exécution. Les 7 fichiers-gabarits de références sont consolidés en 3 fichiers de `ressources/` (stratégie, posts de référence, swipe file).
+- `linkedin-interview-2` devient `linkedin-interview` et range ses pépites dans `Projects/Contenu/ressources/banque-vecu.md`.
+- `install.sh` ne sert plus qu'à ajouter les modules à un workspace existant (`--into`).
+
+### Ajouté
+- Les 8 skills du second cerveau, à la racine : `done`, `daily-review`, `weekly-review`, `inbox-processor`, `import`, `map-process`, `notes-permanentes`, `connect-mcp`.
+- Le CLAUDE.md racine orchestrateur : diagnostic de l'état d'installation au premier message, routage du contexte, routage des livrables, rituels, imports d'ABOUT.ME.
+- Le squelette complet : `ABOUT.ME/` et `Contexte/` avec gabarits, `Inbox/`, `Intelligence/` (schéma du wiki, INDEX, LOG), `Projects/{Clients,Strategie}/` avec leur CLAUDE.md.
+- `docs/` : un fichier par jour du parcours.
+- `anti-ai-voice.md` en version générique.
+- Le validateur vérifie aussi l'absence de placeholders résiduels et la taille des CLAUDE.md (200 lignes).
+
 ## [1.1.0] - 2026-09-09
 
 ### Ajouté
