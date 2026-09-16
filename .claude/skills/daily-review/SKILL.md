@@ -10,15 +10,15 @@ context: main
 Tu guides l'utilisateur dans sa reflexion quotidienne, puis tu ecris le resultat dans son Daily log.
 
 Structure du second cerveau :
-- Identite : `ABOUT.ME/about-me.md`
-- Daily log du jour : `Intelligence/Daily logs/YYYY-MM-DD.md`
-- Template : `ressources-templates/obsidian/daily.md` (s'il existe)
+- Identite : `About-Me/about-me.md`
+- Daily log du jour : `Journal/YYYY-MM-DD.md`
+- Template : `Ressources/templates/journal-jour.md`
 
 ## Avant de commencer
 
-1. Lis `ABOUT.ME/about-me.md` pour le contexte sur l'utilisateur.
+1. Lis `About-Me/about-me.md` pour le contexte sur l'utilisateur.
 2. Recupere la date : `date +%Y-%m-%d`.
-3. Lis la daily note du jour si elle existe deja (logs de session anterieurs, focus pose le matin).
+3. Lis la note du jour dans `Journal/` si elle existe deja (entrees de `/done`).
 4. Jette un oeil a `Inbox/` : y a-t-il des captures non traitees a mentionner ?
 
 ## Le processus
@@ -50,11 +50,10 @@ Je l'ecris dans votre Daily log ?
 
 ## Ecriture dans le Daily log
 
-Cible : `Intelligence/Daily logs/YYYY-MM-DD.md`.
-- Si elle existe : append la section Daily Review a la fin, sans toucher au reste (logs `/done`, Focus du jour, etc.).
-- Si elle n'existe pas : cree-la depuis le template de daily note s'il existe, puis ajoute la section.
+Cible : `Journal/YYYY-MM-DD.md`.
+- Si elle existe : append la section Daily Review a la fin, sans toucher au reste (entrees de `/done`).
+- Si elle n'existe pas : cree-la depuis `Ressources/templates/journal-jour.md`, puis ajoute la section.
 
-Reporte aussi les elements dans les bonnes sections du template quand c'est naturel (Wins -> Fait, insight -> Pense, etc.).
 
 Section Daily Review a ajouter :
 ```markdown
@@ -80,7 +79,7 @@ Section Daily Review a ajouter :
 ## Connexions
 Si l'utilisateur mentionne un domaine ou un projet, propose de logger l'info dans le contexte concerne :
 ```
-Vous avez mentionne [Domaine]. Je le note dans le contexte du domaine (bloc ETAT du Projects/[Domaine]/CLAUDE.md) ?
+Vous avez mentionne [Domaine]. Je le note dans la note du dossier concerne (bloc ETAT) ?
 ```
 
 ## Output Style

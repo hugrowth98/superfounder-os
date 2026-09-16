@@ -30,16 +30,16 @@ Avec une infrastructure de contexte structurée, Claude :
 
 ## 1. L'architecture cible (vue d'ensemble)
 
-Voici l'arborescence que ce guide vous fait construire :
+Voici l'arborescence, livrée avec Superfounder OS. Vous ne la construisez pas, vous la remplissez :
 
 ```
 votre-workspace/
-├── CLAUDE.md                              ← le GPS racine, lu à chaque session
-├── ABOUT.ME/                              ← qui vous êtes (chargé chaque session)
+├── CLAUDE.md              la carte : règles, diagnostic du premier message, routage, rituels
+├── About-Me/              qui vous êtes (chargé à chaque session)
 │   ├── about-me.md
 │   ├── my-company.md
-│   └── anti-ai-voice.md (optionnel)
-├── Contexte/                              ← votre cerveau (chargé à la demande)
+│   └── anti-ai-voice.md
+├── Contexte/              votre cerveau (chargé à la demande)
 │   ├── Constitution-Identity.md
 │   ├── Life-and-Work-Reality.md
 │   ├── Goals-and-Direction.md
@@ -47,30 +47,27 @@ votre-workspace/
 │   ├── Clients-Problems-and-Messages.md
 │   ├── Expertise-Standards-and-Landmines.md
 │   └── Tone-and-Voice.md
-├── ressources-templates/                  ← assets transversaux (hooks, exemples)
-├── Intelligence/                          ← veille, transcriptions, daily logs
-├── Projects/                              ← le travail en cours
-│   ├── Sales/
-│   │   ├── input/
-│   │   ├── output/
-│   │   └── ressources/
-│   ├── LinkedIn/
-│   │   ├── input/
-│   │   ├── output/
-│   │   └── ressources/
-│   ├── Newsletter/
-│   ├── Produit-Clients/
-│   ├── Stratégie/
-│   └── Marketing/
-└── .claude/
-    └── skills/                            ← vos skills custom
+├── Branding/              charte, logos, polices
+├── Ressources/            templates, exemples, docs d'outils
+├── Inbox/                 capture en vrac
+├── Journal/               un fichier par jour, écrit par /done
+├── Veille/                sources brutes et wiki de connaissance
+├── Meeting/               transcripts de calls
+├── Produit-Client/        un dossier par client et par produit
+├── Marketing/             ce qui fait venir : LinkedIn, Newsletter, Mailing, Event, Video, Slides
+├── Vente/                 ce qui convertit : Listes-prospection, Messages, Propositions, Pipeline
+├── Strategie/             réflexions de dirigeant
+├── Archives/              terminé ou inactif
+└── .claude/skills/        les skills transverses
 ```
+
+Chaque dossier de travail (`Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/` et leurs sous-dossiers) contient une **note du même nom que le dossier** (`Vente/Vente.md`) qui dit ce qui va dedans et où on en est, plus un `_log.md` écrit par `/done`. Les livrables vont dans `livrables/`, ce qu'on reçoit dans `sources/`, les assets propres au dossier dans `ressources/`.
 
 **Principes structurants :**
 
-1. **Divulgation progressive** : `CLAUDE.md` et `ABOUT.ME/` sont chargés à chaque session. `Contexte/` n'est chargé que si la tâche le justifie. Vous évitez la saturation du contexte.
+1. **Divulgation progressive** : `CLAUDE.md` et `About-Me/` sont chargés à chaque session. `Contexte/` n'est chargé que si la tâche le justifie. La note d'un dossier se lit avant de travailler dedans.
 2. **Pas de duplication** : un fichier source = un seul endroit. On pointe via chemins relatifs.
-3. **Sandbox dédié** : Claude n'a accès qu'à ce dossier parent, jamais à `~/Documents` ou `~/Desktop`.
+3. **Sandbox dédié** : Claude n'a accès qu'à ce dossier, jamais à `~/Documents` ou `~/Desktop`.
 4. **Convention de nommage** : `Nom-Sujet_YYYY-MM-DD.ext` pour les livrables datés.
 
 > **Note sur le naming** : les fichiers de `Contexte/` portent des noms en anglais (`Constitution-Identity.md`, `Goals-and-Direction.md`, etc.). Ce sont les noms de référence des prompts d'interview. Vous pouvez les renommer en français si vous préférez : pensez juste à mettre à jour les prompts en conséquence.
@@ -98,51 +95,17 @@ cd ~/MonCerveauIA
 
 **Règle de sandbox :** Claude n'aura accès qu'à ce dossier. Ne le placez pas à la racine de votre Documents ou Bureau.
 
-### 2.3 [CLAUDE EXECUTE] Créez la structure de dossiers vide
+### 2.3 [CLAUDE EXECUTE] Vérifiez la structure
 
-Lancez Claude Code dans ce dossier et collez ce prompt :
+La structure est livrée avec Superfounder OS : vous n'avez rien à créer. Lancez Claude Code dans le dossier et collez ce prompt :
 
 ```
-Crée la structure de dossiers suivante dans le répertoire courant,
-en laissant les fichiers vides pour l'instant :
-
-CLAUDE.md (vide)
-ABOUT.ME/about-me.md (vide)
-ABOUT.ME/my-company.md (vide)
-ABOUT.ME/anti-ai-voice.md (vide)
-Contexte/Constitution-Identity.md (vide)
-Contexte/Life-and-Work-Reality.md (vide)
-Contexte/Goals-and-Direction.md (vide)
-Contexte/Offer-Positioning.md (vide)
-Contexte/Clients-Problems-and-Messages.md (vide)
-Contexte/Expertise-Standards-and-Landmines.md (vide)
-Contexte/Tone-and-Voice.md (vide)
-ressources-templates/.gitkeep
-Intelligence/daily-logs/.gitkeep
-Projects/Sales/input/.gitkeep
-Projects/Sales/output/.gitkeep
-Projects/Sales/ressources/.gitkeep
-Projects/LinkedIn/input/.gitkeep
-Projects/LinkedIn/output/.gitkeep
-Projects/LinkedIn/ressources/.gitkeep
-Projects/Newsletter/input/.gitkeep
-Projects/Newsletter/output/.gitkeep
-Projects/Newsletter/ressources/.gitkeep
-Projects/Produit-Clients/input/.gitkeep
-Projects/Produit-Clients/output/.gitkeep
-Projects/Produit-Clients/ressources/.gitkeep
-Projects/Stratégie/input/.gitkeep
-Projects/Stratégie/output/.gitkeep
-Projects/Stratégie/ressources/.gitkeep
-Projects/Marketing/input/.gitkeep
-Projects/Marketing/output/.gitkeep
-Projects/Marketing/ressources/.gitkeep
-.claude/skills/.gitkeep
-
-Confirme la création avec un `tree -L 3`.
+Vérifie que la structure de Superfounder OS est intacte : About-Me/, Contexte/ (7 fichiers),
+Branding/, Ressources/, Inbox/, Journal/, Veille/, Meeting/, Produit-Client/, Marketing/,
+Vente/, Strategie/, Archives/, et .claude/skills/. Confirme avec un `ls`.
 ```
 
-**Validation :** Vous devriez voir une arborescence propre. Tous les fichiers sont vides : on va les remplir un par un.
+**Validation :** Les dossiers sont là, les fichiers de `About-Me/` et `Contexte/` contiennent `[à remplir]`. On va les remplir un par un.
 
 ---
 
@@ -181,11 +144,11 @@ CLAUDE.md doit contenir 5 sections :
    - Style de communication attendu
 
 2. **Fichiers à lire au démarrage de chaque session**
-   - Liste des fichiers ABOUT.ME/* à charger systématiquement
+   - Liste des fichiers About-Me/* à charger systématiquement
 
 3. **Architecture du workspace**
    - Description de chaque dossier racine
-   - Convention input/output/ressources des Projects
+   - Convention sources/livrables/ressources des dossiers de travail, et la note de chaque dossier
    - Convention de nommage des fichiers
 
 4. **Règles de routage des livrables**
@@ -240,7 +203,7 @@ Si elle est vague ou incorrecte : retournez à l'étape 3.3 et raffinez.
 
 ---
 
-## 4. Étape 2 : Construire `ABOUT.ME/`
+## 4. Étape 2 : Construire `About-Me/`
 
 Ces fichiers sont chargés à **chaque session**. Ils définissent qui vous êtes en tant que personne et en tant qu'entreprise. Restez court : `<2000 tokens` pour `about-me.md`, `<1000 tokens` pour `my-company.md`.
 
@@ -372,7 +335,7 @@ STRUCTURE OBLIGATOIRE :
 ---
 
 Produis uniquement le contenu du fichier.
-Écris-le directement dans ABOUT.ME/about-me.md.
+Écris-le directement dans About-Me/about-me.md.
 ```
 
 ### 4.2 Fichier `my-company.md` (votre business actuel)
@@ -454,7 +417,7 @@ STRUCTURE :
 À RAPPELER À L'UTILISATEUR : ce fichier est à mettre à jour
 tous les 1-3 mois. Mets-le en favori dans ton éditeur.
 
-Écris dans ABOUT.ME/my-company.md.
+Écris dans About-Me/my-company.md.
 ```
 
 ### 4.3 Fichier `anti-ai-voice.md` (optionnel mais recommandé)
@@ -464,7 +427,7 @@ Ce fichier contient les règles d'écriture pour ne jamais sonner IA. Indispensa
 #### PROMPT : Génération directe (pas besoin d'interview)
 
 ```
-Crée le fichier ABOUT.ME/anti-ai-voice.md.
+Crée le fichier About-Me/anti-ai-voice.md.
 
 Il doit lister les règles d'écriture pour produire du contenu
 qui ne sonne PAS IA, à appliquer sur tout livrable écrit publié
@@ -2434,97 +2397,55 @@ Aucune explication hors du fichier.
 
 ---
 
-## 6. Étape 4 : Construire `ressources-templates/`, `Intelligence/`, `Projects/`
+## 6. Étape 4 : Peupler `Ressources/`, `Veille/` et les dossiers de travail
 
 Ces dossiers ne se "remplissent" pas via interview : ils s'alimentent au fil de votre travail. Ce qu'il faut faire MAINTENANT, c'est poser les fondations.
 
-### 6.1 `ressources-templates/` (assets transversaux)
+### 6.1 `Ressources/` (ce qui aide à produire)
 
-**Objectif :** Stocker tout ce qui est réutilisable par n'importe quel projet (templates de posts, listes de hooks, exemples de bons mails, frameworks éditoriaux).
+**Objectif :** stocker tout ce qui est réutilisable par n'importe quel dossier : templates, listes de hooks, exemples de bons mails, docs d'outils. `Ressources/templates/` contient déjà les gabarits de note de dossier et de journal.
 
 #### [HUMAIN] À déposer immédiatement si vous les avez
 
-- 1 fichier `hooks-exemples.md` avec 30-50 accroches LinkedIn / Twitter qui ont marché chez vous ou chez vos références
+- 1 fichier `hooks-exemples.md` avec 30-50 accroches LinkedIn qui ont marché chez vous ou chez vos références
 - 1 fichier `exemples-newsletters.md` avec 5-10 newsletters dont vous voulez reprendre la structure
-- 1 fichier `templates-mails.md` avec vos mails-types (suivi, propale, suivi-propale, etc.)
+- 1 fichier `templates-mails.md` avec vos mails-types (suivi, propale, suivi-propale)
 
-Si vous n'avez rien de tout ça, créez les fichiers vides. Vous les remplirez au fil de l'eau.
+Si vous n'avez rien de tout ça, vous les remplirez au fil de l'eau.
 
-### 6.2 `Intelligence/` (veille, transcriptions, daily logs)
+### 6.2 `Veille/`, `Journal/`, `Meeting/` (ce qui entre et ce qui s'est passé)
 
-**Sous-dossiers recommandés :**
-```
-Intelligence/
-├── daily-logs/         ← un fichier par jour pour continuité entre sessions
-├── transcripts/        ← appels clients, réunions (TL;DV, Fireflies, etc.)
-├── veille/             ← articles lus, idées captées
-└── concurrents/        ← recherche concurrentielle, screenshots
-```
+- `Veille/sources/` reçoit le brut : articles clippés, transcripts de vidéos, newsletters. On ne le modifie jamais. `Veille/wiki/` reçoit la connaissance distillée, écrite par Claude via `/notes-permanentes`. `Veille/Veille.md` porte le schéma du wiki.
+- `Journal/` reçoit un fichier par jour, écrit par `/done` à la fin de chaque session, et un fichier par semaine, écrit par `/weekly-review`. Vous ne l'écrivez pas à la main.
+- `Meeting/` reçoit vos transcripts de calls (tldv, Granola, Claap). Ce qui s'y décide ruisselle vers la note du client concerné.
 
-#### [CLAUDE EXECUTE] Initialisation
+#### [HUMAIN] Une première source
 
-```
-Crée la sous-structure de Intelligence/ :
+Déposez dans `Veille/sources/` un article que vous citez souvent, et lancez `/notes-permanentes` : c'est la première page de votre wiki.
 
-Intelligence/daily-logs/.gitkeep
-Intelligence/transcripts/.gitkeep
-Intelligence/veille/.gitkeep
-Intelligence/concurrents/.gitkeep
+### 6.3 Les dossiers de travail
 
-Crée également un fichier modèle Intelligence/daily-logs/_TEMPLATE.md
-avec la structure suivante :
+Quatre dossiers de travail sont livrés : `Produit-Client/` (un dossier par client et par produit), `Marketing/` (LinkedIn, Newsletter, Mailing, Event, Video, Slides), `Vente/` (Listes-prospection, Messages, Propositions, Pipeline), `Strategie/`. Chacun a sa note du même nom, qui dit ce qui va dedans et ce qui n'y va pas.
 
-# Daily Log : YYYY-MM-DD
+Trois sous-dossiers reviennent partout :
+- `sources/` = matière brute reçue (transcripts, briefs, exports)
+- `livrables/` = ce qui est produit
+- `ressources/` = assets propres à ce dossier (à distinguer de `Ressources/` à la racine, transversal)
 
-## Énergie / état du jour
-[mood, énergie /10]
+#### [HUMAIN] Adaptez à votre activité
 
-## Ce que j'ai fait aujourd'hui
-- ...
+Si votre métier appelle un dossier de plus (`Formation/`, `Recrutement/`, `Production/`), créez-le sur le même patron : une note du même nom depuis `Ressources/templates/note-de-dossier.md`, un `_log.md`, et `sources/ livrables/ ressources/`. Une initiative datée (un event, un lancement) vit en sous-dossier du dossier qu'elle sert, avec sa propre note, et part dans `Archives/` une fois finie.
 
-## Décisions prises
-- ...
-
-## Ce qui m'a frappé / ce que j'ai appris
-- ...
-
-## Pour demain
-- ...
-
-Confirme la création.
-```
-
-### 6.3 `Projects/` (le travail en cours)
-
-La structure `input/output/ressources` est la convention universelle :
-- `input/` = matière brute reçue (transcripts, briefs, exports clients)
-- `output/` = livrables finaux produits par Claude
-- `ressources/` = assets propres à ce projet (à distinguer de `ressources-templates/` qui est transversal)
-
-#### [HUMAIN] Adaptez les sous-dossiers de `Projects/`
-
-Le squelette créé à l'étape 2 utilise les catégories de référence (Sales, LinkedIn, Newsletter, Produit-Clients, Stratégie, Marketing). **Adaptez-les à votre activité.**
-
-Quelques exemples selon le profil :
-
-- **Coach indépendant** : `Sales/`, `LinkedIn/`, `Coaching-Clients/`, `Contenu/`, `Stratégie/`
-- **Agence** : `Sales/`, `Production/`, `Comptes-Clients/`, `Marketing/`, `RH/`
-- **Solo dev** : `Open-Source/`, `Side-Projects/`, `Freelance/`, `Apprentissage/`
-- **Créateur de contenu** : `YouTube/`, `Newsletter/`, `Twitter/`, `Sponsors/`, `Produits/`
-
-**Convention de nommage des fichiers `output/` :**
+**Convention de nommage des livrables :**
 
 `Nom-Sujet_YYYY-MM-DD.ext`
 
 Exemples :
-- `Propale-Acme-Refonte_2026-05-04.docx`
-- `Post-Defi-IA-20j_2026-05-04.md`
-- `Edito-Newsletter-12_2026-05-04.md`
+- `Propale-Acme-Refonte_2026-05-04.docx` dans `Vente/Propositions/`
+- `Post-Defi-IA-20j_2026-05-04.md` dans `Marketing/LinkedIn/livrables/`
+- `Edito-Newsletter-12_2026-05-04.md` dans `Marketing/Newsletter/`
 
-**Tag projet multi-support :** Si un même lancement éclate sur plusieurs dossiers, préfixez tous les fichiers avec un tag commun :
-- `[lancement-cohorte-3]_post-annonce.md` dans LinkedIn
-- `[lancement-cohorte-3]_email-warmup.md` dans Sales
-- `[lancement-cohorte-3]_landing-copy.md` dans Marketing
+**Tag projet multi-support :** si un même lancement éclate sur plusieurs dossiers, préfixez tous les fichiers d'un tag commun, par exemple `[lancement-cohorte-3]_`.
 
 ---
 
@@ -2632,8 +2553,8 @@ Une infra Claude n'est pas un projet "one-shot". Elle vit.
 
 | Fichier / dossier | Cadence |
 |---|---|
-| `ABOUT.ME/about-me.md` | Tous les 6-12 mois (rare changement) |
-| `ABOUT.ME/my-company.md` | Tous les 1-3 mois (snapshot) |
+| `About-Me/about-me.md` | Tous les 6-12 mois (rare changement) |
+| `About-Me/my-company.md` | Tous les 1-3 mois (snapshot) |
 | `Contexte/Goals-and-Direction.md` | Tous les 30 jours |
 | `Contexte/Life-and-Work-Reality.md` | Tous les 3 mois |
 | `Contexte/Offer-Positioning.md` | À chaque nouvelle offre / changement de prix |
@@ -2648,7 +2569,7 @@ Une infra Claude n'est pas un projet "one-shot". Elle vit.
 Tous les vendredis :
 1. Faire un dernier Daily Log de la semaine
 2. Vérifier que les livrables produits cette semaine sont au bon endroit
-3. Noter dans `Intelligence/veille/` tout ce qui a marqué la semaine
+3. Noter dans `Veille/veille/` tout ce qui a marqué la semaine
 4. Vérifier qu'aucun fichier n'a atterri à la racine du workspace
 
 ### 9.3 Rituel mensuel (30 min)
@@ -2656,7 +2577,7 @@ Tous les vendredis :
 Une fois par mois :
 1. Mettre à jour `Goals-and-Direction.md` (snapshot du mois suivant)
 2. Mettre à jour `my-company.md` si quelque chose a bougé
-3. Lire les Daily Logs du mois et en faire un résumé dans `Intelligence/`
+3. Lire les Daily Logs du mois et en faire un résumé dans `Veille/`
 4. Identifier 1 nouvelle tâche récurrente → candidate à un skill
 
 ### 9.4 Rituel trimestriel (1h)
@@ -2695,9 +2616,9 @@ Cochez quand c'est fait. Vous pouvez mettre 1 semaine, 1 mois ou 3 mois pour tou
 
 ### Niveau 1 : Fondations (chargées chaque session)
 - [ ] `CLAUDE.md` rédigé et testé à froid
-- [ ] `ABOUT.ME/about-me.md` rédigé via interview 3-prompts
-- [ ] `ABOUT.ME/my-company.md` rédigé via interview 3-prompts
-- [ ] `ABOUT.ME/anti-ai-voice.md` créé (optionnel mais recommandé si contenu)
+- [ ] `About-Me/about-me.md` rédigé via interview 3-prompts
+- [ ] `About-Me/my-company.md` rédigé via interview 3-prompts
+- [ ] `About-Me/anti-ai-voice.md` créé (optionnel mais recommandé si contenu)
 
 ### Niveau 2 : Cerveau (chargé à la demande)
 - [ ] `Contexte/Constitution-Identity.md`
@@ -2709,9 +2630,9 @@ Cochez quand c'est fait. Vous pouvez mettre 1 semaine, 1 mois ou 3 mois pour tou
 - [ ] `Contexte/Tone-and-Voice.md`
 
 ### Niveau 3 : Workspace opérationnel
-- [ ] Sous-dossiers `Projects/` adaptés à mon activité
-- [ ] `ressources-templates/` initié (au moins fichiers vides)
-- [ ] `Intelligence/` initié avec template Daily Log
+- [ ] Dossiers de travail adaptés à mon activité, chacun avec sa note
+- [ ] `Ressources/templates/` initié (au moins fichiers vides)
+- [ ] `Veille/` initié avec template Daily Log
 
 ### Niveau 4 : Connectivité et automatisation
 - [ ] 3-5 MCP prioritaires connectés et documentés dans CLAUDE.md
@@ -2731,7 +2652,7 @@ Quand toute la checklist est cochée, vous avez une infra solide. Les prochaines
 1. **Skills avancés** : automatisations spécifiques à votre métier
 2. **Sub-agents** : déléguer des tâches longues à des agents spécialisés en parallèle
 3. **Intégration cloud** : exécuter votre infra depuis n'importe où via une API
-4. **Partage d'équipe** : étendre le sandbox à votre équipe (avec ses propres `ABOUT.ME/` par membre)
+4. **Partage d'équipe** : étendre le sandbox à votre équipe (avec ses propres `About-Me/` par membre)
 
 ---
 
@@ -2743,7 +2664,7 @@ Quand toute la checklist est cochée, vous avez une infra solide. Les prochaines
 
 1. `setup-claude-infrastructure-init` : Étapes 0 à 2 (intro + arborescence)
 2. `setup-claude-infrastructure-claude-md` : Étape 3 (CLAUDE.md)
-3. `setup-claude-infrastructure-about-me` : Étape 4 (ABOUT.ME/)
+3. `setup-claude-infrastructure-about-me` : Étape 4 (About-Me/)
 4. `setup-claude-infrastructure-contexte` : Étape 5 (les 7 fichiers : un sous-skill par fichier si besoin)
 5. `setup-claude-infrastructure-projects` : Étape 6 (workspace)
 6. `setup-claude-infrastructure-mcp-skills` : Étapes 7-8 (MCP + skills)
@@ -2764,7 +2685,7 @@ Quand toute la checklist est cochée, vous avez une infra solide. Les prochaines
 
 **Données à demander à l'utilisateur en début de skill :**
 - Nom et chemin du dossier parent
-- Profession / métier (sert à adapter les sous-dossiers Projects/)
+- Profession / métier (sert à adapter les dossiers de travail)
 - Niveau de maturité existant (a-t-il déjà des fichiers ? un workspace embryonnaire ?)
 - Temps disponible pour cette session (1h ? 1 journée ? 1 semaine étalée ?)
 

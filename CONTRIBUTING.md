@@ -9,9 +9,9 @@ Merci de vouloir améliorer Superfounder OS. Le dépôt est fait pour être fork
 
 ## Conventions
 
-- Un skill = un dossier avec un `SKILL.md` et, si besoin, `references/` (fichiers lus à la demande) et `scripts/` (code exécuté par le skill). Les skills transverses vont dans `.claude/skills/` à la racine, ceux d'un module dans `Projects/<Module>/.claude/skills/`.
-- Un skill ne contient jamais de donnée sur l'utilisateur : il lit `Contexte/` et `Projects/<Module>/ressources/` à l'exécution. Pas de jetons de substitution.
-- Un `CLAUDE.md` reste sous 200 lignes. C'est une carte, pas une bibliothèque.
+- Un skill = un dossier avec un `SKILL.md` et, si besoin, `references/` (fichiers lus à la demande) et `scripts/` (code exécuté par le skill). Les skills transverses vont dans `.claude/skills/` à la racine, ceux d'un module dans `Vente/.claude/skills/` ou `Marketing/.claude/skills/`.
+- Un skill ne contient jamais de donnée sur l'utilisateur : il lit `Contexte/`, `Vente/contexte.md` et `Marketing/LinkedIn/ressources/` à l'exécution. Pas de jetons de substitution.
+- Le `CLAUDE.md` racine reste sous 200 lignes. C'est une carte, pas une bibliothèque. Un dossier de travail n'a pas de `CLAUDE.md` : il a une note du même nom que le dossier.
 - Le frontmatter YAML de chaque `SKILL.md` contient au minimum `name` (identique au nom du dossier) et `description` (qui dit QUAND le skill se déclenche, avec les phrases typiques de l'utilisateur).
 - Langue : français pour les skills métier, anglais accepté pour les skills techniques d'origine anglophone.
 - Aucun tiret cadratin ni demi-cadratin dans les fichiers : utilisez `-`, `:` ou des parenthèses.

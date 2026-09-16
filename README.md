@@ -3,11 +3,11 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![45 skills](https://img.shields.io/badge/skills-45-blue.svg)](#ce-que-contient-le-dépôt)
+[![46 skills](https://img.shields.io/badge/skills-46-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
-Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 45 skills utilisés chaque semaine sur un vrai business : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
+Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 46 skills utilisés chaque semaine sur un vrai business : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
 
 Tout est en français, pensé pour un dirigeant qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
 
@@ -15,15 +15,15 @@ Tout est en français, pensé pour un dirigeant qui ne code pas. Vous écrivez d
 
 La plupart des entreprises utilisent l'IA sur le produit : coder plus vite, faire de la recherche, livrer. Presque jamais sur la distribution. Le problème, c'est que créer un produit devient une commodité. Ce qui fait la différence, c'est votre capacité à le mettre devant les bonnes personnes et à le vendre.
 
-Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en trois jours :
+Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en trois modules :
 
-| Jour | Ce que vous installez | La phrase à taper | Où |
+| Module | Ce que vous installez | La phrase à taper | Où |
 |---|---|---|---|
-| **1. Le second cerveau** | Qui vous êtes, votre offre, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
-| **2. La prospection** | Trouver, détecter un signal, trier, enrichir, écrire, envoyer, suivre. En 7 phrases, avec 25 skills. | `Installe ma prospection` | `Projects/Prospection/` |
-| **3. Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | `Projects/Contenu/` |
+| **Le second cerveau** | Qui vous êtes, votre offre, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
+| **La prospection** | Trouver, détecter un signal, trier, enrichir, écrire, envoyer, suivre. En 7 phrases, avec 25 skills. | `Installe ma prospection` | `Vente/` |
+| **Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | `Marketing/` |
 
-Chaque jour lit ce que le précédent a produit et n'interviewe que sur ce qui manque. Le détail de chaque jour est dans [docs/](docs/).
+Le second cerveau se fait en premier. Les deux autres le lisent et n'interviewent que sur ce qui manque, dans l'ordre que vous voulez. Le détail de chaque module est dans [docs/](docs/).
 
 ## Démarrer
 
@@ -42,48 +42,55 @@ Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace`
 ## Ce que contient le dépôt
 
 ```
-superfounder-os/                  ← le dossier que Claude Code ouvre
-├── CLAUDE.md                     la carte : règles, diagnostic du premier message, routage, rituels
-├── ABOUT.ME/                     TOUJOURS chargé. Qui vous êtes. Change en années.
+superfounder-os/            le dossier que Claude Code ouvre
+├── CLAUDE.md               la carte : règles, diagnostic du premier message, rôle de chaque dossier, routage, rituels
+├── About-Me/               TOUJOURS chargé. Qui vous êtes. Change en années.
 │   ├── about-me.md  my-company.md  anti-ai-voice.md
-├── Contexte/                     À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
-├── Inbox/                        capture en vrac, vidée par inbox-processor
-├── Intelligence/                 daily logs, sources brutes, wiki de connaissance durable
-├── ressources-templates/         modèles transverses
-├── Projects/
-│   ├── Prospection/              jour 2 : CLAUDE.md copilote, contexte.md, GUIDE.md, 25 skills scopés
-│   ├── Contenu/                  jour 3 : CLAUDE.md copilote, ressources/ (stratégie, posts, swipe file), 10 skills scopés
-│   ├── Clients/  Strategie/      même patron : CLAUDE.md + input/ output/ ressources/
-├── .claude/skills/               les 10 skills transverses (jour 1)
-│   ├── installer-second-cerveau  done  daily-review  weekly-review  inbox-processor
+├── Contexte/               À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
+├── Branding/               charte, logos, polices
+├── Ressources/             templates (note de dossier, journal), exemples, docs d'outils
+├── Inbox/                  capture en vrac, vidée par inbox-processor
+├── Journal/                un fichier par jour, écrit par /done
+├── Veille/                 sources brutes, wiki de connaissance, INDEX, LOG
+├── Meeting/                transcripts de calls
+├── Produit-Client/         un dossier par client et par produit
+├── Marketing/              LinkedIn/ Newsletter/ Mailing/ Event/ Video/ Slides/  +  10 skills scopés
+├── Vente/                  Listes-prospection/ Messages/ Propositions/ Pipeline/  +  25 skills scopés
+├── Strategie/              réflexions de dirigeant
+├── Archives/               terminé ou inactif
+├── .claude/skills/         les 11 skills transverses
+│   ├── installer-second-cerveau  done  lint  daily-review  weekly-review  inbox-processor
 │   ├── import  map-process  notes-permanentes  connect-mcp  find-skills
-├── docs/                         jour-1, jour-2, jour-3
-├── install.sh                    pour un workspace existant seulement
+├── docs/                   second-cerveau, prospection, contenu
+├── install.sh              pour un workspace existant seulement
 └── scripts/validate_skills.py    contrôle qualité, lancé en CI
 ```
 
+Chaque dossier de travail contient une **note du même nom que le dossier** (`Vente/Vente.md`) qui dit ce qui va dedans, ce qui n'y va pas, et où on en est. C'est elle que Claude lit avant de travailler. Plus un `_log.md`, une ligne par session.
+
 ## Comment c'est construit (et pourquoi)
 
-Le dépôt applique les pratiques documentées de Claude Code pour la gestion du contexte. Si vous voulez adapter l'OS, gardez ces cinq règles.
+Le dépôt applique les pratiques documentées de Claude Code pour la gestion du contexte. Si vous voulez adapter l'OS, gardez ces six règles.
 
 1. **Une information vit à un seul endroit.** L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
-2. **Trois vitesses de changement, trois couches.** `ABOUT.ME/` change en années et est importé dans le contexte à chaque session (`@ABOUT.ME/...` dans le CLAUDE.md racine). `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'un domaine change en semaines et est réécrit par `/done`.
-3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et `ressources/` à chaque exécution. Pas de placeholders à remplacer, pas de recompilation quand votre positionnement bouge.
-4. **Le contexte vit près de son usage.** Les 25 skills de prospection sont dans `Projects/Prospection/.claude/skills/`, les 10 de contenu dans `Projects/Contenu/.claude/skills/`. Claude Code ne les charge que quand vous travaillez dans ce dossier : la liste reste courte partout, et chaque dossier a son `CLAUDE.md` copilote de moins de 200 lignes.
-5. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le bloc ETAT du domaine et dans son `_journal.md`. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
+2. **Trois vitesses de changement, trois couches.** `About-Me/` change en années et est importé dans le contexte à chaque session. `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'une note de dossier change en semaines et est réécrit par `/done`.
+3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et les ressources du dossier à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
+4. **Le contexte vit près de son usage.** Les 25 skills de prospection sont dans `Vente/.claude/skills/`, les 10 de contenu dans `Marketing/.claude/skills/`. Claude Code ne les charge que quand vous travaillez dans ce dossier.
+5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Rôle, Conventions, Organisation, Roadmap, ETAT, Reprise, Historique, Liens. Vous écrivez les trois premières, `/done` écrit les autres.
+6. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le journal du jour, la note du dossier et son `_log.md`. `/lint` une fois par mois vérifie que rien n'a dérivé. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 
-## Une journée type, une fois les trois jours faits
+## Une journée type, une fois les trois modules installés
 
-Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit les blocs ETAT de chaque domaine et propose. Vous travaillez dans un dossier, ses skills et son copilote se chargent seuls. Vous capturez en vrac dans `Inbox/`. Le soir, `/done` puis `/daily-review`. Le vendredi, `/weekly-review`. Une fois par trimestre, vous relisez `Contexte/`.
+Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et les blocs ETAT, et propose. Vous travaillez dans un dossier, ses skills se chargent seuls, vous ouvrez sa note. Vous capturez en vrac dans `Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `Contexte/`.
 
 Le contenu nourrit la prospection (ceux qui commentent vos posts sont vos meilleurs prospects). La prospection nourrit les rendez-vous. Les rendez-vous nourrissent le contenu.
 
 ## Sécurité et données
 
-- Les clés API vivent dans `Projects/Prospection/.env`, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
+- Les clés API vivent dans `Vente/.env`, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
 - Aucun skill n'envoie d'invitation, de message ou de campagne sans un "oui" explicite de votre part.
-- Vos fichiers personnels (`ABOUT.ME/`, `Contexte/`, `ressources/`, `_journal.md`) sont à vous. Si vous versionnez votre workspace, faites-le dans un dépôt privé.
-- `scripts/validate_skills.py` tourne en CI sur chaque push : frontmatter des skills, absence de tirets cadratins, de clés API, de placeholders, taille des CLAUDE.md.
+- Vos fichiers personnels (`About-Me/`, `Contexte/`, `Branding/`, `Journal/`, `Meeting/`, les `ressources/`, les `_log.md`) sont à vous. Si vous versionnez votre workspace, faites-le dans un dépôt privé.
+- `scripts/validate_skills.py` tourne en CI sur chaque push : frontmatter des skills, absence de tirets cadratins, de clés API, de placeholders, taille du CLAUDE.md.
 
 ## Contribuer
 

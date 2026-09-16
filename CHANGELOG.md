@@ -3,6 +3,27 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [3.0.0] - 2026-09-16
+
+Une seule structure, pour votre workspace comme pour ceux de vos clients. Le parcours en trois jours devient trois modules installables dans l'ordre que vous voulez, une fois le second cerveau en place.
+
+### Changé (rupture avec 2.x)
+- **Rangement à plat par fonction**, plus de `Projects/` ni de `input/ output/ ressources` imbriqués : `About-Me/`, `Contexte/`, `Branding/`, `Ressources/`, `Inbox/`, `Journal/`, `Veille/`, `Meeting/`, `Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/`, `Archives/`.
+- **Une note par dossier de travail**, du même nom que le dossier (`Vente/Vente.md`) : rôle, conventions, organisation, bloc ETAT, reprise, historique. Elle remplace le `CLAUDE.md` de sous-dossier. Un `_log.md` par dossier, une ligne par session.
+- **`Journal/`** remplace `Intelligence/Daily logs/` : un fichier par jour, écrit par `/done`, un par semaine par `/weekly-review`. Le template à emojis disparaît.
+- **`Veille/`** remplace `Intelligence/` : `sources/` (le brut), `wiki/` (la connaissance), `INDEX.md`, `LOG.md`.
+- `Projects/Prospection/` devient `Vente/` avec quatre sous-dossiers typés (`Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`). Les 25 skills restent scopés dans `Vente/.claude/skills/`.
+- `Projects/Contenu/` devient `Marketing/` avec sept briques (`LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`, `Site-vitrine/` à créer au besoin). Les 10 skills restent scopés dans `Marketing/.claude/skills/`, les ressources de contenu vivent dans `Marketing/LinkedIn/ressources/`.
+- `Projects/Clients/` devient `Produit-Client/`, `Projects/Strategie/` devient `Strategie/`.
+- Plus de notion de jour 1, 2, 3. Les trois phrases restent : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Les deux dernières lisent le second cerveau et n'interviewent que sur ce qui manque.
+- `/done` réécrit sur trois niveaux : le journal du jour, la note du dossier touché (ETAT, Reprise, Historique), son `_log.md`. Il propose un diff pour `About-Me/`, `Contexte/` et `Branding/` au lieu d'y écrire.
+- `docs/` : un fichier par module, sans numéro de jour.
+
+### Ajouté
+- `/lint` : neuf contrôles de santé du workspace (notes manquantes, ETAT périmés, contradictions, frontmatter, versions non archivées, fichiers à la racine, tirets cadratins, chemins morts, dossiers orphelins). Lecture seule jusqu'à validation.
+- `Ressources/templates/` : `note-de-dossier.md`, `note-de-dossier-client.md`, `journal-jour.md`.
+- `Branding/`, `Meeting/`, `Archives/` avec leur note.
+
 ## [2.0.0] - 2026-09-11
 
 Refonte complète : le dépôt devient un workspace Claude Code prêt à ouvrir, structuré selon les pratiques documentées de gestion du contexte (skills scopés par dossier, CLAUDE.md imbriqués, imports, une vérité par information, lecture du contexte à l'exécution).

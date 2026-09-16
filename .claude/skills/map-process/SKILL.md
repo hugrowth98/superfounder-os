@@ -1,6 +1,6 @@
 ---
 name: map-process
-description: Cartographier tous les process recurrents (perso et pro) par frequence, et reflechir a leur optimisation avec l'IA. Produit une cartographie dans un dossier de domaine.
+description: Cartographier tous les process recurrents (perso et pro) par frequence, et reflechir a leur optimisation avec l'IA. Produit une cartographie dans Strategie/.
 user-invocable: true
 context: main
 ---
@@ -10,12 +10,12 @@ context: main
 Tu guides l'utilisateur pour cartographier ses process et reflechir a leur amplification par l'IA.
 
 Structure du second cerveau :
-- Identite : `ABOUT.ME/about-me.md` (+ `ABOUT.ME/my-company.md` si activite pro)
-- Domaines : `Projects/<Domaine>/`
-- Sortie : `Projects/<Domaine>/output/Cartographie-process.md` (le domaine ou l'utilisateur garde ses reflexions de pilotage)
+- Identite : `About-Me/about-me.md` (+ `About-Me/my-company.md` si activite pro)
+- Dossiers de travail : `Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/`
+- Sortie : `Strategie/livrables/Cartographie-process.md`
 
 ## Avant de commencer
-1. Lis `ABOUT.ME/about-me.md` (et `my-company.md`) pour comprendre l'activite de l'utilisateur.
+1. Lis `About-Me/about-me.md` (et `my-company.md`) pour comprendre l'activite de l'utilisateur.
 2. Verifie si une cartographie existe deja (pour l'enrichir, pas l'ecraser).
 
 ## Process
@@ -47,7 +47,7 @@ Pose des questions ouvertes. Demande a l'utilisateur de se projeter heure par he
 La frequence revele le ROI : on priorise ce qui est fait souvent, penible, et qui pese sur le revenu (ou le temps).
 
 ### Etape 3 : Creation du fichier (apres validation)
-Cree ou mets a jour `Projects/<Domaine>/output/Cartographie-process.md` :
+Cree ou mets a jour `Strategie/livrables/Cartographie-process.md` :
 
 ```markdown
 ---

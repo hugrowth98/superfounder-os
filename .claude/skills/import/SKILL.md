@@ -1,6 +1,6 @@
 ---
 name: import
-description: Import intelligent par passes intentionnelles : alignement, scan, delegation a des sous-agents, plan puis execution. Route les notes/exports/PDF vers Projects, Contexte ou le wiki Intelligence. 4 verdicts (KEEP/EXTRACT/SUMMARIZE/ARCHIVE).
+description: Import intelligent par passes intentionnelles : alignement, scan, delegation a des sous-agents, plan puis execution. Route les notes/exports/PDF vers les dossiers de travail, Contexte ou le wiki Veille. 4 verdicts (KEEP/EXTRACT/SUMMARIZE/ARCHIVE).
 user-invocable: true
 context: main
 ---
@@ -11,8 +11,8 @@ Importe un lot de contenu (notes, exports ChatGPT/Claude, PDF, docs) dans le sec
 
 Structure du second cerveau :
 - Zone d'import : `Inbox/_import/` (sous-dossier dedie de l'inbox pour cette commande)
-- Destinations : `Projects/<Domaine>/`, `Contexte/`, `ressources-templates/`, `Intelligence/raw/` (puis wiki), archive
-- Identite : `ABOUT.ME/about-me.md` (+ `my-company.md` si present)
+- Destinations : les dossiers de travail (`Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/`), `Contexte/`, `Ressources/`, `Veille/sources/` (puis wiki), `Archives/`
+- Identite : `About-Me/about-me.md` (+ `my-company.md` si present)
 - Routage : arbre de decision du `CLAUDE.md` racine
 
 ## Principe : passes intentionnelles
@@ -26,7 +26,7 @@ Si un gros volume melange est deja dans `Inbox/_import/`, propose de decouper en
 ## Etape 1 : Alignement
 Avant d'ouvrir un fichier, capte le contexte humain :
 1. Qu'y a-t-il dans `Inbox/_import/` pour cette passe ? (etre precis)
-2. Objectif : (a) ranger note par note dans les domaines, (b) extraire l'info utile vers le contexte (ABOUT.ME, le bloc ETAT du CLAUDE.md des domaines) et archiver le reste, (c) faire le tri (garder vs jeter), (d) un melange.
+2. Objectif : (a) ranger note par note dans les domaines, (b) extraire l'info utile vers le contexte (About-Me, le bloc ETAT de la note du dossier) et archiver le reste, (c) faire le tri (garder vs jeter), (d) un melange.
 3. Quoi archiver direct (projets termines, sujets morts) ?
 4. Quel domaine est central pour cette passe ?
 5. Budget tokens limite ? (si oui, router les sous-agents vers un modele economique)
@@ -43,10 +43,10 @@ Annonce le total a traiter. Au-dela de 150 items, propose de decouper.
 
 ## Etape 4 : Table de routage du workspace
 Construis ta carte des destinations :
-- Identite : `ABOUT.ME/about-me.md` (+ `my-company.md`)
-- Domaines actifs : liste `Projects/*/` (et sous-dossiers), lis chaque `CLAUDE.md` pour les mots-cles
+- Identite : `About-Me/about-me.md` (+ `my-company.md`)
+- Dossiers de travail : `Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/` et leurs sous-dossiers ; lis la note de chacun (meme nom que le dossier) pour les mots-cles
 - Contexte transverse : `Contexte/`
-- Wiki : `Intelligence/INDEX.md` (ce qui existe deja)
+- Wiki : `Veille/INDEX.md` (ce qui existe deja)
 Note les mots-cles par domaine : ils servent au matching.
 
 ## Etape 5 : Delegation a des sous-agents
@@ -54,12 +54,12 @@ Pour chaque lot, lance un sous-agent (en parallele). Brief : contexte du workspa
 - `source`, `title` (reecris si peu parlant), `summary`, `created_hint`
 - `verdict` :
   - `KEEP_NOTE` : garder tel quel dans un domaine / Contexte / ressources
-  - `EXTRACT_CONTEXT` : extraire l'info utile vers le bloc ETAT du `CLAUDE.md` d'un domaine, `ABOUT.ME`, ou une page wiki ; archiver l'original
+  - `EXTRACT_CONTEXT` : extraire l'info utile vers le bloc ETAT de la note d'un dossier, `About-Me`, ou une page wiki ; archiver l'original
   - `SUMMARIZE` : regrouper avec d'autres items du meme groupe en une note de synthese
   - `ARCHIVE` : obsolete
 - `verdict_reason`, `destination`, `context_patch` (si EXTRACT), `summarize_group` (si SUMMARIZE), `rename_suggestion`, `confidence`, `notes`
 
-Regles de routage : suivre l'arbre du `CLAUDE.md` racine. Preferer rattacher a un domaine existant. Pour les sources de connaissance durable (concepts, frameworks), destination = `Intelligence/raw/` avec note "a passer en /notes-permanentes". Conversations ChatGPT/Claude : EXTRACT_CONTEXT ou SUMMARIZE presque toujours mieux que KEEP_NOTE.
+Regles de routage : suivre l'arbre du `CLAUDE.md` racine. Preferer rattacher a un dossier existant. Pour les sources de connaissance durable (concepts, frameworks), destination = `Veille/sources/` avec note "a passer en /notes-permanentes". Conversations ChatGPT/Claude : EXTRACT_CONTEXT ou SUMMARIZE presque toujours mieux que KEEP_NOTE.
 
 ## Etape 6 : Plan complet (aucune ecriture)
 Presente le plan groupe par verdict puis destination (tableaux), avec vue d'ensemble des compteurs, alertes (doublons, candidats nouveau domaine, ecarts intention/corpus). Propose : (a) executer, (b) ajuster des verdicts, (c) voir le contenu d'items avant de decider.
@@ -72,8 +72,8 @@ Par lots de 15 :
 - KEEP_NOTE : deplace (renomme si suggere) vers la destination, en respectant la convention de nommage du `CLAUDE.md` racine.
 - EXTRACT_CONTEXT : applique le patch a la note cible (append sous `## Import du YYYY-MM-DD`), deplace l'original vers l'archive.
 - SUMMARIZE : cree une note de synthese par groupe, archive les sources.
-- ARCHIVE : deplace vers `Inbox/_import/_archive-YYYY-MM-DD/` (ou un dossier d'archive precise par l'utilisateur).
-Demander confirmation avant de creer un nouveau dossier de domaine. Ne jamais ecrire dans les dossiers en lecture seule sans accord explicite.
+- ARCHIVE : deplace vers `Archives/import-YYYY-MM-DD/`.
+Demander confirmation avant de creer un nouveau dossier de travail. Ne jamais ecrire dans les dossiers en lecture seule sans accord explicite.
 
 ## Etape 9 : Recap + feedback
 Resume des compteurs et cout estime. Demande : ce qui a convenu, ce qui aurait pu etre mieux. Si feedback exploitable, propose un diff de ce SKILL.md (applique seulement si valide). Puis lance `/done` pour logger la session. Rappelle que `Inbox/_import/` est vide (sauf `_originaux/`) pour la prochaine passe.

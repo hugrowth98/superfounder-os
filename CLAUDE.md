@@ -1,11 +1,11 @@
 # Superfounder OS
 
-> Fichier lu par Claude Code au démarrage de chaque session, quel que soit le dossier.
-> C'est la carte du workspace, pas une bibliothèque : il dit où sont les choses et quand les lire.
+> Lu par Claude Code au démarrage de chaque session, quel que soit le dossier.
+> C'est la carte du workspace, pas une bibliothèque : elle dit où sont les choses, à quoi sert chaque dossier, et quand les lire.
 
-@ABOUT.ME/about-me.md
-@ABOUT.ME/my-company.md
-@ABOUT.ME/anti-ai-voice.md
+@About-Me/about-me.md
+@About-Me/my-company.md
+@About-Me/anti-ai-voice.md
 
 ## 1. Règles (toujours)
 
@@ -14,92 +14,146 @@
 - Une seule action à la fois. L'utilisateur n'est pas développeur : tu fais le travail technique, il répond aux questions.
 - Rien ne part vers l'extérieur (message, invitation, campagne, email) sans un "oui" explicite.
 - Jamais de contexte inventé. Si l'information manque, tu la demandes ou tu laisses vide.
-- Tout livrable va dans le `output/` du bon domaine, nommé `Nom-Sujet_YYYY-MM-DD.ext`.
+- Ce qui n'est pas écrit dans ce dossier n'existe pas pour toi. Une décision prise en conversation finit dans un fichier avant la fin de la session.
 
-## 2. Premier message : diagnostiquer, puis proposer le bon jour
+## 2. Premier message : diagnostiquer, puis proposer
 
 Avant de répondre au tout premier message d'une session, regarde discrètement l'état d'installation :
 
 | Module | Test | Installé si |
 |---|---|---|
-| Jour 1, second cerveau | `ABOUT.ME/about-me.md` | ne contient plus de `[à remplir]` |
-| Jour 2, prospection | `Projects/Prospection/contexte.md` et `.env` | sections remplies, au moins une clé présente |
-| Jour 3, contenu | `Projects/Contenu/ressources/strategie-contenu.md` | sections remplies |
+| Le second cerveau | `About-Me/about-me.md` | ne contient plus de `[à remplir]` |
+| La prospection | `Vente/contexte.md` et `Vente/.env` | sections remplies, au moins une clé présente |
+| Le contenu | `Marketing/LinkedIn/ressources/strategie-contenu.md` | sections remplies |
 
 Puis :
 - **Rien n'est installé** : souhaite la bienvenue en 3 phrases (ce que l'OS permet : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu), et lance `installer-second-cerveau`.
-- **Jour 1 fait, pas le jour 2** : propose "Installe ma prospection".
-- **Jours 1 et 2 faits** : propose "Installe mon contenu".
-- **Tout est installé** : lis les blocs ETAT des `Projects/*/CLAUDE.md`, résume en 3 lignes où en est chaque domaine, et propose la prochaine action la plus utile.
+- **Second cerveau fait, un module manque** : propose "Installe ma prospection" ou "Installe mon contenu", au choix de l'utilisateur. Les deux lisent le second cerveau et n'interviewent que sur ce qui manque.
+- **Tout est installé** : lis le journal d'hier et d'aujourd'hui s'ils existent, puis le bloc ETAT des notes de `Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/`. Résume en 3 lignes où en est chaque dossier et propose la prochaine action la plus utile.
 
-Les installeurs se lancent toujours par la même phrase : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Chaque installeur lit ce que le précédent a produit et n'interviewe que sur ce qui manque.
+Les installeurs se lancent toujours par la même phrase : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Les skills de prospection vivent dans `Vente/`, ceux de contenu dans `Marketing/` : si l'utilisateur les demande depuis la racine, va travailler dans le bon dossier.
 
-## 3. Architecture
+## 3. Le rôle de chaque dossier
+
+| Dossier | Ce qu'il contient | Ce qu'il ne contient pas |
+|---|---|---|
+| `About-Me/` | Qui vous êtes, votre boîte, vos règles d'écriture. Trois fichiers, chargés à chaque session. Change en années. | Rien de daté, rien de projet |
+| `Contexte/` | La vérité unique sur votre marché et vos méthodes : identité, réalité, objectifs, offre, clients, standards, voix. Sept fichiers, chargés selon la tâche. Change en trimestres. | L'état d'un projet, un livrable |
+| `Branding/` | Charte, logos, polices, brand book. La référence visuelle. | Les visuels produits (ils vont dans `Marketing/`) |
+| `Ressources/` | Ce qui aide à produire mais n'est pas du savoir : templates, exemples, hooks, docs d'API. Transverse à tous les dossiers. | Les assets propres à un dossier (ils vont dans son `ressources/`) |
+| `Inbox/` | Zone tampon. Ce qui arrive sans place définie. Vidé par `/inbox-processor`. | Un livrable fini, une source du wiki |
+| `Journal/` | Un fichier par jour, écrit par `/done` : ce qui a été fait, décidé, appris. Un fichier par semaine pour le bilan. La mémoire chronologique. | Le détail d'un projet (il vit dans sa note de dossier) |
+| `Veille/` | Ce qui vient de l'extérieur : `sources/` (le brut, immuable), `wiki/` (la connaissance distillée), `INDEX.md`, `LOG.md`. | La production de l'utilisateur |
+| `Meeting/` | Les transcripts de calls. Ce qui s'y décide ruisselle vers la note du client. | Le compte rendu envoyé (il va chez le client) |
+| `Produit-Client/` | Un dossier par client et par produit, chacun avec sa note, son contexte, ses livrables. | Un post qui parle d'un client (il va dans `Marketing/`) |
+| `Marketing/` | Tout ce qui fait venir : `LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`. Les 10 skills de contenu. | Une propale, un message de prospection |
+| `Vente/` | Tout ce qui convertit : `Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`. Les 25 skills de prospection. | Un contenu publié |
+| `Strategie/` | Les réflexions de dirigeant : offre, pricing, positionnement, études, décisions structurantes. | Un livrable client |
+| `Archives/` | Terminé ou inactif, gardé accessible. | Ce qui est encore en cours |
+
+Zones protégées, modifiées seulement sur demande explicite ou via un installeur : `About-Me/`, `Contexte/`, `Branding/`, `.claude/`.
+
+## 4. La forme d'un dossier de travail
+
+**Règle de lecture : avant de travailler dans un dossier, ouvre sa note.** Elle porte le nom exact du dossier. Si l'utilisateur parle d'un client, d'un module ou d'une initiative sans nommer de fichier, la note est le point d'entrée.
 
 ```
-CLAUDE.md                   cette carte (chargée partout)
-ABOUT.ME/                   qui vous êtes : chargé à chaque session via les imports ci-dessus
-Contexte/                   la vérité unique sur l'offre, les clients, la voix : chargé à la demande (section 4)
-Inbox/                      capture en vrac, vidée par inbox-processor
-Intelligence/               daily logs, sources brutes (raw/), wiki de connaissance durable
-ressources-templates/       modèles transverses (daily note, hooks, exemples)
-Projects/<Domaine>/         un dossier par domaine, toujours : CLAUDE.md, _journal.md, input/ output/ ressources/
-  Prospection/              jour 2, avec ses 25 skills scopés dans .claude/skills/
-  Contenu/                  jour 3, avec ses 10 skills scopés dans .claude/skills/
-  Clients/ Strategie/       livrables clients, réflexions de dirigeant
-.claude/skills/             les 10 skills transverses (installeur jour 1, rituels, connect-mcp, find-skills)
-docs/                       le parcours en 3 jours, un fichier par jour
+Vente/
+  Vente.md          LA NOTE DU DOSSIER : même nom que le dossier, lue avant tout travail dedans
+  _log.md           une ligne par session, écrite par /done
+  contexte.md       le profil de prospection (propre à Vente)
+  sources/          ce qu'on reçoit : exports, briefs, transcripts
+  ressources/       assets propres à ce dossier
+  Listes-prospection/  Messages/  Propositions/  Pipeline/   sous-dossiers nommés par nature
+  Campagne-Q4/      une initiative datée : son dossier, sa note, archivée à la fin
 ```
 
-Trois vitesses de changement, trois couches : `ABOUT.ME/` change en années, `Contexte/` en trimestres, le bloc ETAT d'un domaine en semaines. Une information vit à un seul endroit. Les dossiers de Projects ne redéfinissent jamais l'offre ou la voix : ils pointent vers `Contexte/`.
+La note a toujours ces sections, dans cet ordre :
 
-## 4. Routage du contexte (quoi charger selon la tâche)
+| Section | Qui l'écrit |
+|---|---|
+| Rôle, Conventions, Organisation | l'utilisateur. `/done` n'y touche jamais |
+| Roadmap | l'utilisateur l'écrit, `/done` coche |
+| Bloc ETAT (État actuel, Décisions actées, Prochaines étapes) | `/done` le réécrit entièrement |
+| Reprise | `/done` : où on s'est arrêté, ce qui bloque, la première action |
+| Historique | `/done` : une ligne par session, la plus récente en haut, lien vers le journal |
+| Liens | `/done` : les wikilinks vers les entités liées |
 
-| Tâche | Charger en plus d'ABOUT.ME |
+Règle de résolution : quand tu modifies un fichier, la note à mettre à jour est celle du dossier parent le plus proche qui en a une. Deux niveaux maximum sous un dossier de travail. Jamais de fichier à la racine du workspace.
+
+## 5. Routage du contexte (quoi charger selon la tâche)
+
+| Tâche | Charger en plus d'About-Me |
 |---|---|
 | Rédiger quoi que ce soit de publié (post, newsletter, page, message) | `Contexte/Tone-and-Voice.md` |
-| Prospection, messages, qualification | `Contexte/Offer-Positioning.md` + `Contexte/Clients-Problems-and-Messages.md` + `Projects/Prospection/contexte.md` |
-| Contenu LinkedIn | `Contexte/Tone-and-Voice.md` + `Projects/Contenu/ressources/strategie-contenu.md` |
+| Prospection, messages, qualification | `Contexte/Offer-Positioning.md` + `Contexte/Clients-Problems-and-Messages.md` + `Vente/contexte.md` |
+| Contenu LinkedIn | `Contexte/Tone-and-Voice.md` + `Marketing/LinkedIn/ressources/strategie-contenu.md` |
 | Stratégie, offre, pricing, objectifs | `Contexte/Goals-and-Direction.md` + `Contexte/Offer-Positioning.md` + `Contexte/Life-and-Work-Reality.md` |
 | Standards de qualité, erreurs passées | `Contexte/Expertise-Standards-and-Landmines.md` |
 | Valeurs, décisions difficiles | `Contexte/Constitution-Identity.md` |
+| Travail sur un client | la note de son dossier dans `Produit-Client/` |
+| Visuel, marque | `Branding/` |
 
-Les `CLAUDE.md` des dossiers de Projects se chargent seuls quand tu y travailles. Les skills de prospection et de contenu n'apparaissent que dans leur dossier : si l'utilisateur demande un post depuis la racine, va travailler dans `Projects/Contenu/`.
+Plus, toujours : la note du dossier où tu travailles. Tu l'ouvres toi-même, elle ne se charge pas seule.
 
-## 5. Routage des livrables (premier match gagne)
+## 6. Routage des livrables (premier match gagne)
 
-1. Post LinkedIn, calendrier, brief éditorial : `Projects/Contenu/output/`
-2. Liste de prospects, messages, campagne, export : `Projects/Prospection/output/`
-3. Livrable pour un client précis : `Projects/Clients/output/`, préfixé du nom du client
-4. Réflexion de dirigeant (offre, pricing, vision, roadmap) : `Projects/Strategie/output/`
-5. Source brute à exploiter (transcript, article, export) : `input/` du domaine concerné, ou `Intelligence/raw/`
-6. Rien de tout ça : `Inbox/`, et on trie plus tard
+1. Post LinkedIn, carrousel, calendrier éditorial, brief de veille : `Marketing/LinkedIn/livrables/`
+2. Édition de newsletter : `Marketing/Newsletter/`
+3. Email à l'audience déjà inscrite (promo d'event, nurturing, annonce) : `Marketing/Mailing/`
+4. Livrable d'un event (funnel, landing, trames, slides) : `Marketing/Event/<Event>/`
+5. Vidéo publiée, pub : `Marketing/Video/`
+6. Support visuel transverse, planche d'atelier : `Marketing/Slides/`
+7. Liste de prospects, run de scraping ou d'enrichissement : `Vente/Listes-prospection/`
+8. Message outbound, séquence, icebreaker, playbook d'appel : `Vente/Messages/`
+9. Propale, devis : `Vente/Propositions/`
+10. Import, export ou dédoublonnage CRM, liste de call : `Vente/Pipeline/`
+11. Livrable pour un client ou un produit : `Produit-Client/<Nom>/livrables/`, préfixé du nom
+12. Réflexion de dirigeant, étude, décision structurante : `Strategie/livrables/`
+13. Rien de tout ça : `Inbox/`
 
-Jamais de fichier à la racine. `ABOUT.ME/`, `Contexte/` et `.claude/` ne se modifient que sur demande explicite ou via un installeur.
+Tie-breaker : le support final l'emporte sur le sujet. Un post qui annonce un event va dans LinkedIn, pas dans Event. Un email d'invitation à ce même event va dans Mailing. Une propale qui détaille l'offre va dans Vente, pas dans Produit-Client.
 
-## 6. Rituels
+## 7. Routage des entrées
+
+| Ce qui arrive | Où ça va |
+|---|---|
+| Transcript de call | `Meeting/`, puis les décisions ruissellent vers la note du client |
+| Article, vidéo, newsletter, veille | `Veille/sources/` |
+| Idée, vocal, lien, fichier déposé sans contexte | `Inbox/` |
+| Décision qui change une zone protégée (prix, offre, marque) | proposée en diff, jamais écrite directement |
+
+## 8. Conventions
+
+- Livrable daté : `Nom-Sujet_YYYY-MM-DD.ext`. Note de dossier : le nom exact du dossier. Journal : `Journal/YYYY-MM-DD.md` et `Journal/YYYY-Www.md`.
+- Une entité (client, produit, personne) porte son nom canonique et se cite en `[[wikilink]]`.
+- Une seule version visible d'un livrable. Les versions précédentes vont dans `Archives/`.
+- Frontmatter sur toute note et tout livrable créé : `type`, `status`, `date`, `maj`.
+- Une information vit à un seul endroit. L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. `Vente/contexte.md` et `Marketing/LinkedIn/ressources/strategie-contenu.md` pointent dessus et ne gardent que ce qui leur est propre.
+
+## 9. Rituels
 
 | Quand | Commande | Ce qu'elle fait |
 |---|---|---|
-| Fin de chaque session de travail | `/done` | extrait décisions et faits, réécrit le bloc ETAT du domaine, ajoute au `_journal.md` |
-| Le soir | `/daily-review` | énergie, victoires, frictions, apprentissage, focus du lendemain |
-| Le vendredi | `/weekly-review` | bilan, report des tâches, plan de la semaine suivante jour par jour |
+| Fin de chaque session | `/done` | extrait décisions et faits, écrit le journal du jour, réécrit ETAT, Reprise et Historique de la note du dossier touché, ajoute une ligne à son `_log.md` |
+| Une fois par mois | `/lint` | santé du workspace : notes manquantes, ETAT périmés, contradictions, frontmatter, versions à archiver |
+| Le soir | `/daily-review` | énergie, victoires, frictions, focus du lendemain, dans le journal du jour |
+| Le vendredi | `/weekly-review` | bilan de la semaine, plan de la suivante, dans `Journal/` |
 | Quand l'Inbox déborde | `/inbox-processor` | route chaque item vers le bon dossier |
-| Un gros lot à digérer (exports, PDF, notes) | `/import` | trie par passes, garde, extrait, résume ou archive |
-| Une source qui mérite de durer | `/notes-permanentes` | l'intègre au wiki `Intelligence/` |
+| Un gros lot à digérer | `/import` | trie par passes de 100 items |
+| Une source qui mérite de durer | `/notes-permanentes` | une page dans `Veille/wiki/` |
 | Nouvel outil à brancher | `/connect-mcp` | installe le serveur MCP |
 | "Y a-t-il un skill pour ça ?" | `find-skills` | cherche dans l'écosystème ouvert |
 | Cartographier ses process | `/map-process` | par fréquence, pour décider où mettre l'IA |
 
-Le bloc ETAT d'un `CLAUDE.md` de domaine est maintenu par `/done`. Ne pas l'éditer à la main.
+Une tâche, une session, puis `/done`. Le bloc ETAT d'une note est maintenu par `/done` : ne pas l'éditer à la main.
 
-## 7. Le bloc ETAT (format, dans chaque Projects/<Domaine>/CLAUDE.md)
+## 10. Le bloc ETAT (format, dans chaque note de dossier)
 
 ```
 <!-- ETAT:START (géré par /done, ne pas éditer à la main) -->
 ## État actuel
 maj : YYYY-MM-DD
-## Priorités / en cours
 ## Décisions actées
 ## Prochaines étapes
 - [ ] ...
