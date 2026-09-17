@@ -135,7 +135,7 @@ Si l'utilisateur a un métier qui appelle un dossier de plus (par exemple `Forma
 2. **Tone-and-Voice.md** (section 5.7) : voix d'auteur. Demander des documents : posts, mails, transcripts.
 3. **Expertise-Standards-and-Landmines.md** (section 5.6) : niveau d'exigence et erreurs vécues.
 4. **Offer-Positioning.md** (section 5.4) : offre actuelle, exclusions.
-5. **Clients-Problems-and-Messages.md** (section 5.5), le plus stratégique. Demander en priorité : transcripts d'appels de vente, verbatim clients. S'il en a, les déposer dans `Meeting/Clients/<Nom>/` pour une mission, `Meeting/Coaching/<Nom>/` pour un coaching, `Meeting/Prospects/YYYY-MM/` pour un prospect.
+5. **Clients-Problems-and-Messages.md** (section 5.5), le plus stratégique. Demander en priorité : transcripts d'appels de vente, verbatim clients. S'il en a, les déposer dans `Meeting/Clients/Actuels/<Nom>/` pour une mission, `Meeting/Clients/Coaching/<Nom>/` pour un coaching, `Meeting/Prospects/YYYY-MM/` pour un prospect.
 6. **Life-and-Work-Reality.md** (section 5.2) : contraintes réelles, modèle éco.
 7. **Goals-and-Direction.md** (section 5.3) : objectifs datés, mesurables.
 
@@ -164,7 +164,7 @@ Si l'utilisateur a un métier qui appelle un dossier de plus (par exemple `Forma
 2. Pour chaque client, une conversation courte : qui c'est (secteur, taille), la mission et son prix, l'interlocuteur principal, comment il aime travailler, où en est la mission. Un document déposé (propale, compte rendu, transcript) remplace les questions.
 3. Créer `Produit-Client/<Nom>/` avec sa note `<Nom>.md` depuis `Ressources/templates/note-de-dossier-client.md`, remplie avec ce qui a été dit, plus `_log.md` et `livrables/`. Montrer, faire valider, écrire.
 
-C'est la note que Claude lira avant tout travail pour ce client. Un transcript de call avec lui va dans `Meeting/Clients/<Nom>/`, et `/done` fait ruisseler ce qui s'y décide vers cette note.
+C'est la note que Claude lira avant tout travail pour ce client. Un transcript de call avec lui va dans `Meeting/Clients/Actuels/<Nom>/`, et `/done` fait ruisseler ce qui s'y décide vers cette note.
 
 ---
 
