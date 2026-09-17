@@ -11,9 +11,9 @@ maj: AAAA-MM-JJ
 
 ## Rôle
 
-Les transcripts de calls, un fichier par call, dans trois dossiers : Clients, Events, Prospects. C'est la matière première la plus sous-exploitée d'un business de service : les mots exacts des clients, leurs objections, leurs douleurs.
+Les transcripts de calls, un fichier par call, dans cinq dossiers : Clients, Events, Prospects, Interne, Autres. C'est la matière première la plus sous-exploitée d'un business de service : les mots exacts des clients, leurs objections, leurs douleurs.
 
-Ne va pas ici : le compte rendu envoyé au client après le call (il va dans `Produit-Client/<Client>/livrables/`), les réunions internes sans personne externe (elles vont dans `Archives/Meeting-Interne/` si vous tenez à les garder).
+Ne va pas ici : le compte rendu envoyé au client après le call (il va dans `Produit-Client/<Client>/livrables/`), les notes de réunion interne sans transcript.
 
 ## Conventions
 
@@ -27,6 +27,8 @@ Routage d'un nouveau transcript, premier match gagne :
 4. Atelier collectif (IA, outils, méthode) : `Clients/Ateliers-collectifs/YYYY-MM/`.
 5. Event marketing que vous organisez : `Events/Live/` ou `Events/Challenge/`.
 6. Premier ou deuxième call avec une personne externe : `Prospects/YYYY-MM/`.
+7. Call sans personne externe (équipe, board, partenaire) : `Interne/YYYY-MM/`.
+8. Rien de tout ça : `Autres/YYYY-MM/`.
 
 Un prospect devient client ou coaché au troisième call, ou dès qu'un atelier, un coaching, un kick off ou un onboarding est planifié. On crée alors son dossier et on y remonte tous ses calls de `Prospects/` : l'historique reste ensemble.
 
@@ -47,6 +49,8 @@ Ce qui se décide dans un call ruisselle vers la note du client concerné via `/
 - `Clients/Ateliers-collectifs/YYYY-MM/` : les ateliers collectifs.
 - `Events/Live/`, `Events/Challenge/` : les events marketing que vous organisez.
 - `Prospects/YYYY-MM/` : les premiers calls sans suite, rangés par mois.
+- `Interne/YYYY-MM/` : équipe, board, partenaires, rangés par mois.
+- `Autres/YYYY-MM/` : ce qui ne rentre nulle part.
 
 ## Roadmap
 

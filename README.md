@@ -52,7 +52,7 @@ superfounder-os/            le dossier que Claude Code ouvre
 ├── Inbox/                  capture en vrac, vidée par inbox-processor
 ├── Journal/                un fichier par jour, écrit par /done
 ├── Veille/                 sources brutes, wiki de connaissance, INDEX, LOG
-├── Meeting/                transcripts de calls : Clients/ Events/ Prospects/
+├── Meeting/                transcripts de calls : Clients/ Events/ Prospects/ Interne/ Autres/
 ├── Produit-Client/         un dossier par client et par produit
 ├── Marketing/              LinkedIn/ Newsletter/ Mailing/ Event/ Video/ Slides/  +  10 skills scopés
 ├── Vente/                  Listes-prospection/ Messages/ Propositions/ Pipeline/  +  25 skills scopés
