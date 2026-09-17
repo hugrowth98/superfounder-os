@@ -44,7 +44,7 @@ Les installeurs se lancent toujours par la même phrase : "Installe mon second c
 | `Inbox/` | Zone tampon. Ce qui arrive sans place définie. Vidé par `/inbox-processor`. | Un livrable fini, une source du wiki |
 | `Journal/` | Un fichier par jour, écrit par `/done` : ce qui a été fait, décidé, appris. Un fichier par semaine pour le bilan. La mémoire chronologique. | Le détail d'un projet (il vit dans sa note de dossier) |
 | `Veille/` | Ce qui vient de l'extérieur : `sources/` (le brut, immuable), `wiki/` (la connaissance distillée), `INDEX.md`, `LOG.md`. | La production de l'utilisateur |
-| `Meeting/` | Les transcripts de calls. Ce qui s'y décide ruisselle vers la note du client. | Le compte rendu envoyé (il va chez le client) |
+| `Meeting/` | Les transcripts de calls, rangés par relation : `Clients/<Nom>/`, `Prospects/`, `Events/`, `Interne/`, `Autres/`. Ce qui s'y décide ruisselle vers la note du client. | Le compte rendu envoyé (il va chez le client) |
 | `Produit-Client/` | Un dossier par client et par produit, chacun avec sa note, son contexte, ses livrables. | Un post qui parle d'un client (il va dans `Marketing/`) |
 | `Marketing/` | Tout ce qui fait venir : `LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`. Les 10 skills de contenu. | Une propale, un message de prospection |
 | `Vente/` | Tout ce qui convertit : `Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`. Les 25 skills de prospection. | Un contenu publié |
@@ -118,7 +118,7 @@ Tie-breaker : le support final l'emporte sur le sujet. Un post qui annonce un ev
 
 | Ce qui arrive | Où ça va |
 |---|---|
-| Transcript de call | `Meeting/`, puis les décisions ruissellent vers la note du client |
+| Transcript de call | `Meeting/Clients/<Nom>/` si la personne a un dossier, sinon `Prospects/`, `Events/`, `Interne/` ou `Autres/` (règle dans `Meeting/Meeting.md`), puis les décisions ruissellent vers la note du client |
 | Article, vidéo, newsletter, veille | `Veille/sources/` |
 | Idée, vocal, lien, fichier déposé sans contexte | `Inbox/` |
 | Décision qui change une zone protégée (prix, offre, marque) | proposée en diff, jamais écrite directement |

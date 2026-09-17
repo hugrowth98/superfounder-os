@@ -51,7 +51,7 @@ Applique l'arbre de routage du `CLAUDE.md` racine (premier match gagne) : chaque
 
 Selon le type :
 - Idee / fait lie a un dossier -> verser dans le bloc ETAT de sa note, supprimer l'item.
-- Transcript de call -> deplacer vers `Meeting/`. Autre source brute -> le `sources/` du dossier concerne.
+- Transcript de call -> deplacer vers `Meeting/Clients/<Nom>/` si la personne a un dossier, sinon `Meeting/Prospects/YYYY-MM/` (regle complete dans `Meeting/Meeting.md`). Autre source brute -> le `sources/` du dossier concerne.
 - Source de connaissance (article, concept) -> deplacer vers `Veille/sources/` et proposer `/notes-permanentes`.
 - Reference transverse -> `Contexte/` ou `Ressources/templates/`.
 - Obsolete -> deplacer vers `Archives/`. Sans valeur -> supprimer (confirmer avant).

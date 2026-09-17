@@ -11,19 +11,35 @@ maj: AAAA-MM-JJ
 
 ## Rôle
 
-Les transcripts de calls, clients et prospects, un fichier par call. C'est la matière première la plus sous-exploitée d'un business de service : les mots exacts des clients, leurs objections, leurs douleurs.
+Les transcripts de calls, un fichier par call, rangés par nature de la relation : clients, prospects, events, interne, autres. C'est la matière première la plus sous-exploitée d'un business de service : les mots exacts des clients, leurs objections, leurs douleurs.
 
 Ne va pas ici : le compte rendu envoyé au client après le call (il va dans `Produit-Client/<Client>/livrables/`), les notes de réunion interne sans transcript.
 
 ## Conventions
 
-Nommage `YYYY-MM-DD_<client-ou-prospect>_<sujet>.md`, rangé dans un sous-dossier par mois si le volume le justifie. Frontmatter `client:` rempli quand le client a un dossier.
+Nommage `YYYY-MM-DD_<client-ou-prospect>_<sujet>.md`.
+
+Routage d'un nouveau transcript, premier match gagne :
+
+1. La personne ou la boîte a un dossier dans `Clients/` : il y va.
+2. Atelier collectif, challenge, masterclass, live, formation ouverte : `Events/<Nom-event>/`.
+3. Call sans personne externe (équipe, board, partenaire opérationnel) : `Interne/YYYY-MM/`.
+4. Premier ou deuxième call avec une personne externe : `Prospects/YYYY-MM/`.
+5. Rien de tout ça : `Autres/YYYY-MM/`.
+
+Un prospect devient client au troisième call, ou dès qu'un atelier, un coaching, un kick off ou un onboarding est planifié. On crée alors `Clients/<Nom>/` et on y remonte tous ses calls de `Prospects/` : l'historique reste ensemble.
+
+Nom d'un dossier client : le nom canonique de la boîte quand il y en a une (le même que dans `Produit-Client/`), sinon `Prenom-Nom`.
 
 Ce qui se décide dans un call ruisselle vers la note du client concerné via `/done`. Les douleurs entendues alimentent `Contexte/Clients-Problems-and-Messages.md` (proposé en diff) et les idées de contenu.
 
 ## Organisation
 
-[Un fichier par call.]
+- `Clients/<Nom>/` : un dossier par client, tous ses calls dedans, du premier rdv au dernier atelier.
+- `Prospects/YYYY-MM/` : les premiers calls sans suite, rangés par mois.
+- `Events/<Nom-event>/` : ateliers collectifs, challenges, masterclasses, un dossier par event.
+- `Interne/YYYY-MM/` : équipe, board, partenaires, rangés par mois.
+- `Autres/YYYY-MM/` : ce qui ne rentre nulle part.
 
 ## Roadmap
 

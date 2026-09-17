@@ -3,6 +3,14 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [3.1.0] - 2026-09-17
+
+`Meeting/` se range par relation, plus par mois.
+
+### Changé
+- **`Meeting/` a cinq sous-dossiers** : `Clients/<Nom>/` (un dossier par client, tous ses calls dedans), `Prospects/YYYY-MM/`, `Events/<Nom-event>/`, `Interne/YYYY-MM/`, `Autres/YYYY-MM/`. La règle de routage, premier match gagne, est dans `Meeting/Meeting.md`. Un prospect passe dans `Clients/` au troisième call ou dès qu'un atelier ou un onboarding est planifié.
+- `CLAUDE.md`, `README.md`, `/inbox-processor` et `installer-second-cerveau` pointent vers le nouveau routage.
+
 ## [3.0.0] - 2026-09-16
 
 Une seule structure, pour votre workspace comme pour ceux de vos clients. Le parcours en trois jours devient trois modules installables dans l'ordre que vous voulez, une fois le second cerveau en place.
