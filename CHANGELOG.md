@@ -8,7 +8,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), ver
 `Meeting/` se range par relation, plus par mois.
 
 ### Changé
-- **`Meeting/` a cinq sous-dossiers** : `Clients/<Nom>/` (un dossier par client, tous ses calls dedans), `Prospects/YYYY-MM/`, `Events/<Nom-event>/`, `Interne/YYYY-MM/`, `Autres/YYYY-MM/`. La règle de routage, premier match gagne, est dans `Meeting/Meeting.md`. Un prospect passe dans `Clients/` au troisième call ou dès qu'un atelier ou un onboarding est planifié.
+- **`Meeting/` se range par relation** : `Clients/<Nom>/` (missions en cours), `Coaching/<Nom>/` (coachés 1:1), `Anciens-clients/<Nom>/`, `Ateliers-cold-call/`, `Ateliers-collectifs/`, `Events/Live/` et `Events/Challenge/` (vos events marketing), `Prospects/YYYY-MM/`, `Interne/YYYY-MM/`, `Autres/YYYY-MM/`. La règle de routage en huit étapes, premier match gagne, est dans `Meeting/Meeting.md`. Un prospect passe dans `Clients/` ou `Coaching/` au troisième call ou dès qu'un atelier ou un onboarding est planifié ; un dossier terminé glisse dans `Anciens-clients/` tel quel.
 - `CLAUDE.md`, `README.md`, `/inbox-processor` et `installer-second-cerveau` pointent vers le nouveau routage.
 
 ## [3.0.0] - 2026-09-16

@@ -135,7 +135,7 @@ Si l'utilisateur a un métier qui appelle un dossier de plus (par exemple `Forma
 2. **Tone-and-Voice.md** (section 5.7) : voix d'auteur. Demander des documents : posts, mails, transcripts.
 3. **Expertise-Standards-and-Landmines.md** (section 5.6) : niveau d'exigence et erreurs vécues.
 4. **Offer-Positioning.md** (section 5.4) : offre actuelle, exclusions.
-5. **Clients-Problems-and-Messages.md** (section 5.5), le plus stratégique. Demander en priorité : transcripts d'appels de vente, verbatim clients. S'il en a, les déposer dans `Meeting/Clients/<Nom>/` pour un client, `Meeting/Prospects/YYYY-MM/` pour un prospect.
+5. **Clients-Problems-and-Messages.md** (section 5.5), le plus stratégique. Demander en priorité : transcripts d'appels de vente, verbatim clients. S'il en a, les déposer dans `Meeting/Clients/<Nom>/` pour une mission, `Meeting/Coaching/<Nom>/` pour un coaching, `Meeting/Prospects/YYYY-MM/` pour un prospect.
 6. **Life-and-Work-Reality.md** (section 5.2) : contraintes réelles, modèle éco.
 7. **Goals-and-Direction.md** (section 5.3) : objectifs datés, mesurables.
 
