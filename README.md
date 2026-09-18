@@ -3,11 +3,11 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![46 skills](https://img.shields.io/badge/skills-46-blue.svg)](#ce-que-contient-le-dépôt)
+[![47 skills](https://img.shields.io/badge/skills-47-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
-Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 46 skills utilisés chaque semaine sur un vrai business : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
+Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 47 skills utilisés chaque semaine sur un vrai business : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
 
 Tout est en français, pensé pour un dirigeant qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
 
@@ -19,9 +19,9 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en t
 
 | Module | Ce que vous installez | La phrase à taper | Où |
 |---|---|---|---|
-| **Le second cerveau** | Qui vous êtes, votre offre, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
-| **La prospection** | Trouver, détecter un signal, trier, enrichir, écrire, envoyer, suivre. En 7 phrases, avec 25 skills. | `Installe ma prospection` | `Vente/` |
-| **Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | `Marketing/` |
+| **Le second cerveau** | Qui vous êtes, votre offre, vos départements, vos projets, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
+| **La prospection** | Trouver, détecter un signal, trier, enrichir, écrire, envoyer, suivre. En 7 phrases, avec 25 skills. | `Installe ma prospection` | racine |
+| **Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | racine |
 
 Le second cerveau se fait en premier. Les deux autres le lisent et n'interviewent que sur ce qui manque, dans l'ordre que vous voulez. Le détail de chaque module est dans [docs/](docs/).
 
@@ -37,41 +37,37 @@ Puis, dans le chat : `Installe mon second cerveau`. Le dépôt est votre workspa
 
 Prérequis : [Claude Code](https://www.anthropic.com/claude-code) et un abonnement Claude payant. Pour la prospection, selon vos canaux : Unipile (LinkedIn), Crustdata (recherche), FullEnrich (emails), Lemlist (campagnes), Apify (scraping). Python 3.10 ou plus pour les scripts de prospection.
 
-Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace` y ajoute les modules sans toucher à vos fichiers existants.
+Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace` y ajoute la structure et les skills sans toucher à vos fichiers existants.
 
 ## Claude Code, Codex ou OpenCode
 
-Le dépôt fonctionne avec les trois, sans rien configurer. Claude Code lit `CLAUDE.md` et `.claude/skills`. Codex lit `AGENTS.md` et `.agents/skills`. OpenCode lit `AGENTS.md` et `opencode.json`. Les deux dossiers de skills sont des liens symboliques vers `Skills/` : sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies (l'installeur le propose). Les trois phrases d'installation sont les mêmes partout.
+Le dépôt fonctionne avec les trois, sans rien configurer. Claude Code lit `CLAUDE.md` et `.claude/skills`. Codex lit `AGENTS.md` et `.agents/skills`. OpenCode lit `AGENTS.md` et `opencode.json`. Les deux dossiers de skills sont des liens symboliques vers `10 Skills/` : sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies (l'installeur le propose). Les trois phrases d'installation sont les mêmes partout.
 
 ## Ce que contient le dépôt
 
 ```
 superfounder-os/            le dossier que Claude Code ouvre
-├── CLAUDE.md               la carte : règles, diagnostic du premier message, rôle de chaque dossier, routage, rituels
-├── About-Me/               TOUJOURS chargé. Qui vous êtes. Change en années.
+├── CLAUDE.md               la carte : règles, diagnostic du premier message, arbre, départements, forme d'une fiche, routage, rituels
+├── 00 Inbox/               capture en vrac, vidée par /inbox-processor ; _import/ pour /import
+├── 01 About-Me/            TOUJOURS chargé. Qui vous êtes. Change en années.
 │   ├── about-me.md  my-company.md  anti-ai-voice.md
-├── Contexte/               À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
-├── Branding/               charte, logos, polices
-├── Ressources/             templates (note de dossier, journal), exemples, docs d'outils
-├── Inbox/                  capture en vrac, vidée par inbox-processor
-├── Journal/                un fichier par jour, écrit par /done
-├── Veille/                 sources brutes, wiki de connaissance, INDEX, LOG
-├── Meeting/                transcripts de calls : Clients/ Events/ Prospects/ Interne/ Autres/
-├── Produit-Client/         un dossier par client et par produit
-├── Marketing/              LinkedIn/ Newsletter/ Mailing/ Event/ Video/ Slides/
-├── Vente/                  Listes-prospection/ Messages/ Propositions/ Pipeline/
-├── Strategie/              réflexions de dirigeant
-├── Archives/               terminé ou inactif
-├── Skills/                 les 46 skills, une bibliothèque unique
-├── .claude/skills          lien vers Skills/ (Claude Code)
-├── .agents/skills          lien vers Skills/ (Codex)
-├── opencode.json  AGENTS.md    OpenCode et Codex lisent la même carte
-├── docs/                   second-cerveau, prospection, contenu
-├── install.sh              pour un workspace existant seulement
-└── scripts/validate_skills.py    contrôle qualité, lancé en CI
+├── 02 Contexte/            À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
+├── 03 Branding/            charte, logos, polices
+├── 04 Projets/             une initiative avec une fin : un dossier, une note, des Étapes, archivé à la fin
+├── 05 Departements/        les responsabilités continues, chacune avec sa fiche
+│   ├── Strategie/  Contenu/ (LinkedIn, Newsletter, Video, Slides)  Go-to-Market/ (Listes-prospection, Messages, Mailing)
+│   ├── Vente/ (Propositions, Pipeline)  Produit/  Finance-Compta/
+├── 06 Clients/             un dossier par client signé, avec sa note
+├── 07 Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
+├── 08 Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
+├── 09 Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
+├── 10 Skills/              la bibliothèque : 47 skills, une procédure par dossier
+├── 11 Archives/            terminé ou remplacé, gardé accessible
+├── .claude/skills          lien vers 10 Skills/ (Claude Code)      .agents/skills  lien vers 10 Skills/ (Codex)
+├── AGENTS.md  opencode.json  .env.example  install.sh  docs/  scripts/validate_skills.py
 ```
 
-Chaque dossier de travail contient une **note du même nom que le dossier** (`Vente/Vente.md`) qui dit ce qui va dedans, ce qui n'y va pas, et où on en est. C'est elle que Claude lit avant de travailler. Plus un `_log.md`, une ligne par session.
+Une fiche (département, projet, client) tient en six sections : Mission, Périmètre et Objectif pour un département, Cadre, Étapes pour un projet ou un client, Où on en est, Key Notes. Vous écrivez les premières, `/done` fait vivre les dernières.
 
 ## Comment c'est construit (et pourquoi)
 

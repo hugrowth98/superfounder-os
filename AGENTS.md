@@ -7,23 +7,19 @@ maj: 2026-09-18
 
 # AGENTS.md
 
-> Consignes de travail pour Codex et OpenCode dans ce workspace, reprises du fichier `CLAUDE.md`. Elles s'appliquent à ce dossier et à ses sous-dossiers. Le `CLAUDE.md` reste la référence pour Claude Code : les deux fichiers disent la même chose.
+> Consignes de travail pour Codex et OpenCode dans ce workspace, reprises du `CLAUDE.md`. Le `CLAUDE.md` reste la référence pour Claude Code : les deux fichiers disent la même chose.
 
 ## Démarrage de chaque session
 
-Avant de travailler, lire intégralement les trois fichiers suivants, dont les chemins sont relatifs à la racine du workspace :
+Avant de travailler, lire intégralement, chemins relatifs à la racine du workspace :
 
-1. `About-Me/about-me.md`
-2. `About-Me/my-company.md`
-3. `About-Me/anti-ai-voice.md`
+1. `01 About-Me/about-me.md`
+2. `01 About-Me/my-company.md`
+3. `01 About-Me/anti-ai-voice.md`
 
-Ces références sont des instructions de lecture explicites : ne pas supposer que leur contenu est chargé automatiquement. Puis ouvrir la note du dossier concerné et les références utiles selon la section 5. Si un fichier manque, le signaler sans inventer son contenu.
+Ces références sont des instructions de lecture explicites : ne pas supposer que leur contenu est chargé automatiquement. Puis ouvrir la note du dossier concerné et les références utiles selon la section 7. Si un fichier manque, le signaler sans inventer son contenu.
 
-Les règles adressées à "tu" dans ce fichier s'appliquent au moteur qui le lit, quel qu'il soit. Les commandes en `/nom` désignent des skills : dans Codex on les appelle avec `$nom`, dans OpenCode via l'outil skill. Un nom d'outil propre à Claude Code ne désigne pas une capacité disponible ailleurs : signaler une capacité manquante plutôt que de prétendre l'avoir exécutée.
-
-## Où sont les skills
-
-Les 46 skills sont dans `Skills/`, un dossier par skill avec un `SKILL.md`. Codex les trouve via `.agents/skills`, lien symbolique vers `Skills/`. OpenCode les trouve via `opencode.json` (`skills.paths`), et charge `About-Me/` via le même fichier. Un skill se lit et se modifie dans `Skills/`, jamais à travers un lien. Un skill ajouté dans `Skills/` est visible des trois moteurs sans rien d'autre à faire.
+Les règles adressées à "tu" s'appliquent au moteur qui lit ce fichier. Les commandes en `/nom` désignent des skills : dans Codex on les appelle avec `$nom`, dans OpenCode via l'outil skill. Un nom d'outil propre à Claude Code ne désigne pas une capacité disponible ailleurs : signaler une capacité manquante plutôt que prétendre l'avoir exécutée.
 
 ## 1. Règles (toujours)
 
@@ -32,7 +28,9 @@ Les 46 skills sont dans `Skills/`, un dossier par skill avec un `SKILL.md`. Code
 - Une seule action à la fois. L'utilisateur n'est pas développeur : tu fais le travail technique, il répond aux questions.
 - Rien ne part vers l'extérieur (message, invitation, campagne, email) sans un "oui" explicite.
 - Jamais de contexte inventé. Si l'information manque, tu la demandes ou tu laisses vide.
-- Ce qui n'est pas écrit dans ce dossier n'existe pas pour toi. Une décision prise en conversation finit dans un fichier avant la fin de la session.
+- Jamais de suppression : ce qui n'a plus sa place va dans `11 Archives/`.
+- Ce qui n'est pas écrit dans ce dossier n'existe pas pour toi. Une décision prise en conversation finit dans un fichier avant la fin de la session, via `/done`.
+- Tous les chemins contiennent des espaces : guillemets dans chaque commande.
 
 ## 2. Premier message : diagnostiquer, puis proposer
 
@@ -40,144 +38,153 @@ Avant de répondre au tout premier message d'une session, regarde discrètement 
 
 | Module | Test | Installé si |
 |---|---|---|
-| Le second cerveau | `About-Me/about-me.md` | ne contient plus de `[à remplir]` |
-| La prospection | `Vente/contexte.md` et `.env` à la racine | sections remplies, au moins une clé présente |
-| Le contenu | `Marketing/LinkedIn/ressources/strategie-contenu.md` | sections remplies |
+| Le second cerveau | `01 About-Me/about-me.md` | ne contient plus de `[à remplir]` |
+| La prospection | `05 Departements/Go-to-Market/contexte.md` et `.env` à la racine | sections remplies, au moins une clé présente |
+| Le contenu | `05 Departements/Contenu/LinkedIn/strategie-contenu.md` | sections remplies |
 
 Puis :
-- **Rien n'est installé** : souhaite la bienvenue en 3 phrases (ce que l'OS permet : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu), et lance `installer-second-cerveau`.
-- **Second cerveau fait, un module manque** : propose "Installe ma prospection" ou "Installe mon contenu", au choix de l'utilisateur. Les deux lisent le second cerveau et n'interviewent que sur ce qui manque.
-- **Tout est installé** : lis le journal d'hier et d'aujourd'hui s'ils existent, puis le bloc ETAT des notes de `Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/`. Résume en 3 lignes où en est chaque dossier et propose la prochaine action la plus utile.
+- **Rien n'est installé** : souhaite la bienvenue en trois phrases (un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu) et lance `installer-second-cerveau`.
+- **Second cerveau fait, un module manque** : propose "Installe ma prospection" ou "Installe mon contenu", au choix.
+- **Tout est installé** : lis le journal d'hier et d'aujourd'hui s'ils existent, puis la section "Où on en est" des projets actifs et des départements. Résume en trois lignes et propose la prochaine action la plus utile.
 
-Les installeurs se lancent toujours par la même phrase : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Les 46 skills vivent dans `Skills/` à la racine et sont visibles depuis n'importe quel dossier.
+Les trois installeurs se lancent par la même phrase : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu".
 
-## 3. Le rôle de chaque dossier
+## 3. L'arbre
 
-| Dossier | Ce qu'il contient | Ce qu'il ne contient pas |
+| Dossier | Ce qu'il contient | Rythme |
 |---|---|---|
-| `About-Me/` | Qui vous êtes, votre boîte, vos règles d'écriture. Trois fichiers, chargés à chaque session. Change en années. | Rien de daté, rien de projet |
-| `Contexte/` | La vérité unique sur votre marché et vos méthodes : identité, réalité, objectifs, offre, clients, standards, voix. Sept fichiers, chargés selon la tâche. Change en trimestres. | L'état d'un projet, un livrable |
-| `Branding/` | Charte, logos, polices, brand book. La référence visuelle. | Les visuels produits (ils vont dans `Marketing/`) |
-| `Ressources/` | Ce qui aide à produire mais n'est pas du savoir : templates, exemples, hooks, docs d'API. Transverse à tous les dossiers. | Les assets propres à un dossier (ils vont dans son `ressources/`) |
-| `Inbox/` | Zone tampon. Ce qui arrive sans place définie. Vidé par `/inbox-processor`. | Un livrable fini, une source du wiki |
-| `Journal/` | Un fichier par jour, écrit par `/done` : ce qui a été fait, décidé, appris. Un fichier par semaine pour le bilan. La mémoire chronologique. | Le détail d'un projet (il vit dans sa note de dossier) |
-| `Veille/` | Ce qui vient de l'extérieur : `sources/` (le brut, immuable), `wiki/` (la connaissance distillée), `INDEX.md`, `LOG.md`. | La production de l'utilisateur |
-| `Meeting/` | Les transcripts de calls, dans cinq dossiers : `Clients/` (Actuels, Coaching, Anciens-clients, Ateliers), `Events/` (Live, Challenge), `Prospects/`, `Interne/`, `Autres/`. Ce qui s'y décide ruisselle vers la note du client. | Le compte rendu envoyé (il va chez le client) |
-| `Produit-Client/` | Un dossier par client et par produit, chacun avec sa note, son contexte, ses livrables. | Un post qui parle d'un client (il va dans `Marketing/`) |
-| `Marketing/` | Tout ce qui fait venir : `LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`. | Une propale, un message de prospection |
-| `Vente/` | Tout ce qui convertit : `Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`. | Un contenu publié |
-| `Strategie/` | Les réflexions de dirigeant : offre, pricing, positionnement, études, décisions structurantes. | Un livrable client |
-| `Archives/` | Terminé ou inactif, gardé accessible. | Ce qui est encore en cours |
+| `00 Inbox/` | La capture : idée, lien, fichier déposé. Vidé par `/inbox-processor`. Gros lot dans `_import/` pour `/import`. | Jours |
+| `01 About-Me/` | Qui vous êtes, votre boîte, vos règles d'écriture. Trois fichiers chargés à chaque session. | Années |
+| `02 Contexte/` | La vérité unique sur votre marché et vos méthodes : identité, réalité, objectifs, offre, clients, standards, voix. Sept fichiers, chargés selon la tâche. | Trimestres |
+| `03 Branding/` | Charte, logos, polices. | Années |
+| `04 Projets/` | Une initiative avec un objectif et une fin : lancement, event, site, offre à structurer. Archivée quand ses Étapes sont cochées. | Semaines |
+| `05 Departements/` | Les responsabilités continues de l'entreprise : Strategie, Contenu, Go-to-Market, Vente, Produit, Finance-Compta. | Jamais de fin |
+| `06 Clients/` | Un dossier par client signé, avec sa note. | Mois |
+| `07 Meeting/` | Les transcripts de calls : `Clients/`, `Prospects/`, `Interne/`, `Autres/`. | Jours |
+| `08 Ressources/` | Ce qui aide à produire : `templates/`, exemples, docs d'outils, et `Veille/` (sources brutes, wiki). | Mois |
+| `09 Journal/` | Un fichier par jour écrit par `/done`, un par semaine par `/weekly-review`. | Jours |
+| `10 Skills/` | La bibliothèque de skills, lue par Claude Code, Codex et OpenCode. | Semaines |
+| `11 Archives/` | Terminé ou remplacé, gardé accessible, à plat. | Rarement |
 
-Zones protégées, modifiées seulement sur demande explicite ou via un installeur : `About-Me/`, `Contexte/`, `Branding/`, `Skills/`.
+Zones protégées, modifiées seulement sur demande explicite ou via un installeur : `01 About-Me/`, `02 Contexte/`, `03 Branding/`, `10 Skills/`.
 
-## 4. La forme d'un dossier de travail
+Projet, département ou client ? Un projet a une fin. Un département n'en a pas. Un client est une mission signée. Un prospect pas encore signé vit dans Vente. Un support réutilisable pour tous les clients vit dans Produit.
 
-**Règle de lecture : avant de travailler dans un dossier, ouvre sa note.** Elle porte le nom exact du dossier. Si l'utilisateur parle d'un client, d'un module ou d'une initiative sans nommer de fichier, la note est le point d'entrée.
+## 4. Les six départements
+
+| Département | Ce qu'il fait | Ce qui n'y va pas |
+|---|---|---|
+| `Strategie/` | Offre, pricing, positionnement, études, décisions structurantes | Une propale, un livrable client |
+| `Contenu/` | Ce que vous publiez : `LinkedIn/`, `Newsletter/`, `Video/`, `Slides/` | Un email à votre audience, une pub |
+| `Go-to-Market/` | Ce qui amène un prospect à la conversation : `Listes-prospection/`, `Messages/`, `Mailing/`, `sources/`, et `contexte.md` (le profil de prospection) | Une propale, un post organique |
+| `Vente/` | Ce qui transforme la conversation en contrat : `Propositions/`, `Pipeline/` | Une liste, un message outbound |
+| `Produit/` | Vos offres et ce que vous livrez à tous vos clients : supports, templates, programmes | Le livrable d'un client précis |
+| `Finance-Compta/` | Factures, prévisionnel, compta | Un devis non signé |
+
+Frontière : le support final l'emporte sur le sujet. Un post qui annonce un event est du Contenu, l'email d'invitation du Go-to-Market, la propale de la Vente, et l'event lui-même est un projet. Vous pouvez renommer ou ajouter un département : même forme, une ligne de plus dans ce tableau.
+
+## 5. La forme d'un dossier de travail
+
+Tout projet, département et client a la même forme :
 
 ```
-Vente/
-  Vente.md          LA NOTE DU DOSSIER : même nom que le dossier, lue avant tout travail dedans
+05 Departements/Vente/
+  Vente.md          LA NOTE : même nom que le dossier, lue avant tout travail dedans
   _log.md           une ligne par session, écrite par /done
-  contexte.md       le profil de prospection (propre à Vente)
-  sources/          ce qu'on reçoit : exports, briefs, transcripts
-  ressources/       assets propres à ce dossier
-  Listes-prospection/  Messages/  Propositions/  Pipeline/   sous-dossiers nommés par nature
-  Campagne-Q4/      une initiative datée : son dossier, sa note, archivée à la fin
+  Propositions/     un sous-dossier seulement quand une nature de fichier dépasse dix items
+  Propale-Client_2026-05-22.md   sinon les fichiers sont à plat
 ```
 
-La note a toujours ces sections, dans cet ordre :
+**Règle de lecture : avant de travailler dans un dossier, ouvre sa note.** Si l'utilisateur parle d'un client, d'un département ou d'un projet sans nommer de fichier, la note est le point d'entrée.
 
-| Section | Qui l'écrit |
+Les sous-dossiers se nomment par ce qu'ils contiennent, jamais par une étape : pas de `livrables/`, `ressources/`, `input/`, `output/`. Seule exception : `sources/` pour le brut volumineux qu'on ne modifie pas.
+
+La note est courte, six sections maximum :
+
+| Section | Département | Projet | Client | Qui l'écrit |
+|---|---|---|---|---|
+| Mission | oui | oui | oui | l'utilisateur |
+| Périmètre | trois à cinq responsabilités | | | l'utilisateur |
+| Objectif | le chiffre, repris dans le frontmatter `objectif:` | | | l'utilisateur |
+| Cadre | règles, outils, skills, sous-dossiers | contexte, contraintes | interlocuteurs, offre, conventions | l'utilisateur ; `/done` ajoute une décision datée en fin de section |
+| Étapes | | cases | cases | l'utilisateur écrit, `/done` coche |
+| Où on en est | oui | oui | oui | `/done` réécrit, cinq lignes max, avec le lien vers la dernière session |
+| Key Notes | oui | oui | oui | `/done` complète les wikilinks |
+
+`/done` ne réécrit jamais Mission, Périmètre, Objectif ni le texte de Cadre : il y corrige une ligne devenue fausse, et c'est tout. Un sous-dossier qui a sa propre note (comme `Contenu/LinkedIn/`) n'a que Mission, Cadre, Où on en est et Key Notes.
+
+Règle de résolution : quand tu modifies un fichier, la note à mettre à jour est celle du dossier parent le plus proche qui en a une. Un fichier dans un projet remonte au projet, pas au département qui le porte.
+
+## 6. Créer un document
+
+1. **Une note** (projet, département, client) part toujours d'un template de `08 Ressources/templates/` : `projet.md`, `departement.md`, `client.md`. Jamais de zéro. Le dossier reçoit aussi un `_log.md`. Un nouveau projet s'ajoute à `04 Projets/Projets.md`.
+2. **Un livrable** porte un frontmatter (`livrable.md`) : `type`, `status` (draft, final), `date`, `maj`, `client` si besoin, `tags`.
+3. **Le journal** : `09 Journal/YYYY-MM-DD.md` depuis `journal-jour.md`, `09 Journal/YYYY-Www.md` depuis `journal-semaine.md`.
+4. **Une réflexion** de dirigeant : `reflexion.md`, rangée dans `05 Departements/Strategie/`.
+5. **Nommage** : `Nom-Sujet_YYYY-MM-DD.ext`. Un projet daté prend sa date dans son nom (`Lancement-2026-10`). Une entité porte son nom canonique et se cite en `[[wikilink]]`.
+6. **Une seule version visible** d'un livrable. Les précédentes vont dans `11 Archives/`.
+7. **Un projet multi-support** préfixe ses fichiers d'un tag commun, par exemple `[lancement]_`.
+8. Jamais de livrable à la racine. Seuls `CLAUDE.md`, `AGENTS.md`, `opencode.json` et `.env` y vivent.
+
+## 7. Routage du contexte (quoi charger selon la tâche)
+
+| Tâche | Charger en plus d'About-Me et de la note du dossier |
 |---|---|
-| Rôle, Conventions, Organisation | l'utilisateur. `/done` n'y touche jamais |
-| Roadmap | l'utilisateur l'écrit, `/done` coche |
-| Bloc ETAT (État actuel, Décisions actées, Prochaines étapes) | `/done` le réécrit entièrement |
-| Reprise | `/done` : où on s'est arrêté, ce qui bloque, la première action |
-| Historique | `/done` : une ligne par session, la plus récente en haut, lien vers le journal |
-| Liens | `/done` : les wikilinks vers les entités liées |
+| Rédiger quoi que ce soit de publié (post, newsletter, page, message) | `02 Contexte/Tone-and-Voice.md` |
+| Prospection, messages, qualification | `02 Contexte/Offer-Positioning.md` + `02 Contexte/Clients-Problems-and-Messages.md` + `05 Departements/Go-to-Market/contexte.md` |
+| Contenu LinkedIn | `02 Contexte/Tone-and-Voice.md` + `05 Departements/Contenu/LinkedIn/strategie-contenu.md` |
+| Stratégie, offre, pricing, objectifs | `02 Contexte/Goals-and-Direction.md` + `02 Contexte/Offer-Positioning.md` + `02 Contexte/Life-and-Work-Reality.md` |
+| Standards de qualité, erreurs passées | `02 Contexte/Expertise-Standards-and-Landmines.md` |
+| Valeurs, décisions difficiles | `02 Contexte/Constitution-Identity.md` |
+| Travail sur un client | sa note dans `06 Clients/<Client>/` |
+| Visuel, marque | `03 Branding/` |
 
-Règle de résolution : quand tu modifies un fichier, la note à mettre à jour est celle du dossier parent le plus proche qui en a une. Deux niveaux maximum sous un dossier de travail. Jamais de fichier à la racine du workspace.
+## 8. Routage des livrables (premier match gagne)
 
-## 5. Routage du contexte (quoi charger selon la tâche)
+1. Post LinkedIn, carrousel, calendrier éditorial, brief de veille : `05 Departements/Contenu/LinkedIn/`
+2. Édition de newsletter : `05 Departements/Contenu/Newsletter/`
+3. Vidéo publiée, pub vidéo : `05 Departements/Contenu/Video/`
+4. Support visuel d'atelier ou de live : `05 Departements/Contenu/Slides/`
+5. Email à l'audience inscrite (promo, nurturing, annonce) : `05 Departements/Go-to-Market/Mailing/`
+6. Liste de prospects, run de scraping ou d'enrichissement : `05 Departements/Go-to-Market/Listes-prospection/`
+7. Message outbound, séquence, icebreaker, playbook d'appel : `05 Departements/Go-to-Market/Messages/`
+8. Propale, devis, email d'envoi : `05 Departements/Vente/Propositions/`
+9. Import, export ou dédoublonnage CRM, liste de call : `05 Departements/Vente/Pipeline/`
+10. Support réutilisable pour tous les clients : `05 Departements/Produit/`
+11. Réflexion de dirigeant, étude, décision structurante : `05 Departements/Strategie/`
+12. Facture, prévisionnel : `05 Departements/Finance-Compta/`
+13. Livrable d'un projet (landing, trame, séquence d'inscription) : `04 Projets/<Projet>/`, préfixé du tag du projet
+14. Livrable pour un client signé : `06 Clients/<Client>/`, préfixé du nom du client
+15. Rien de tout ça : `00 Inbox/`
 
-| Tâche | Charger en plus d'About-Me |
-|---|---|
-| Rédiger quoi que ce soit de publié (post, newsletter, page, message) | `Contexte/Tone-and-Voice.md` |
-| Prospection, messages, qualification | `Contexte/Offer-Positioning.md` + `Contexte/Clients-Problems-and-Messages.md` + `Vente/contexte.md` |
-| Contenu LinkedIn | `Contexte/Tone-and-Voice.md` + `Marketing/LinkedIn/ressources/strategie-contenu.md` |
-| Stratégie, offre, pricing, objectifs | `Contexte/Goals-and-Direction.md` + `Contexte/Offer-Positioning.md` + `Contexte/Life-and-Work-Reality.md` |
-| Standards de qualité, erreurs passées | `Contexte/Expertise-Standards-and-Landmines.md` |
-| Valeurs, décisions difficiles | `Contexte/Constitution-Identity.md` |
-| Travail sur un client | la note de son dossier dans `Produit-Client/` |
-| Visuel, marque | `Branding/` |
-
-Plus, toujours : la note du dossier où tu travailles. Tu l'ouvres toi-même, elle ne se charge pas seule.
-
-## 6. Routage des livrables (premier match gagne)
-
-1. Post LinkedIn, carrousel, calendrier éditorial, brief de veille : `Marketing/LinkedIn/livrables/`
-2. Édition de newsletter : `Marketing/Newsletter/`
-3. Email à l'audience déjà inscrite (promo d'event, nurturing, annonce) : `Marketing/Mailing/`
-4. Livrable d'un event (funnel, landing, trames, slides) : `Marketing/Event/<Event>/`
-5. Vidéo publiée, pub : `Marketing/Video/`
-6. Support visuel transverse, planche d'atelier : `Marketing/Slides/`
-7. Liste de prospects, run de scraping ou d'enrichissement : `Vente/Listes-prospection/`
-8. Message outbound, séquence, icebreaker, playbook d'appel : `Vente/Messages/`
-9. Propale, devis : `Vente/Propositions/`
-10. Import, export ou dédoublonnage CRM, liste de call : `Vente/Pipeline/`
-11. Livrable pour un client ou un produit : `Produit-Client/<Nom>/livrables/`, préfixé du nom
-12. Réflexion de dirigeant, étude, décision structurante : `Strategie/livrables/`
-13. Rien de tout ça : `Inbox/`
-
-Tie-breaker : le support final l'emporte sur le sujet. Un post qui annonce un event va dans LinkedIn, pas dans Event. Un email d'invitation à ce même event va dans Mailing. Une propale qui détaille l'offre va dans Vente, pas dans Produit-Client.
-
-## 7. Routage des entrées
+## 9. Routage des entrées
 
 | Ce qui arrive | Où ça va |
 |---|---|
-| Transcript de call | `Meeting/Clients/` (sous-dossier Actuels, Coaching, Anciens-clients ou Ateliers), `Meeting/Events/` (Live, Challenge), `Meeting/Prospects/`, `Meeting/Interne/` ou `Meeting/Autres/` par mois, règle dans `Meeting/Meeting.md`, puis les décisions ruissellent vers la note du client |
-| Article, vidéo, newsletter, veille | `Veille/sources/` |
-| Idée, vocal, lien, fichier déposé sans contexte | `Inbox/` |
-| Décision qui change une zone protégée (prix, offre, marque) | proposée en diff, jamais écrite directement |
+| Transcript de call | `07 Meeting/`, selon la règle de `07 Meeting/Meeting.md`, puis les décisions ruissellent vers la note du client ou du prospect |
+| Article, vidéo, newsletter, veille | `08 Ressources/Veille/sources/`, puis `/notes-permanentes` si ça mérite une page de wiki |
+| Idée, lien, fichier déposé sans contexte | `00 Inbox/` |
+| Décision qui change une zone protégée (prix, offre, marque, façon de travailler) | proposée en diff, jamais écrite directement |
 
-## 8. Conventions
+## 10. Rituels
 
-- Livrable daté : `Nom-Sujet_YYYY-MM-DD.ext`. Note de dossier : le nom exact du dossier. Journal : `Journal/YYYY-MM-DD.md` et `Journal/YYYY-Www.md`.
-- Une entité (client, produit, personne) porte son nom canonique et se cite en `[[wikilink]]`.
-- Une seule version visible d'un livrable. Les versions précédentes vont dans `Archives/`.
-- Frontmatter sur toute note et tout livrable créé : `type`, `status`, `date`, `maj`.
-- Une information vit à un seul endroit. L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. `Vente/contexte.md` et `Marketing/LinkedIn/ressources/strategie-contenu.md` pointent dessus et ne gardent que ce qui leur est propre.
-
-## 9. Rituels
+Lire `10 Skills/<nom>/SKILL.md` avant d'appliquer un rituel.
 
 | Quand | Commande | Ce qu'elle fait |
 |---|---|---|
-| Fin de chaque session | `/done` | extrait décisions et faits, écrit le journal du jour, réécrit ETAT, Reprise et Historique de la note du dossier touché, ajoute une ligne à son `_log.md` |
-| Une fois par mois | `/lint` | santé du workspace : notes manquantes, ETAT périmés, contradictions, frontmatter, versions à archiver |
-| Le soir | `/daily-review` | énergie, victoires, frictions, focus du lendemain, dans le journal du jour |
-| Le vendredi | `/weekly-review` | bilan de la semaine, plan de la suivante, dans `Journal/` |
-| Quand l'Inbox déborde | `/inbox-processor` | route chaque item vers le bon dossier |
-| Un gros lot à digérer | `/import` | trie par passes de 100 items |
-| Une source qui mérite de durer | `/notes-permanentes` | une page dans `Veille/wiki/` |
-| Nouvel outil à brancher | `/connect-mcp` | installe le serveur MCP |
-| "Y a-t-il un skill pour ça ?" | `find-skills` | cherche dans l'écosystème ouvert |
+| Fin de session | `/done` | extrait décisions, faits, préférences, contradictions, ressources ; écrit le journal du jour ; réécrit Où on en est, date les décisions dans Cadre, coche les Étapes ; ajoute une ligne au `_log.md` ; propose l'archivage d'un projet fini |
+| Le vendredi | `/weekly-review` | bilan, report des cases non cochées, plan de la semaine jour par jour |
+| Le soir, pour ceux qui aiment | `/daily-review` | énergie, victoires, frictions, focus du lendemain |
+| Inbox pleine | `/inbox-processor` | route chaque item vers un projet, un département, un client, les ressources ou l'archive |
+| Gros lot à digérer | `/import` | trie par passes avec sous-agents, quatre verdicts |
+| Une fois par mois, ou avant de reprendre un dossier | `/lint` | santé du workspace ; avec un dossier en argument, audit de son contexte |
+| Source qui mérite de durer | `/notes-permanentes` | une page dans `08 Ressources/Veille/wiki/` |
+| Tâche faite trois fois à la main | `/create-skill` | en fait un skill dans `10 Skills/` |
 | Cartographier ses process | `/map-process` | par fréquence, pour décider où mettre l'IA |
+| Nouvel outil | `/connect-mcp` | installe le serveur MCP |
 
-Une tâche, une session, puis `/done`. Le bloc ETAT d'une note est maintenu par `/done` : ne pas l'éditer à la main.
-
-## 10. Le bloc ETAT (format, dans chaque note de dossier)
-
-```
-<!-- ETAT:START (géré par /done, ne pas éditer à la main) -->
-## État actuel
-maj : YYYY-MM-DD
-## Décisions actées
-## Prochaines étapes
-- [ ] ...
-<!-- ETAT:END -->
-```
+Le ruissellement de `/done` : le journal (direct), la note du dossier (direct), son `_log.md` (direct), puis `01 About-Me/` et `02 Contexte/` en diff validé. En cas de contradiction entre un fichier et la conversation, l'info la plus récente gagne. Une tâche, une session, puis `/done`.
 
 ## 11. Une bibliothèque de skills, trois moteurs
 
-Les 46 skills vivent dans `Skills/`, un dossier par skill. `.claude/skills` (Claude Code) et `.agents/skills` (Codex) sont des liens symboliques vers `Skills/` ; `opencode.json` pointe dessus pour OpenCode et lui fait charger `About-Me/`. `AGENTS.md` reprend cette carte pour Codex et OpenCode, qui ne suivent pas les imports `@`. Un skill se lit et se modifie dans `Skills/`, jamais à travers un lien. Le `.env` des outils de prospection est à la racine du workspace.
+Les skills vivent dans `10 Skills/`, un dossier par skill. `.claude/skills` (Claude Code) et `.agents/skills` (Codex) sont des liens symboliques vers `10 Skills/`. `opencode.json` pointe dessus pour OpenCode et lui fait charger `01 About-Me/`. `AGENTS.md` reprend cette carte pour Codex et OpenCode, qui ne suivent pas les imports `@`. Un skill se lit et se modifie dans `10 Skills/`, jamais à travers un lien. Le `.env` des outils de prospection est à la racine. Les imports `@` ci-dessus échappent l'espace avec `\`, c'est la seule forme qui charge.

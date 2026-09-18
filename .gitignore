@@ -16,11 +16,12 @@ __pycache__/
 
 # Donnees personnelles d'un utilisateur qui forke : a versionner dans un depot PRIVE seulement
 # (decommentez si vous publiez votre fork)
-# About-Me/
-# Contexte/
-# Branding/
-# Vente/contexte.md
-# Marketing/LinkedIn/ressources/
-# Journal/
-# Meeting/
+# 01 About-Me/
+# 02 Contexte/
+# 03 Branding/
+# 05 Departements/Go-to-Market/contexte.md
+# 05 Departements/Contenu/LinkedIn/strategie-contenu.md
+# 06 Clients/
+# 07 Meeting/
+# 09 Journal/
 # **/_log.md

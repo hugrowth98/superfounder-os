@@ -1,11 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "instructions": [
-    "About-Me/about-me.md",
-    "About-Me/my-company.md",
-    "About-Me/anti-ai-voice.md"
+    "01 About-Me/about-me.md",
+    "01 About-Me/my-company.md",
+    "01 About-Me/anti-ai-voice.md"
   ],
   "skills": {
-    "paths": ["./Skills"]
+    "paths": [
+      "./10 Skills"
+    ]
   }
 }

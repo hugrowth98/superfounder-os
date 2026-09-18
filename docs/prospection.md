@@ -6,7 +6,7 @@
 
 ## Avant de commencer
 
-- Le second cerveau est installé : `Contexte/Offer-Positioning.md`, `Clients-Problems-and-Messages.md` et `Tone-and-Voice.md` sont remplis. La prospection les lit, elle ne vous les redemande pas.
+- Le second cerveau est installé : `02 Contexte/Offer-Positioning.md`, `Clients-Problems-and-Messages.md` et `Tone-and-Voice.md` sont remplis. La prospection les lit, elle ne vous les redemande pas.
 - Selon vos canaux, un compte sur : Unipile (LinkedIn), Crustdata (recherche), FullEnrich (emails), Lemlist (campagnes email), Apify (scraping). Vous pouvez démarrer avec un seul et brancher les autres plus tard.
 
 ## La phrase à taper
@@ -20,7 +20,7 @@ Installe ma prospection
 ## Ce qui se passe
 
 1. Claude lit votre second cerveau et ne vous pose que les questions propres à la prospection : zone géographique, signaux de bon moment, tutoiement ou vouvoiement, volume visé, canal, comptes à ne jamais contacter.
-2. Il écrit le profil de prospection (`Vente/contexte.md`) et vous le fait valider.
+2. Il écrit le profil de prospection (`05 Departements/Go-to-Market/contexte.md`) et vous le fait valider.
 3. Il connecte vos outils un par un. Vous collez les clés dans le chat, il écrit le `.env` à la racine du workspace.
 4. Il propose une première recherche.
 
@@ -30,7 +30,7 @@ Installe ma prospection
 |---|---|
 | "Trouve-moi 20 directeurs marketing de PME SaaS en France" | recherche par critères, export CSV dans `Listes-prospection/` |
 | "Regarde qui a commenté ce post" | les gens qui commentent un post sur votre sujet sont plus réceptifs qu'une liste froide |
-| "Qualifie cette liste selon mon ICP" | tri selon `Contexte/`, avec la raison de chaque exclusion |
+| "Qualifie cette liste selon mon ICP" | tri selon `02 Contexte/`, avec la raison de chaque exclusion |
 | "Trouve les emails de ces prospects" | enrichissement, emails et téléphones vérifiés |
 | "Rédige un message pour chacun, dans ma voix" | un message par prospect dans `Messages/`, à partir de son profil et de votre positionnement |
 | "Envoie les invitations à cette liste" ou "Crée une campagne Lemlist" | LinkedIn ou email, après votre validation |
@@ -38,7 +38,7 @@ Installe ma prospection
 
 ## Où vont les choses
 
-`Vente/` a quatre sous-dossiers, chacun avec sa note : `Listes-prospection/` (les listes et les runs), `Messages/` (la copy), `Propositions/` (les propales), `Pipeline/` (les imports et exports CRM). Votre CRM reste la source de vérité du pipe.
+`05 Departements/Vente/` a quatre sous-dossiers, chacun avec sa note : `Listes-prospection/` (les listes et les runs), `Messages/` (la copy), `Propositions/` (les propales), `Pipeline/` (les imports et exports CRM). Votre CRM reste la source de vérité du pipe.
 
 ## Les garde-fous
 
