@@ -82,6 +82,9 @@ for f in note-de-dossier.md note-de-dossier-client.md journal-jour.md; do
   copy_new "$HERE/Ressources/templates/$f" "$TARGET/Ressources/templates/$f"
 done
 copy_new "$HERE/docs" "$TARGET/docs"
+copy_new "$HERE/AGENTS.md" "$TARGET/AGENTS.md"
+copy_new "$HERE/opencode.json" "$TARGET/opencode.json"
+copy_new "$HERE/.agents" "$TARGET/.agents"
 
 echo
 if [[ $DRY -eq 1 ]]; then echo "Dry-run : rien n'a été écrit."; else

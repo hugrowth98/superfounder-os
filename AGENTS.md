@@ -1,11 +1,35 @@
-# Superfounder OS
+---
+type: instructions
+status: active
+date: 2026-09-18
+maj: 2026-09-18
+---
 
-> Lu par Claude Code au démarrage de chaque session, quel que soit le dossier.
-> C'est la carte du workspace, pas une bibliothèque : elle dit où sont les choses, à quoi sert chaque dossier, et quand les lire.
+# AGENTS.md
 
-@About-Me/about-me.md
-@About-Me/my-company.md
-@About-Me/anti-ai-voice.md
+> Consignes de travail pour Codex et OpenCode dans ce workspace, reprises du fichier `CLAUDE.md`. Elles s'appliquent à ce dossier et à ses sous-dossiers. Le `CLAUDE.md` reste la référence pour Claude Code : les deux fichiers disent la même chose.
+
+## Démarrage de chaque session
+
+Avant de travailler, lire intégralement les trois fichiers suivants, dont les chemins sont relatifs à la racine du workspace :
+
+1. `About-Me/about-me.md`
+2. `About-Me/my-company.md`
+3. `About-Me/anti-ai-voice.md`
+
+Ces références sont des instructions de lecture explicites : ne pas supposer que leur contenu est chargé automatiquement. Puis ouvrir la note du dossier concerné et les références utiles selon la section 5. Si un fichier manque, le signaler sans inventer son contenu.
+
+Les règles adressées à "tu" dans ce fichier s'appliquent au moteur qui le lit, quel qu'il soit. Les commandes en `/nom` désignent des skills : dans Codex on les appelle avec `$nom`, dans OpenCode via l'outil skill. Un nom d'outil propre à Claude Code ne désigne pas une capacité disponible ailleurs : signaler une capacité manquante plutôt que de prétendre l'avoir exécutée.
+
+## Où sont les skills
+
+Les 46 skills sont des dossiers avec un `SKILL.md` : 11 transverses dans `.claude/skills/`, 25 de prospection dans `Vente/.claude/skills/`, 10 de contenu dans `Marketing/.claude/skills/`.
+
+- Claude Code les lit dans ces trois dossiers, ceux d'un module seulement quand on travaille dans le module.
+- Codex les trouve via `.agents/skills/`, qui contient trois liens symboliques (`os`, `vente`, `marketing`) vers ces dossiers.
+- OpenCode découvre `.claude/skills/` de lui-même en remontant depuis le dossier courant, et charge `About-Me/` via `opencode.json`.
+
+Un skill se lit et se modifie dans son dossier `.claude/skills/` d'origine, jamais à travers `.agents/`. Un skill ajouté dans un de ces trois dossiers est visible des trois moteurs sans rien d'autre à faire.
 
 ## 1. Règles (toujours)
 
@@ -159,7 +183,3 @@ maj : YYYY-MM-DD
 - [ ] ...
 <!-- ETAT:END -->
 ```
-
-## 11. Codex et OpenCode
-
-Le même workspace fonctionne avec Codex et OpenCode. `AGENTS.md` à la racine reprend cette carte pour eux, avec une consigne de lecture explicite d'`About-Me/` puisqu'ils ne suivent pas les imports `@`. Codex trouve les skills dans `.agents/skills/` (trois liens vers les dossiers de skills). OpenCode lit `.claude/skills/` de lui-même et charge `About-Me/` via `opencode.json`. Un skill se modifie dans son dossier `.claude/skills/` d'origine, jamais à travers `.agents/`.

@@ -39,6 +39,10 @@ Prérequis : [Claude Code](https://www.anthropic.com/claude-code) et un abonneme
 
 Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace` y ajoute les modules sans toucher à vos fichiers existants.
 
+## Claude Code, Codex ou OpenCode
+
+Le dépôt fonctionne avec les trois. Claude Code lit `CLAUDE.md` et les skills scopés par dossier. Codex lit `AGENTS.md` et trouve les 46 skills via `.agents/skills/`, trois liens symboliques vers les dossiers de skills (sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies). OpenCode lit `AGENTS.md`, découvre `.claude/skills/` tout seul et charge `About-Me/` via `opencode.json`. Les trois phrases d'installation sont les mêmes partout.
+
 ## Ce que contient le dépôt
 
 ```

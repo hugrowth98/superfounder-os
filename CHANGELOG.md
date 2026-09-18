@@ -3,6 +3,16 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [3.2.0] - 2026-09-18
+
+Le même dépôt pour Claude Code, Codex et OpenCode.
+
+### Ajouté
+- `AGENTS.md` à la racine : la carte du `CLAUDE.md` reprise pour Codex et OpenCode, avec une consigne de lecture explicite d'`About-Me/` (ils ne suivent pas les imports `@`) et la correspondance des commandes (`/nom` devient `$nom` dans Codex, l'outil skill dans OpenCode).
+- `.agents/skills/` : trois liens symboliques (`os`, `vente`, `marketing`) vers les dossiers de skills, pour que Codex trouve les 46 skills.
+- `opencode.json` : charge les trois fichiers d'`About-Me/` au démarrage d'OpenCode.
+- Section 11 du `CLAUDE.md` et section du README qui décrivent le montage. Le validateur ignore `.agents/`. `install.sh` copie les trois nouveaux éléments.
+
 ## [3.1.0] - 2026-09-17
 
 `Meeting/` se range par relation, plus par mois.
