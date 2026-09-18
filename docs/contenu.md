@@ -11,7 +11,7 @@
 
 ## La phrase à taper
 
-Ouvrez `Marketing/` dans Claude Code, puis :
+Dans le chat, depuis n'importe quel dossier :
 
 ```
 Installe mon contenu
@@ -38,7 +38,7 @@ Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque e
 
 ## Où vont les choses
 
-`Marketing/` a six briques, chacune avec sa note : `LinkedIn/` (les posts, dans `livrables/`), `Newsletter/`, `Mailing/` (les emails à votre audience), `Event/`, `Video/`, `Slides/`. Les skills de contenu se chargent partout dans `Marketing/`.
+`Marketing/` a six briques, chacune avec sa note : `LinkedIn/` (les posts, dans `livrables/`), `Newsletter/`, `Mailing/` (les emails à votre audience), `Event/`, `Video/`, `Slides/`. Les 46 skills vivent dans `Skills/` et sont visibles partout.
 
 ## Comment vérifier que c'est bon
 

@@ -4,5 +4,8 @@
     "About-Me/about-me.md",
     "About-Me/my-company.md",
     "About-Me/anti-ai-voice.md"
-  ]
+  ],
+  "skills": {
+    "paths": ["./Skills"]
+  }
 }

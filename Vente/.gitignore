@@ -1,5 +1,0 @@
-.env
-.DS_Store
-**/scripts/compteur.json
-**/scripts/baseline.json
-**/*.raw.json

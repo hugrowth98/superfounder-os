@@ -23,13 +23,7 @@ Les règles adressées à "tu" dans ce fichier s'appliquent au moteur qui le lit
 
 ## Où sont les skills
 
-Les 46 skills sont des dossiers avec un `SKILL.md` : 11 transverses dans `.claude/skills/`, 25 de prospection dans `Vente/.claude/skills/`, 10 de contenu dans `Marketing/.claude/skills/`.
-
-- Claude Code les lit dans ces trois dossiers, ceux d'un module seulement quand on travaille dans le module.
-- Codex les trouve via `.agents/skills/`, qui contient trois liens symboliques (`os`, `vente`, `marketing`) vers ces dossiers.
-- OpenCode découvre `.claude/skills/` de lui-même en remontant depuis le dossier courant, et charge `About-Me/` via `opencode.json`.
-
-Un skill se lit et se modifie dans son dossier `.claude/skills/` d'origine, jamais à travers `.agents/`. Un skill ajouté dans un de ces trois dossiers est visible des trois moteurs sans rien d'autre à faire.
+Les 46 skills sont dans `Skills/`, un dossier par skill avec un `SKILL.md`. Codex les trouve via `.agents/skills`, lien symbolique vers `Skills/`. OpenCode les trouve via `opencode.json` (`skills.paths`), et charge `About-Me/` via le même fichier. Un skill se lit et se modifie dans `Skills/`, jamais à travers un lien. Un skill ajouté dans `Skills/` est visible des trois moteurs sans rien d'autre à faire.
 
 ## 1. Règles (toujours)
 
@@ -47,7 +41,7 @@ Avant de répondre au tout premier message d'une session, regarde discrètement 
 | Module | Test | Installé si |
 |---|---|---|
 | Le second cerveau | `About-Me/about-me.md` | ne contient plus de `[à remplir]` |
-| La prospection | `Vente/contexte.md` et `Vente/.env` | sections remplies, au moins une clé présente |
+| La prospection | `Vente/contexte.md` et `.env` à la racine | sections remplies, au moins une clé présente |
 | Le contenu | `Marketing/LinkedIn/ressources/strategie-contenu.md` | sections remplies |
 
 Puis :
@@ -55,7 +49,7 @@ Puis :
 - **Second cerveau fait, un module manque** : propose "Installe ma prospection" ou "Installe mon contenu", au choix de l'utilisateur. Les deux lisent le second cerveau et n'interviewent que sur ce qui manque.
 - **Tout est installé** : lis le journal d'hier et d'aujourd'hui s'ils existent, puis le bloc ETAT des notes de `Produit-Client/`, `Marketing/`, `Vente/`, `Strategie/`. Résume en 3 lignes où en est chaque dossier et propose la prochaine action la plus utile.
 
-Les installeurs se lancent toujours par la même phrase : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Les skills de prospection vivent dans `Vente/`, ceux de contenu dans `Marketing/` : si l'utilisateur les demande depuis la racine, va travailler dans le bon dossier.
+Les installeurs se lancent toujours par la même phrase : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Les 46 skills vivent dans `Skills/` à la racine et sont visibles depuis n'importe quel dossier.
 
 ## 3. Le rôle de chaque dossier
 
@@ -70,12 +64,12 @@ Les installeurs se lancent toujours par la même phrase : "Installe mon second c
 | `Veille/` | Ce qui vient de l'extérieur : `sources/` (le brut, immuable), `wiki/` (la connaissance distillée), `INDEX.md`, `LOG.md`. | La production de l'utilisateur |
 | `Meeting/` | Les transcripts de calls, dans cinq dossiers : `Clients/` (Actuels, Coaching, Anciens-clients, Ateliers), `Events/` (Live, Challenge), `Prospects/`, `Interne/`, `Autres/`. Ce qui s'y décide ruisselle vers la note du client. | Le compte rendu envoyé (il va chez le client) |
 | `Produit-Client/` | Un dossier par client et par produit, chacun avec sa note, son contexte, ses livrables. | Un post qui parle d'un client (il va dans `Marketing/`) |
-| `Marketing/` | Tout ce qui fait venir : `LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`. Les 10 skills de contenu. | Une propale, un message de prospection |
-| `Vente/` | Tout ce qui convertit : `Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`. Les 25 skills de prospection. | Un contenu publié |
+| `Marketing/` | Tout ce qui fait venir : `LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`. | Une propale, un message de prospection |
+| `Vente/` | Tout ce qui convertit : `Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`. | Un contenu publié |
 | `Strategie/` | Les réflexions de dirigeant : offre, pricing, positionnement, études, décisions structurantes. | Un livrable client |
 | `Archives/` | Terminé ou inactif, gardé accessible. | Ce qui est encore en cours |
 
-Zones protégées, modifiées seulement sur demande explicite ou via un installeur : `About-Me/`, `Contexte/`, `Branding/`, `.claude/`.
+Zones protégées, modifiées seulement sur demande explicite ou via un installeur : `About-Me/`, `Contexte/`, `Branding/`, `Skills/`.
 
 ## 4. La forme d'un dossier de travail
 
@@ -183,3 +177,7 @@ maj : YYYY-MM-DD
 - [ ] ...
 <!-- ETAT:END -->
 ```
+
+## 11. Une bibliothèque de skills, trois moteurs
+
+Les 46 skills vivent dans `Skills/`, un dossier par skill. `.claude/skills` (Claude Code) et `.agents/skills` (Codex) sont des liens symboliques vers `Skills/` ; `opencode.json` pointe dessus pour OpenCode et lui fait charger `About-Me/`. `AGENTS.md` reprend cette carte pour Codex et OpenCode, qui ne suivent pas les imports `@`. Un skill se lit et se modifie dans `Skills/`, jamais à travers un lien. Le `.env` des outils de prospection est à la racine du workspace.

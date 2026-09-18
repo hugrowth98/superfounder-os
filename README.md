@@ -41,7 +41,7 @@ Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace`
 
 ## Claude Code, Codex ou OpenCode
 
-Le dépôt fonctionne avec les trois. Claude Code lit `CLAUDE.md` et les skills scopés par dossier. Codex lit `AGENTS.md` et trouve les 46 skills via `.agents/skills/`, trois liens symboliques vers les dossiers de skills (sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies). OpenCode lit `AGENTS.md`, découvre `.claude/skills/` tout seul et charge `About-Me/` via `opencode.json`. Les trois phrases d'installation sont les mêmes partout.
+Le dépôt fonctionne avec les trois, sans rien configurer. Claude Code lit `CLAUDE.md` et `.claude/skills`. Codex lit `AGENTS.md` et `.agents/skills`. OpenCode lit `AGENTS.md` et `opencode.json`. Les deux dossiers de skills sont des liens symboliques vers `Skills/` : sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies (l'installeur le propose). Les trois phrases d'installation sont les mêmes partout.
 
 ## Ce que contient le dépôt
 
@@ -58,13 +58,14 @@ superfounder-os/            le dossier que Claude Code ouvre
 ├── Veille/                 sources brutes, wiki de connaissance, INDEX, LOG
 ├── Meeting/                transcripts de calls : Clients/ Events/ Prospects/ Interne/ Autres/
 ├── Produit-Client/         un dossier par client et par produit
-├── Marketing/              LinkedIn/ Newsletter/ Mailing/ Event/ Video/ Slides/  +  10 skills scopés
-├── Vente/                  Listes-prospection/ Messages/ Propositions/ Pipeline/  +  25 skills scopés
+├── Marketing/              LinkedIn/ Newsletter/ Mailing/ Event/ Video/ Slides/
+├── Vente/                  Listes-prospection/ Messages/ Propositions/ Pipeline/
 ├── Strategie/              réflexions de dirigeant
 ├── Archives/               terminé ou inactif
-├── .claude/skills/         les 11 skills transverses
-│   ├── installer-second-cerveau  done  lint  daily-review  weekly-review  inbox-processor
-│   ├── import  map-process  notes-permanentes  connect-mcp  find-skills
+├── Skills/                 les 46 skills, une bibliothèque unique
+├── .claude/skills          lien vers Skills/ (Claude Code)
+├── .agents/skills          lien vers Skills/ (Codex)
+├── opencode.json  AGENTS.md    OpenCode et Codex lisent la même carte
 ├── docs/                   second-cerveau, prospection, contenu
 ├── install.sh              pour un workspace existant seulement
 └── scripts/validate_skills.py    contrôle qualité, lancé en CI
@@ -79,19 +80,19 @@ Le dépôt applique les pratiques documentées de Claude Code pour la gestion du
 1. **Une information vit à un seul endroit.** L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
 2. **Trois vitesses de changement, trois couches.** `About-Me/` change en années et est importé dans le contexte à chaque session. `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'une note de dossier change en semaines et est réécrit par `/done`.
 3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et les ressources du dossier à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
-4. **Le contexte vit près de son usage.** Les 25 skills de prospection sont dans `Vente/.claude/skills/`, les 10 de contenu dans `Marketing/.claude/skills/`. Claude Code ne les charge que quand vous travaillez dans ce dossier.
+4. **Une bibliothèque de skills, trois moteurs.** Les 46 skills sont dans `Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `Skills/`, les trois le voient.
 5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Rôle, Conventions, Organisation, Roadmap, ETAT, Reprise, Historique, Liens. Vous écrivez les trois premières, `/done` écrit les autres.
 6. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le journal du jour, la note du dossier et son `_log.md`. `/lint` une fois par mois vérifie que rien n'a dérivé. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 
 ## Une journée type, une fois les trois modules installés
 
-Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et les blocs ETAT, et propose. Vous travaillez dans un dossier, ses skills se chargent seuls, vous ouvrez sa note. Vous capturez en vrac dans `Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `Contexte/`.
+Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et les blocs ETAT, et propose. Vous travaillez dans un dossier, vous ouvrez sa note, les 46 skills sont là. Vous capturez en vrac dans `Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `Contexte/`.
 
 Le contenu nourrit la prospection (ceux qui commentent vos posts sont vos meilleurs prospects). La prospection nourrit les rendez-vous. Les rendez-vous nourrissent le contenu.
 
 ## Sécurité et données
 
-- Les clés API vivent dans `Vente/.env`, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
+- Les clés API vivent dans `.env` à la racine, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
 - Aucun skill n'envoie d'invitation, de message ou de campagne sans un "oui" explicite de votre part.
 - Vos fichiers personnels (`About-Me/`, `Contexte/`, `Branding/`, `Journal/`, `Meeting/`, les `ressources/`, les `_log.md`) sont à vous. Si vous versionnez votre workspace, faites-le dans un dépôt privé.
 - `scripts/validate_skills.py` tourne en CI sur chaque push : frontmatter des skills, absence de tirets cadratins, de clés API, de placeholders, taille du CLAUDE.md.

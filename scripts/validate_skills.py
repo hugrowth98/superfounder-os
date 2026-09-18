@@ -45,7 +45,7 @@ def parse_frontmatter(text):
 
 def iter_files(suffixes):
     for path in ROOT.rglob("*"):
-        if path.is_dir() or ".git" in path.parts or ".agents" in path.parts:
+        if path.is_dir() or ".git" in path.parts or ".agents" in path.parts or ".claude" in path.parts:
             continue
         if path.suffix in suffixes or path.name in {".env.example"}:
             yield path
@@ -53,7 +53,7 @@ def iter_files(suffixes):
 
 def main():
     errors = []
-    skills = sorted(p for p in ROOT.rglob("SKILL.md") if ".git" not in p.parts and ".agents" not in p.parts)
+    skills = sorted(p for p in ROOT.rglob("SKILL.md") if ".git" not in p.parts and ".agents" not in p.parts and ".claude" not in p.parts)
     for path in skills:
         text = path.read_text(encoding="utf-8")
         fm = parse_frontmatter(text)
@@ -88,7 +88,7 @@ def main():
             errors.append(f"{path.relative_to(ROOT)}: placeholder {{{{...}}}} résiduel")
 
     for cm in ROOT.rglob("CLAUDE.md"):
-        if ".git" in cm.parts or ".agents" in cm.parts:
+        if ".git" in cm.parts or ".agents" in cm.parts or ".claude" in cm.parts:
             continue
         n = len(cm.read_text(encoding="utf-8").splitlines())
         if n > 200:

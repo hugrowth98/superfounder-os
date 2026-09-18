@@ -5,13 +5,17 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), ver
 
 ## [3.2.0] - 2026-09-18
 
-Le même dépôt pour Claude Code, Codex et OpenCode.
+Une bibliothèque de skills, trois moteurs : Claude Code, Codex, OpenCode.
+
+### Changé (rupture avec 3.1)
+- **Les 46 skills vivent dans `Skills/`**, un dossier par skill, à la racine. Plus de skills scopés dans `Vente/.claude/skills/` ni `Marketing/.claude/skills/` : ils sont visibles depuis n'importe quel dossier, et "Installe ma prospection" ou "Installe mon contenu" se tapent depuis la racine.
+- `.claude/skills` (Claude Code) et `.agents/skills` (Codex) sont des liens symboliques vers `Skills/`, versionnés. Sur Windows sans mode développeur, l'installeur propose des copies.
+- Le `.env` des outils de prospection passe de `Vente/.env` à la racine du workspace. Les scripts le trouvent d'eux-mêmes.
 
 ### Ajouté
-- `AGENTS.md` à la racine : la carte du `CLAUDE.md` reprise pour Codex et OpenCode, avec une consigne de lecture explicite d'`About-Me/` (ils ne suivent pas les imports `@`) et la correspondance des commandes (`/nom` devient `$nom` dans Codex, l'outil skill dans OpenCode).
-- `.agents/skills/` : trois liens symboliques (`os`, `vente`, `marketing`) vers les dossiers de skills, pour que Codex trouve les 46 skills.
-- `opencode.json` : charge les trois fichiers d'`About-Me/` au démarrage d'OpenCode.
-- Section 11 du `CLAUDE.md` et section du README qui décrivent le montage. Le validateur ignore `.agents/`. `install.sh` copie les trois nouveaux éléments.
+- `AGENTS.md` : la carte du `CLAUDE.md` reprise pour Codex et OpenCode, avec la lecture explicite d'`About-Me/` (ils ne suivent pas les imports `@`).
+- `opencode.json` : charge `About-Me/` et pointe `skills.paths` sur `./Skills`.
+- Section 11 du `CLAUDE.md`, section du README, entrée dans le validateur et `install.sh`.
 
 ## [3.1.0] - 2026-09-17
 
@@ -30,8 +34,8 @@ Une seule structure, pour votre workspace comme pour ceux de vos clients. Le par
 - **Une note par dossier de travail**, du même nom que le dossier (`Vente/Vente.md`) : rôle, conventions, organisation, bloc ETAT, reprise, historique. Elle remplace le `CLAUDE.md` de sous-dossier. Un `_log.md` par dossier, une ligne par session.
 - **`Journal/`** remplace `Intelligence/Daily logs/` : un fichier par jour, écrit par `/done`, un par semaine par `/weekly-review`. Le template à emojis disparaît.
 - **`Veille/`** remplace `Intelligence/` : `sources/` (le brut), `wiki/` (la connaissance), `INDEX.md`, `LOG.md`.
-- `Projects/Prospection/` devient `Vente/` avec quatre sous-dossiers typés (`Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`). Les 25 skills restent scopés dans `Vente/.claude/skills/`.
-- `Projects/Contenu/` devient `Marketing/` avec sept briques (`LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`, `Site-vitrine/` à créer au besoin). Les 10 skills restent scopés dans `Marketing/.claude/skills/`, les ressources de contenu vivent dans `Marketing/LinkedIn/ressources/`.
+- `Projects/Prospection/` devient `Vente/` avec quatre sous-dossiers typés (`Listes-prospection/`, `Messages/`, `Propositions/`, `Pipeline/`). Les 25 skills restent scopés dans `Skills/`.
+- `Projects/Contenu/` devient `Marketing/` avec sept briques (`LinkedIn/`, `Newsletter/`, `Mailing/`, `Event/`, `Video/`, `Slides/`, `Site-vitrine/` à créer au besoin). Les 10 skills restent scopés dans `Skills/`, les ressources de contenu vivent dans `Marketing/LinkedIn/ressources/`.
 - `Projects/Clients/` devient `Produit-Client/`, `Projects/Strategie/` devient `Strategie/`.
 - Plus de notion de jour 1, 2, 3. Les trois phrases restent : "Installe mon second cerveau", "Installe ma prospection", "Installe mon contenu". Les deux dernières lisent le second cerveau et n'interviewent que sur ce qui manque.
 - `/done` réécrit sur trois niveaux : le journal du jour, la note du dossier touché (ETAT, Reprise, Historique), son `_log.md`. Il propose un diff pour `About-Me/`, `Contexte/` et `Branding/` au lieu d'y écrire.

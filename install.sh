@@ -42,11 +42,15 @@ sync_skills() { # remplace les skills (ce sont des procédures versionnées, pas
 keep() { [[ $DRY -eq 1 ]] || mkdir -p "$TARGET/$1"; }
 
 echo "Cible : $TARGET"
-echo; echo "Skills transverses (racine) :"
-sync_skills "$HERE/.claude/skills" "$TARGET/.claude/skills"
+echo; echo "Skills (bibliotheque unique Skills/, liens pour Claude Code et Codex) :"
+sync_skills "$HERE/Skills" "$TARGET/Skills"
+for l in .claude/skills .agents/skills; do
+  if [[ -e "$TARGET/$l" && ! -L "$TARGET/$l" ]]; then echo "  = $TARGET/$l (existe, conservé : faites-en un lien vers Skills/ si vous voulez une seule bibliothèque)"
+  else echo "  ~ $TARGET/$l -> ../Skills"; [[ $DRY -eq 1 ]] || { mkdir -p "$(dirname "$TARGET/$l")"; ln -sfn ../Skills "$TARGET/$l"; }; fi
+done
 
 echo; echo "Module Vente (prospection) :"
-for f in Vente.md _log.md GUIDE.md contexte.md .env.example .gitignore; do
+for f in Vente.md _log.md GUIDE.md contexte.md; do
   copy_new "$HERE/Vente/$f" "$TARGET/Vente/$f"
 done
 for d in Listes-prospection Messages Propositions Pipeline; do
@@ -54,7 +58,6 @@ for d in Listes-prospection Messages Propositions Pipeline; do
   copy_new "$HERE/Vente/$d/_log.md" "$TARGET/Vente/$d/_log.md"
 done
 keep Vente/sources; keep Vente/ressources
-sync_skills "$HERE/Vente/.claude/skills" "$TARGET/Vente/.claude/skills"
 
 echo; echo "Module Marketing (contenu) :"
 copy_new "$HERE/Marketing/Marketing.md" "$TARGET/Marketing/Marketing.md"
@@ -67,7 +70,6 @@ for f in strategie-contenu.md posts-de-reference.md swipe-file.md; do
   copy_new "$HERE/Marketing/LinkedIn/ressources/$f" "$TARGET/Marketing/LinkedIn/ressources/$f"
 done
 keep Marketing/LinkedIn/sources; keep Marketing/LinkedIn/livrables
-sync_skills "$HERE/Marketing/.claude/skills" "$TARGET/Marketing/.claude/skills"
 
 echo; echo "Squelette (si absent) :"
 for d in Produit-Client Strategie Veille Meeting Journal Inbox Branding; do
@@ -84,7 +86,7 @@ done
 copy_new "$HERE/docs" "$TARGET/docs"
 copy_new "$HERE/AGENTS.md" "$TARGET/AGENTS.md"
 copy_new "$HERE/opencode.json" "$TARGET/opencode.json"
-copy_new "$HERE/.agents" "$TARGET/.agents"
+copy_new "$HERE/.env.example" "$TARGET/.env.example"
 
 echo
 if [[ $DRY -eq 1 ]]; then echo "Dry-run : rien n'a été écrit."; else

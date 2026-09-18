@@ -11,7 +11,7 @@ maj: AAAA-MM-JJ
 
 ## Rôle
 
-Tout ce qui fait venir des gens : contenu, events, campagnes, publicités, community. C'est le dossier de la distribution. Le module de contenu de Superfounder OS y vit : dix skills scopés dans `.claude/skills/`, un socle commun (`linkedin-writing-core`) que tous les autres chargent en premier.
+Tout ce qui fait venir des gens : contenu, events, campagnes, publicités, community. C'est le dossier de la distribution. Le module de contenu de Superfounder OS y vit : dix skills de contenu dans `Skills/` à la racine, un socle commun (`linkedin-writing-core`) que tous les autres chargent en premier.
 
 Six briques, chacune avec sa note :
 
@@ -52,7 +52,7 @@ Si le type de post n'est pas précisé, `linkedin-writing-core` choisit le forma
 - `Event/` un dossier daté par event
 - `Video/` vidéos publiées
 - `Slides/` supports Excalidraw transverses
-- `.claude/skills/` les 10 skills de contenu, chargés partout dans Marketing/
+- les 10 skills de contenu vivent dans `Skills/` à la racine, visibles partout
 
 ## Roadmap
 

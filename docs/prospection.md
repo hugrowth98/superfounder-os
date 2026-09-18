@@ -11,7 +11,7 @@
 
 ## La phrase à taper
 
-Ouvrez `Vente/` dans Claude Code, puis :
+Dans le chat, depuis n'importe quel dossier :
 
 ```
 Installe ma prospection
@@ -21,7 +21,7 @@ Installe ma prospection
 
 1. Claude lit votre second cerveau et ne vous pose que les questions propres à la prospection : zone géographique, signaux de bon moment, tutoiement ou vouvoiement, volume visé, canal, comptes à ne jamais contacter.
 2. Il écrit le profil de prospection (`Vente/contexte.md`) et vous le fait valider.
-3. Il connecte vos outils un par un. Vous collez les clés dans le chat, il écrit le `.env`.
+3. Il connecte vos outils un par un. Vous collez les clés dans le chat, il écrit le `.env` à la racine du workspace.
 4. Il propose une première recherche.
 
 ## Le parcours en 7 phrases

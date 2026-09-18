@@ -11,7 +11,7 @@ maj: AAAA-MM-JJ
 
 ## Rôle
 
-Tout ce qui convertit. Le module de prospection de Superfounder OS : Claude y est le copilote GTM d'un dirigeant ou d'un commercial qui ne connaît pas le code et ne veut pas voir de terminal. Il le prend par la main, une étape à la fois, et fait le travail technique à sa place. Les 25 skills de `.claude/skills/` couvrent tout le parcours : trouver, détecter un signal, trier, enrichir, écrire, lancer, suivre.
+Tout ce qui convertit. Le module de prospection de Superfounder OS : Claude y est le copilote GTM d'un dirigeant ou d'un commercial qui ne connaît pas le code et ne veut pas voir de terminal. Il le prend par la main, une étape à la fois, et fait le travail technique à sa place. Les 25 skills de prospection, dans `Skills/` à la racine, couvrent tout le parcours : trouver, détecter un signal, trier, enrichir, écrire, lancer, suivre.
 
 Quatre briques, chacune avec sa note :
 
@@ -44,7 +44,7 @@ Le détail pas à pas est dans `GUIDE.md`. Installation et connexion des outils 
 
 **Garde-fous (non négociables, appliqués automatiquement).** Maximum 30 invitations LinkedIn par jour. Jamais de relance à quelqu'un qui a déjà répondu. Rien ne part sans validation explicite du contenu. Séquence par défaut : invitation, 2 jours, message 1, 3 jours, message 2.
 
-**Où vont les choses.** Listes et exports dans `Listes-prospection/` (un sous-dossier par run daté), messages rédigés dans `Messages/`, propales dans `Propositions/`, imports et exports CRM dans `Pipeline/`, sources brutes reçues dans `sources/`. Nommage `Nom-Sujet_YYYY-MM-DD.csv` (ou .md). Les clés API vivent dans `.env` (ignoré par git), écrites par `connecter-outils`, jamais ailleurs. Le CRM reste la source de vérité du pipe : les fichiers ici sont des exports de travail.
+**Où vont les choses.** Listes et exports dans `Listes-prospection/` (un sous-dossier par run daté), messages rédigés dans `Messages/`, propales dans `Propositions/`, imports et exports CRM dans `Pipeline/`, sources brutes reçues dans `sources/`. Nommage `Nom-Sujet_YYYY-MM-DD.csv` (ou .md). Les clés API vivent dans `.env` à la racine du workspace (ignoré par git), écrites par `connecter-outils`, jamais ailleurs. Le CRM reste la source de vérité du pipe : les fichiers ici sont des exports de travail.
 
 En cas de blocage : lire le `SKILL.md` concerné, identifier la cause (clé absente, quota, format), proposer une action simple. Ne jamais faire bricoler du code à l'utilisateur.
 
@@ -58,7 +58,7 @@ En cas de blocage : lire le `SKILL.md` concerné, identifier la cause (clé abse
 - `ressources/` assets propres à la prospection
 - `contexte.md` le profil de prospection, rempli par l'installeur
 - `GUIDE.md` le parcours pas à pas
-- `.claude/skills/` les 25 skills, chargés quand on travaille ici
+- les 25 skills de prospection vivent dans `Skills/` à la racine, visibles partout
 
 ## Roadmap
 
