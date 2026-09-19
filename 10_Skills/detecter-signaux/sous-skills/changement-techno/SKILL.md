@@ -38,6 +38,7 @@ Une entreprise qui change un outil a déjà décidé de changer : elle est ouver
 | 7 | dedoublonner | `dedoublonner` | contre HubSpot |
 | 8 | envoyer_sequence | `envoyer-sequence` | sous 72 h ; email puis LinkedIn puis relance à j7 sur un autre angle |
 | 9 | verifier_reponses | `verifier-reponses` | à j3 et j7 |
+| 1z | detecter_techno | `enrichir-entreprise --techno` (`--source predictleads --recentes-jours 60`) | si PredictLeads est branché : détections datées (`first_seen_at`), une ligne `techno_ajout` par techno vue pour la première fois depuis N jours, sans attendre deux runs Apify. |
 
 **CSV en entrée** : `entreprise, domaine` (comptes cibles), plus le relevé du mois précédent.
 

@@ -21,10 +21,11 @@ from pathlib import Path
 _ici = Path(__file__).resolve()
 _racine = next(p for p in _ici.parents if (p / "CLAUDE.md").exists() and (p / "10_Skills").is_dir())
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import dossier_gtm, Crustdata, FullEnrich, HubSpot, Unipile, afficher, env, http, load_env, racine  # noqa: E402
+from gtm_common import dossier_gtm, Crustdata, FullEnrich, HubSpot, PredictLeads, TheirStack, Unipile, afficher, env, http, load_env, racine  # noqa: E402
 
 OUTILS_LIBELLES = {"apify": "Apify", "unipile": "Unipile", "crustdata": "Crustdata", "fullenrich": "FullEnrich",
-                   "ocean": "Ocean.io", "lemlist": "Lemlist", "hubspot": "HubSpot"}
+                   "ocean": "Ocean.io", "lemlist": "Lemlist", "hubspot": "HubSpot",
+                   "predictleads": "PredictLeads", "theirstack": "TheirStack"}
 
 
 def set_env(cle: str, valeur: str) -> None:
@@ -101,6 +102,17 @@ def tester_hubspot() -> tuple[bool, str]:
     return True, "token Private App valide (lecture contacts)"
 
 
+def tester_predictleads() -> tuple[bool, str]:
+    rep = PredictLeads().test()
+    attrs = ((rep.get("data") or {}).get("attributes") if isinstance(rep.get("data"), dict) else {}) or {}
+    return True, "cle + token valides" + (f" (abonnement : {attrs.get('plan') or attrs.get('name') or 'actif'})" if attrs else "")
+
+
+def tester_theirstack() -> tuple[bool, str]:
+    TheirStack().test()
+    return True, "cle valide (recherche floutee, aucun credit consomme)"
+
+
 def tester_salesnav() -> tuple[bool, str]:
     li_at = env("LINKEDIN_LI_AT", obligatoire=False)
     ua = env("LINKEDIN_USER_AGENT", obligatoire=False)
@@ -114,10 +126,12 @@ def tester_salesnav() -> tuple[bool, str]:
 
 TESTS = {"apify": tester_apify, "unipile": tester_unipile, "crustdata": tester_crustdata,
          "fullenrich": tester_fullenrich, "ocean": tester_ocean, "lemlist": tester_lemlist,
-         "hubspot": tester_hubspot, "salesnav": tester_salesnav}
+         "hubspot": tester_hubspot, "salesnav": tester_salesnav,
+         "predictleads": tester_predictleads, "theirstack": tester_theirstack}
 CLES = {"apify": "APIFY_TOKEN", "unipile": "UNIPILE_API_KEY", "crustdata": "CRUSTDATA_API_KEY",
         "fullenrich": "FULLENRICH_API_KEY", "ocean": "OCEAN_API_KEY", "lemlist": "LEMLIST_API_KEY",
-        "hubspot": "HUBSPOT_ACCESS_TOKEN", "salesnav": "LINKEDIN_LI_AT"}
+        "hubspot": "HUBSPOT_ACCESS_TOKEN", "salesnav": "LINKEDIN_LI_AT",
+        "predictleads": "PREDICTLEADS_API_KEY", "theirstack": "THEIRSTACK_API_KEY"}
 
 
 def ecrire_outils(resultats: dict, canal_linkedin: str | None) -> None:
@@ -138,10 +152,12 @@ def ecrire_outils(resultats: dict, canal_linkedin: str | None) -> None:
     if not canal_linkedin:
         canal_linkedin = "unipile" if unipile_ok else "lemlist"
     crm = "hubspot" if resultats.get("hubspot", (False, ""))[0] else "aucun"
-    for cle, val in (("priorite", priorite), ("canal_linkedin", canal_linkedin), ("canal_email", "lemlist"), ("crm", crm)):
+    secours = [o for o in ("predictleads", "theirstack") if resultats.get(o, (False, ""))[0]]
+    signaux_secours = ", ".join(secours) if secours else "aucun"
+    for cle, val in (("priorite", priorite), ("canal_linkedin", canal_linkedin), ("canal_email", "lemlist"), ("crm", crm), ("signaux_secours", signaux_secours)):
         t = re.sub(rf"^{cle}:.*$", f"{cle}: {val}", t, count=1, flags=re.M)
     p.write_text(t, encoding="utf-8")
-    afficher(f"[outils] OUTILS.md mis a jour : priorite={priorite}, canal_linkedin={canal_linkedin}, canal_email=lemlist, crm={crm}")
+    afficher(f"[outils] OUTILS.md mis a jour : priorite={priorite}, canal_linkedin={canal_linkedin}, canal_email=lemlist, crm={crm}, signaux_secours={signaux_secours}")
 
 
 def main() -> None:

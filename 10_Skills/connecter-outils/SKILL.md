@@ -2,7 +2,7 @@
 name: connecter-outils
 description: >
   Branche un par un les 7 outils de la stack (Apify, Unipile, Crustdata, FullEnrich, Ocean.io,
-  Lemlist, HubSpot) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
+  Lemlist, HubSpot) et les 2 optionnels pour les signaux (PredictLeads, TheirStack) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
   le .env, coche "Etat des connexions" dans OUTILS.md et fixe priorite, canal_linkedin,
   canal_email et crm. Gère aussi les cookies LinkedIn pour les actors Sales Navigator d'Apify.
   Se déclenche sur : "connecte mes outils", "branche Unipile", "configure mes clés API",
@@ -60,16 +60,23 @@ Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appe
 7. **HubSpot** (`HUBSPOT_ACCESS_TOKEN`) : Paramètres, Intégrations, Applications privées, créer une
    app avec les scopes `crm.objects.contacts` et `crm.objects.companies` en lecture et écriture.
    Test : lecture d'un contact. Si présent, `crm: hubspot`.
-8. **Cookies Sales Navigator pour Apify** (facultatif, seulement si l'utilisateur veut l'actor
+8. **PredictLeads et TheirStack (optionnels, seulement si l'utilisateur veut les événements d'entreprise,
+   l'intent ou des offres filtrées par techno)**. PredictLeads (`PREDICTLEADS_API_KEY` + `PREDICTLEADS_API_TOKEN`) :
+   les deux sont sur predictleads.com, espace client, page API ; test : `GET /api_subscription`. Abonnement mensuel
+   avec quota de requêtes, pas de crédit par résultat. TheirStack (`THEIRSTACK_API_KEY`) : app.theirstack.com,
+   Settings, API keys ; test : une recherche floutée (0 crédit). Facturation : 1 crédit par offre ou entreprise
+   renvoyée, palier gratuit à l'inscription. S'ils sont branchés, écrire `signaux_secours:` dans OUTILS.md ; sinon
+   `aucun`, et les sous-skills du master `detecter-signaux` qui en dépendent (événements, intent) restent en lecture manuelle.
+9. **Cookies Sales Navigator pour Apify** (facultatif, seulement si l'utilisateur veut l'actor
    `curious_coder/linkedin-sales-navigator-search-scraper`) : sur linkedin.com connecté, ouvrir
    l'extension Cookie-Editor, copier la valeur du cookie `li_at` et celle de `li_a` (Sales Navigator),
    puis le user agent du navigateur (taper "my user agent" dans Google). Écrire `LINKEDIN_LI_AT`,
    `LINKEDIN_LI_A`, `LINKEDIN_USER_AGENT` dans `.env`. Variante : exporter tous les cookies en JSON
    dans un fichier hors du module GTM et écrire son chemin dans `LINKEDIN_COOKIES_FILE`. Ces cookies
    expirent en quelques semaines : à l'erreur "Cookies are expired", refaire l'étape.
-9. Demandez le canal LinkedIn voulu (Unipile avec le compte de l'utilisateur, ou Lemlist multicanal),
+10. Demandez le canal LinkedIn voulu (Unipile avec le compte de l'utilisateur, ou Lemlist multicanal),
    puis écrivez tout : `python3 scripts/verifier_connexions.py --ecrire-outils --canal-linkedin unipile`.
-10. Résumez l'état des 7 outils et proposez un seul next step : `installer-gtm` si `05_Departements/Go-to-Market/contexte.md` a
+11. Résumez l'état des 7 outils (et des 2 optionnels) et proposez un seul next step : `installer-gtm` si `05_Departements/Go-to-Market/contexte.md` a
     encore des crochets, sinon "on construit votre première liste".
 
 ## Garde-fous

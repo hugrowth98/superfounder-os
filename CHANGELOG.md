@@ -3,6 +3,14 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.1.0] - 2026-09-19
+
+Deux sources optionnelles pour les signaux.
+
+### Ajouté
+- PredictLeads et TheirStack comme secours du verbe detecter_signal, par le même script (`--source predictleads`, `--source theirstack`) : événements d'entreprise (expansion, partenariat, lancement, nomination, rachat), levées, offres actives, intent (recrute et utilise une techno), offres filtrées par techno citée. Nouveaux types `events` et `intent`. Aussi dans `scraper-offres-emploi` (`--source predictleads|theirstack`) et `enrichir-entreprise --techno --source predictleads` (détections datées, `--recentes-jours`).
+- Clients `PredictLeads` et `TheirStack` dans `10_Skills/_commun/gtm_common.py`, tests dans `connecter-outils` (`--outil predictleads|theirstack`), ligne `signaux_secours:` dans `OUTILS.md`, clés dans `.env.example`.
+
 ## [5.0.0] - 2026-09-19
 
 Le module GTM : la prospection reconstruite en méthode et exécution séparées.

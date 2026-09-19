@@ -32,6 +32,7 @@ Une offre d'emploi est un budget rendu public : elle dit ce que l'entreprise jug
 | 1b | detecter_signal | `detecter-signaux` (script `detecter_signal.py`) | vague : `signalbase/signalbase-api`, `signalType: hiring`, `countries: FR`, `departments: sales,marketing`, `seniorities`, `team_size: 11-50,51-200`, `date_preset: last_30d`. 0,04 $ par résultat. |
 | 1c | trouver_personnes | `trouver-personnes` | rôle manquant : chercher le titre dans l'entreprise ; zéro résultat sur une entreprise dans l'ICP = signal. À faire chaque trimestre sur vos comptes cibles. |
 | 1d | detecter_signal | `detecter-signaux` (script `detecter_signal.py`) | départ : `signalType: job-changes`, `companyLinkedinUrl` de vos comptes cibles ; une personne du service visé apparaît avec une nouvelle entreprise. |
+| 1e | scraper_offres_emploi | `scraper-offres-emploi` (`--source theirstack` ou `--source predictleads`) | si branchés : TheirStack filtre les offres par techno citée dans l'annonce (`--technos hubspot`), 1 crédit par offre ; PredictLeads donne les offres actives par intitulé sur son quota mensuel. |
 | 2 | qualifier_liste | `qualifier-liste` | ICP de l'entreprise, rôle dans le périmètre, exclusion des cabinets de recrutement et de l'intérim qui publient pour d'autres |
 | 3 | trouver_personnes | `trouver-personnes` | le responsable du service qui recrute, ou le dirigeant |
 | 4 | enrichir_personne | `enrichir-personne` | profil complet |

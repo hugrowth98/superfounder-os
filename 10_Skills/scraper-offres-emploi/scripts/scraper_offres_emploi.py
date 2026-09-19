@@ -33,8 +33,8 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import (afficher, aujourd_hui, arret, chemin_sortie, domaine, ecrire_csv, fraicheur,  # noqa: E402
-                        norm_linkedin_url, norm_texte)
+from gtm_common import (PredictLeads, TheirStack, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
+                        ecrire_csv, fraicheur, norm_linkedin_url, norm_texte)
 from apify_run import lancer, prix  # noqa: E402
 
 VERBE = "scraper-offres-emploi"
@@ -184,7 +184,88 @@ def source_signalbase(a) -> tuple[list[dict], str]:
     return lignes, actor
 
 
-SOURCES = {"linkedin": source_linkedin, "indeed": source_indeed, "signalbase": source_signalbase}
+def source_predictleads(a) -> tuple[list[dict], str]:
+    """PredictLeads discover/job_openings : offres actives par intitule, lieu, seniorite. Quota mensuel, pas de credit par offre."""
+    params = {"active_only": "true"}
+    if a.mots_cles:
+        params["title"] = a.mots_cles
+    if a.lieu:
+        params["location"] = a.lieu
+    if a.seniorites:
+        params["seniority"] = a.seniorites
+    if a.du:
+        params["found_at_from"] = a.du
+    if a.dry_run:
+        bandeau_dry_run("PredictLeads discover job_openings", [f"params : {params}", f"limit : {a.max}", "cout : quota mensuel de l'abonnement"])
+        return [], "predictleads"
+    pl = PredictLeads()
+    items, page = [], 1
+    while len(items) < a.max:
+        lot = pl.discover("job_openings", params, page=page, limit=min(100, a.max - len(items)))
+        items += lot
+        if len(lot) < 100:
+            break
+        page += 1
+    lignes = []
+    for it in items:
+        lignes.append({"plateforme": "predictleads", "poste": _g(it, "title"), "entreprise": _g(it, "company_company_name", "company_friendly_company_name"),
+                       "domaine": _g(it, "company_domain"), "linkedin_entreprise_url": norm_linkedin_url(_g(it, "company_linkedin_url")),
+                       "ville": _g(it, "location"), "pays": _g(it, "company_location"), "effectif": _g(it, "company_size"),
+                       "signal_date": str(_g(it, "first_seen_at", "found_at"))[:10], "url_offre": _g(it, "url"),
+                       "type_contrat": "|".join(it.get("contract_types") or []) if isinstance(it.get("contract_types"), list) else _g(it, "contract_types"),
+                       "niveau": _g(it, "seniority"), "categories": "|".join(it.get("categories") or []) if isinstance(it.get("categories"), list) else "",
+                       "source": "predictleads"})
+    return lignes, "predictleads"
+
+
+def source_theirstack(a) -> tuple[list[dict], str]:
+    """TheirStack jobs/search : offres par intitule (regex), pays, seniorite, techno citee. 1 credit par offre renvoyee."""
+    body = {"posted_at_max_age_days": int(a.jours) if str(a.jours).isdigit() else 7, "order_by": [{"field": "date_posted", "desc": True}]}
+    if a.pays:
+        body["job_country_code_or"] = [c.strip().upper() for c in a.pays.split(",")]
+    if a.mots_cles:
+        body["job_title_pattern_or"] = _liste(a.mots_cles)
+    if a.seniorites:
+        body["job_seniority_or"] = _liste(a.seniorites)
+    if a.technos:
+        body["job_technology_slug_or"] = _liste(a.technos)
+    if a.entreprises_domaines:
+        body["company_domain_or"] = _liste(a.entreprises_domaines)
+    import os
+    from gtm_common import load_env
+    load_env()
+    if a.dry_run and not os.environ.get("THEIRSTACK_API_KEY"):
+        bandeau_dry_run("TheirStack jobs/search", [f"body : {body}", f"cout : au plus {a.max} credit(s) ; cle absente, comptage impossible"])
+        return [], "theirstack"
+    ts = TheirStack()
+    total = ts.compter("/jobs/search", body)
+    afficher(f"  [theirstack] {total} offre(s) disponibles ; {min(total, a.max)} seront facturees (1 credit chacune)")
+    if a.dry_run:
+        bandeau_dry_run("TheirStack jobs/search", [f"body : {body}", f"cout : {min(total, a.max)} credit(s)"])
+        return [], "theirstack"
+    items, page = [], 0
+    while len(items) < a.max:
+        lot = ts.jobs(body, min(100, a.max - len(items)), page)
+        items += lot
+        if len(lot) < 100:
+            break
+        page += 1
+    lignes = []
+    for it in items:
+        c = it.get("company_object") or {}
+        if not isinstance(c, dict):
+            c = {}
+        lignes.append({"plateforme": "theirstack", "poste": _g(it, "job_title"), "entreprise": _g(c, "name") or _g(it, "company_name"),
+                       "domaine": _g(c, "domain"), "linkedin_entreprise_url": norm_linkedin_url(_g(c, "linkedin_url")),
+                       "secteur": _g(c, "industry"), "effectif": _g(c, "employee_count"), "ville": _g(it, "location", "short_location"),
+                       "pays": _g(c, "country_code") or _g(it, "country_code"), "signal_date": str(_g(it, "date_posted", "discovered_at"))[:10],
+                       "url_offre": _g(it, "url", "final_url"), "niveau": _g(it, "seniority"),
+                       "technos_offre": "|".join(it.get("technology_slugs") or []), "source": "theirstack"})
+    return lignes, "theirstack"
+
+
+SOURCES = {"linkedin": source_linkedin, "indeed": source_indeed, "signalbase": source_signalbase,
+           "predictleads": source_predictleads, "theirstack": source_theirstack}
 
 
 def main() -> None:
@@ -210,6 +291,9 @@ def main() -> None:
     ap.add_argument("--taille-equipe", help="signalbase : 1-10,11-50,51-200,201-1000,1000-plus")
     ap.add_argument("--secteur", help="signalbase : industry")
     ap.add_argument("--limite", type=int, default=100, help="signalbase : resultats (max 100)")
+    ap.add_argument("--du", help="predictleads : offres vues depuis YYYY-MM-DD")
+    ap.add_argument("--technos", help="theirstack : slugs de technos citees dans l'offre (hubspot,salesforce)")
+    ap.add_argument("--entreprises-domaines", help="theirstack : domaines d'entreprises cibles, separes par des virgules")
     ap.add_argument("--max", type=int, default=200, help="linkedin / indeed : offres max")
     ap.add_argument("--sans-filtre-titre", action="store_true", help="garder toutes les offres, pas seulement le titre exact")
     ap.add_argument("--exclure", help="noms d'intermediaires a ajouter a la liste connue, separes par des virgules")

@@ -39,7 +39,7 @@ Chaque skill de méthode décrit ses actions avec ces verbes, jamais avec un nom
 | envoyer_sequence | `envoyer-sequence` | pousser une liste dans une séquence email ou LinkedIn |
 | verifier_reponses | `verifier-reponses` | qui a répondu, sur quel canal |
 
-## 4. La stack (liste fermée, 7 outils)
+## 4. La stack (liste fermée, 7 outils, plus 2 optionnels pour les signaux)
 
 | Outil | Rôle | Clé dans .env |
 |---|---|---|
@@ -50,6 +50,8 @@ Chaque skill de méthode décrit ses actions avec ces verbes, jamais avec un nom
 | Ocean.io | lookalikes uniquement | `OCEAN_API_KEY` (MCP) |
 | Lemlist | envoi email, et LinkedIn si l'utilisateur le choisit | `LEMLIST_API_KEY` (MCP) |
 | HubSpot | CRM : lecture des clients, import, dédup, pipeline | `HUBSPOT_ACCESS_TOKEN` |
+| PredictLeads (optionnel) | secours du verbe detecter_signal : événements d'entreprise (expansion, partenariat, lancement, nomination), levées, offres, détections techno datées | `PREDICTLEADS_API_KEY`, `PREDICTLEADS_API_TOKEN` |
+| TheirStack (optionnel) | secours du verbe detecter_signal : offres d'emploi filtrées par techno citée, intent (entreprises qui recrutent et utilisent une techno) | `THEIRSTACK_API_KEY` |
 
 Règle de priorité, fixée à l'onboarding et écrite dans `05_Departements/Go-to-Market/OUTILS.md` : Apify d'abord si l'utilisateur a un compte Apify ; sinon l'outil API du verbe (Crustdata, FullEnrich, Unipile). Jamais redemandé en cours de session.
 

@@ -78,7 +78,7 @@ Les six types de signaux Signalbase (levées, acquisitions, recrutement, changem
 python3 scripts/detecter_signal.py --type funding --pays FR --periode last_30d --round "Seed,Series A" --limite 100 --dry-run
 ```
 
-Actor `signalbase/signalbase-api`, 0,04 $ par résultat, dry-run obligatoire avant tout run, coût annoncé, oui attendu. Procédure complète, filtres, mode liste suivie, colonnes de sortie et erreurs : `{SKILL_BASE}/ressources/execution-signalbase.md`. Les autres verbes utilisés par les sous-skills gardent leur skill d'exécution (`scraper-offres-emploi`, `scraper-engagement`, `enrichir-entreprise` avec `--techno` et `--pubs`, `trouver-personnes`, `trouver-email`, `qualifier-liste`, `dedoublonner`, `envoyer-sequence`, `verifier-reponses`).
+Actor `signalbase/signalbase-api`, 0,04 $ par résultat, dry-run obligatoire avant tout run, coût annoncé, oui attendu. Deux sources optionnelles avec le même script, si elles sont branchées (`signaux_secours:` dans `OUTILS.md`) : `--source predictleads` (levées, événements d'entreprise, offres) et `--source theirstack` (offres par techno, intent). Procédure complète, filtres, mode liste suivie, colonnes de sortie et erreurs : `{SKILL_BASE}/ressources/execution-signaux.md`. Les autres verbes utilisés par les sous-skills gardent leur skill d'exécution (`scraper-offres-emploi`, `scraper-engagement`, `enrichir-entreprise` avec `--techno` et `--pubs`, `trouver-personnes`, `trouver-email`, `qualifier-liste`, `dedoublonner`, `envoyer-sequence`, `verifier-reponses`).
 
 ## Repères chiffrés
 

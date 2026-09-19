@@ -12,7 +12,7 @@ VERBES = ["trouver-entreprises","trouver-lookalikes","trouver-personnes","enrich
 MASTERS = ["construire-liste","detecter-signaux","cold-email","cold-call"]
 INSTALL = ["installer-gtm","connecter-outils"]
 INTERDITS = ["ColdIQ","coldiq","Clay ","Clay.","Claygent","Trigify","RB2B","Bombora","Crunchbase",
-             "PredictLeads","TheirStack","6sense","Common Room","Koala","Serper","BuiltWith",
+             "6sense","Common Room","Koala","Serper","BuiltWith",
              "YALC","data workspace","Evaboot","PhantomBuster","ZoomInfo","Clearbit","NeverBounce",
              "ZeroBounce","MillionVerifier","Findymail","Prospeo","LeadMagic","Instantly","Smartlead",
              "Crawford","Braun","Hey ","J'espère que vous allez bien","Je me permets"]

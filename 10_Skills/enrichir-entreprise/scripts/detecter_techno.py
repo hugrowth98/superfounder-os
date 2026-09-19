@@ -20,7 +20,8 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import afficher, arret, aujourd_hui, chemin_sortie, domaine, ecrire_csv, fraicheur, lire_csv, norm_texte, sujet_depuis_fichier  # noqa: E402
+from gtm_common import (PredictLeads, afficher, arret, aujourd_hui, bandeau_dry_run, chemin_sortie, domaine, ecrire_csv,  # noqa: E402
+                        fraicheur, lire_csv, norm_texte, sujet_depuis_fichier)
 from apify_run import lancer, prix  # noqa: E402
 
 VERBE = "detecter-techno"
@@ -77,6 +78,52 @@ def par_categorie(item: dict) -> dict:
     return {"technos": noms, **{k: " | ".join(v) for k, v in cats.items()}}
 
 
+def source_predictleads(a, doms: list[str], lignes: list[dict]) -> None:
+    """Detections datees PredictLeads par domaine (first_seen_at, last_seen_at) : un vrai signal de changement, sans diff a faire."""
+    if a.dry_run:
+        bandeau_dry_run("PredictLeads technology_detections", [f"{len(doms)} domaine(s), une requete chacun", "cout : quota mensuel de l'abonnement"])
+        return
+    pl = PredictLeads()
+    src_par_dom = {l["_dom"]: l for l in lignes if l.get("_dom")}
+    cherche = [norm_texte(c) for c in _liste(a.cherche)]
+    sortie = []
+    for d in doms:
+        src = src_par_dom.get(d, {})
+        base = {"entreprise": src.get("entreprise", ""), "domaine": d, "linkedin_entreprise_url": src.get("linkedin_entreprise_url", ""),
+                "secteur": src.get("secteur", ""), "effectif": src.get("effectif", ""), "source": "predictleads", "date_extraction": aujourd_hui()}
+        try:
+            dets = pl.par_entreprise(d, "technology_detections")
+        except RuntimeError as e:
+            sortie.append({**base, "signal_type": "techno", "signal_detail": f"erreur : {e}"[:200]})
+            continue
+        if not dets:
+            sortie.append({**base, "signal_type": "techno", "signal_detail": "aucune detection", "nb_technos": 0})
+            continue
+        technos = []
+        for it in dets:
+            nom = it.get("technology_name") or it.get("technology_title") or it.get("technology_slug") or it.get("_id", "")
+            premiere = str(it.get("first_seen_at") or "")[:10]
+            derniere = str(it.get("last_seen_at") or "")[:10]
+            technos.append((nom, premiere, derniere))
+            if a.recentes_jours and premiere:
+                fr = fraicheur(premiere)
+                if fr and int(fr) <= int(a.recentes_jours):
+                    sortie.append({**base, "signal_type": "techno_ajout", "signal_date": premiere, "fraicheur": fr, "techno": nom,
+                                   "signal_detail": f"adopte {nom} (vu la premiere fois le {premiere})"})
+        noms = [n for n, _, _ in technos]
+        ligne = {**base, "signal_type": "techno", "signal_date": aujourd_hui(), "fraicheur": "0", "nb_technos": len(noms),
+                 "technos": " | ".join(noms), "technos_datees": " | ".join(f"{n} ({p}..{q})" for n, p, q in technos[:60]),
+                 "signal_detail": f"{len(noms)} techno(s) : " + ", ".join(noms[:8])}
+        if cherche:
+            trouvees = [n for n in noms if any(c in norm_texte(n) for c in cherche)]
+            ligne["techno_cible"] = "oui" if trouvees else "non"
+            ligne["techno_cible_detail"] = " | ".join(trouvees)
+        sortie.append(ligne)
+    out = Path(a.out) if a.out else chemin_sortie("enrichir-entreprise_techno", (a.sujet or (sujet_depuis_fichier(a.entree) if a.entree else "domaines")) + "-predictleads")
+    ecrire_csv(sortie, out)
+    afficher(f"{len(sortie)} ligne(s) (technos datees PredictLeads) -> {out}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--in", dest="entree", help="CSV avec domaine, site_web ou email")
@@ -86,9 +133,15 @@ def main() -> None:
     ap.add_argument("--sujet", default="")
     ap.add_argument("--out")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--source", choices=["apify", "predictleads"], default="apify",
+                    help="apify (stack du jour, diff entre deux runs) ou predictleads (detections datees, first_seen_at)")
+    ap.add_argument("--recentes-jours", type=int, help="predictleads : sortir une ligne techno_ajout par techno vue pour la premiere fois depuis N jours")
     a = ap.parse_args()
 
     doms, lignes = domaines_depuis(a)
+    if a.source == "predictleads":
+        source_predictleads(a, doms, lignes)
+        return
     items, _ = lancer(ACTOR, {"websites": doms}, label=f"tech-stack ({len(doms)} domaines)", dry_run=a.dry_run, estimation=prix(ACTOR, len(doms)))
     if a.dry_run:
         return

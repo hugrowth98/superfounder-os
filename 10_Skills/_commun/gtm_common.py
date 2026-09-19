@@ -38,7 +38,7 @@ except ImportError:  # pragma: no cover
     sys.exit("Le module 'requests' manque : pip3 install requests")
 
 __all__ = [
-    "COLONNES", "racine", "dossier_gtm", "load_env", "env", "lire_outils", "dossier_listes", "chemin_sortie",
+    "COLONNES", "PredictLeads", "TheirStack", "racine", "dossier_gtm", "load_env", "env", "lire_outils", "dossier_listes", "chemin_sortie",
     "slug", "norm_texte", "norm_linkedin_url", "slug_linkedin", "domaine", "aujourd_hui",
     "seniorite_depuis_titre", "sujet_depuis_fichier", "fraicheur", "lire_csv", "ecrire_csv", "http", "afficher", "bandeau_dry_run", "estimer",
     "Unipile", "FullEnrich", "Crustdata", "HubSpot", "extraire_post_id", "arret",
@@ -768,3 +768,103 @@ class HubSpot:
                 if not after:
                     break
         return trouves
+
+
+# ---------------------------------------------------------------- PredictLeads (optionnel : evenements, levees, offres, technos datees)
+
+class PredictLeads:
+    """Client REST PredictLeads v3. Cles : PREDICTLEADS_API_KEY et PREDICTLEADS_API_TOKEN (en-tetes X-Api-Key, X-Api-Token).
+    Reponses au format JSON:API : data[] (attributes, relationships) + included[] (company_lite...). Facturation par
+    requete mensuelle selon l'abonnement : on ne pagine que si on le demande."""
+    BASE = "https://predictleads.com/api/v3"
+
+    def __init__(self, exiger_cle: bool = True):
+        self.cle = env("PREDICTLEADS_API_KEY", obligatoire=exiger_cle, aide="Cle et token sur predictleads.com, page API.")
+        self.token = env("PREDICTLEADS_API_TOKEN", obligatoire=exiger_cle)
+
+    def _req(self, chemin: str, params: dict | None = None) -> dict:
+        h = {"X-Api-Key": self.cle, "X-Api-Token": self.token, "Accept": "application/json"}
+        st, corps = http("GET", f"{self.BASE}{chemin}", headers=h, params={k: v for k, v in (params or {}).items() if v not in (None, "")})
+        if st == 401:
+            raise RuntimeError("PredictLeads 401 : cle ou token invalide, ou abonnement API inactif")
+        if st == 402:
+            raise RuntimeError("PredictLeads 402 : quota mensuel de requetes depasse")
+        if st >= 400:
+            raise RuntimeError(f"PredictLeads GET {chemin} -> HTTP {st} : {str(corps)[:300]}")
+        return corps if isinstance(corps, dict) else {}
+
+    def test(self) -> dict:
+        return self._req("/api_subscription")
+
+    @staticmethod
+    def _index_included(rep: dict) -> dict:
+        return {(it.get("type"), it.get("id")): it.get("attributes", {}) for it in rep.get("included", []) if isinstance(it, dict)}
+
+    def aplatir(self, rep: dict) -> list[dict]:
+        """Une ligne par element de data[], avec les attributs de l'entreprise liee (company_lite) fusionnes."""
+        inc = self._index_included(rep)
+        lignes = []
+        for it in rep.get("data", []) or []:
+            attrs = dict(it.get("attributes", {}))
+            attrs["_id"] = it.get("id", "")
+            attrs["_type"] = it.get("type", "")
+            rel = (it.get("relationships") or {})
+            comp = ((rel.get("company") or {}).get("data") or {})
+            if comp:
+                for cle, val in inc.get((comp.get("type"), comp.get("id")), {}).items():
+                    attrs.setdefault(f"company_{cle}", val)
+            for nom_rel in ("technology", "job_opening"):
+                r = ((rel.get(nom_rel) or {}).get("data") or {})
+                if r:
+                    for cle, val in inc.get((r.get("type"), r.get("id")), {}).items():
+                        attrs.setdefault(f"{nom_rel}_{cle}", val)
+            lignes.append(attrs)
+        return lignes
+
+    # decouverte sur un marche
+    def discover(self, dataset: str, params: dict, page: int = 1, limit: int = 100) -> list[dict]:
+        """dataset : financing_events, news_events, job_openings. params : filtres du dataset (voir docs)."""
+        return self.aplatir(self._req(f"/discover/{dataset}", {**params, "page": page, "limit": min(limit, 1000)}))
+
+    # par entreprise (domaine)
+    def par_entreprise(self, dom: str, dataset: str, params: dict | None = None) -> list[dict]:
+        """dataset : financing_events, news_events, job_openings, technology_detections."""
+        return self.aplatir(self._req(f"/companies/{dom}/{dataset}", {**(params or {}), "limit": 100}))
+
+
+# ---------------------------------------------------------------- TheirStack (optionnel : offres, technos, intent jobs + techno)
+
+class TheirStack:
+    """Client REST TheirStack v1. Cle : THEIRSTACK_API_KEY (Bearer). 1 credit par offre ou par entreprise renvoyee ;
+    `blur_company_data: true` renvoie un apercu gratuit (entreprise floutee) pour compter avant de payer."""
+    BASE = "https://api.theirstack.com/v1"
+
+    def __init__(self, exiger_cle: bool = True):
+        self.cle = env("THEIRSTACK_API_KEY", obligatoire=exiger_cle, aide="Cle sur app.theirstack.com, Settings, API.")
+
+    def _post(self, chemin: str, body: dict) -> dict:
+        h = {"Authorization": f"Bearer {self.cle}", "Content-Type": "application/json", "Accept": "application/json"}
+        st, corps = http("POST", f"{self.BASE}{chemin}", headers=h, json_body=body)
+        if st == 401:
+            raise RuntimeError("TheirStack 401 : cle invalide")
+        if st == 402:
+            raise RuntimeError("TheirStack 402 : plus de credits")
+        if st >= 400:
+            raise RuntimeError(f"TheirStack POST {chemin} -> HTTP {st} : {str(corps)[:300]}")
+        return corps if isinstance(corps, dict) else {}
+
+    def test(self) -> dict:
+        return self._post("/jobs/search", {"limit": 1, "blur_company_data": True, "posted_at_max_age_days": 7, "job_country_code_or": ["FR"]})
+
+    def compter(self, chemin: str, body: dict) -> int:
+        """Nombre total de resultats sans consommer de credit (apercu floute, limit 1)."""
+        rep = self._post(chemin, {**body, "limit": 1, "blur_company_data": True, "include_total_results": True})
+        return int(((rep.get("metadata") or {}).get("total_results")) or 0)
+
+    def jobs(self, body: dict, limit: int = 50, page: int = 0) -> list[dict]:
+        rep = self._post("/jobs/search", {**body, "limit": min(limit, 500), "page": page, "blur_company_data": False})
+        return rep.get("data", []) or []
+
+    def entreprises(self, body: dict, limit: int = 50, page: int = 0) -> list[dict]:
+        rep = self._post("/companies/search", {**body, "limit": min(limit, 500), "page": page, "blur_company_data": False, "expand_technology_slugs": True})
+        return rep.get("data", []) or []

@@ -20,6 +20,8 @@ Le principe : vous validez, Claude exécute. Rien ne part sans votre oui.
 | Crustdata | rechercher des entreprises et des personnes par API, sans passer par Apify | non | sur devis, crédits à l'usage |
 | Ocean.io | trouver des entreprises qui ressemblent à vos meilleurs clients | non | sur devis, essai gratuit |
 | HubSpot | votre CRM : import, dédoublonnage, pipeline | non | gratuit pour démarrer |
+| PredictLeads (optionnel) | les événements d'entreprise (expansion, partenariat, lancement, nomination), les levées, les technos datées | non | abonnement mensuel avec quota de requêtes |
+| TheirStack (optionnel) | les offres d'emploi filtrées par techno citée, et l'intent (recrute et utilise telle techno) | non | 1 crédit par résultat, palier gratuit à l'inscription |
 
 Un seul outil suffit pour commencer. Le minimum pour une première liste : Claude Code et Apify. Le minimum pour appeler : ajouter FullEnrich. Le minimum pour envoyer : ajouter Lemlist.
 

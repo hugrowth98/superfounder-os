@@ -11,6 +11,7 @@ priorite: [apify | api]
 canal_linkedin: [unipile | lemlist]      choisi à l'onboarding
 canal_email: lemlist
 crm: [hubspot | aucun]
+signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branchés pour les événements et l'intent
 ```
 
 ## Carte verbe vers outil
@@ -24,10 +25,10 @@ crm: [hubspot | aucun]
 | enrichir_entreprise | Unipile (page) + Crustdata | idem | Apify `harvestapi/linkedin-company` | Unipile `GET /api/v1/linkedin/company/{id}` ; Crustdata `GET /screener/company?company_domain=` |
 | trouver_email | FullEnrich | FullEnrich | aucun | `POST /api/v2/contact/enrich/bulk`, champ `contact.emails` (1 crédit par email trouvé) |
 | trouver_telephone | FullEnrich | FullEnrich | aucun | idem, champ `contact.phones` (10 crédits par mobile trouvé) |
-| detecter_signal (master `detecter-signaux`) | Apify | Apify | aucun | `signalbase/signalbase-api` (funding, acquisitions, hiring, job-changes, investors, companies ; 0,04 $ par résultat) |
-| scraper_offres_emploi | Apify | Apify | aucun | `tagadanar/linkedin-jobs-scraper` (LinkedIn), `borderline/indeed-scraper` (Indeed), `signalbase/signalbase-api` signalType=hiring |
+| detecter_signal (master `detecter-signaux`) | Apify | Apify | PredictLeads (`--source predictleads` : levées, événements d'entreprise, offres ; quota mensuel), TheirStack (`--source theirstack` : offres, intent jobs + techno ; 1 crédit par résultat) | `signalbase/signalbase-api` (funding, acquisitions, hiring, job-changes, investors, companies ; 0,04 $ par résultat) ; PredictLeads `discover/financing_events`, `discover/news_events`, `discover/job_openings` ; TheirStack `jobs/search`, `companies/search` |
+| scraper_offres_emploi | Apify | Apify | PredictLeads (`--source predictleads`), TheirStack (`--source theirstack`, filtre par techno citée) | `tagadanar/linkedin-jobs-scraper` (LinkedIn), `borderline/indeed-scraper` (Indeed), `signalbase/signalbase-api` signalType=hiring ; PredictLeads `discover/job_openings` ; TheirStack `jobs/search` |
 | scraper_engagement | Unipile | Unipile | Apify | Unipile `posts/{id}/reactions` et `/comments` ; secours `harvestapi/linkedin-post-comments`, `harvestapi/linkedin-post-reactions` |
-| detecter_techno (`enrichir-entreprise --techno`) | Apify | Apify | aucun | `scrapemint/website-tech-stack-detector` |
+| detecter_techno (`enrichir-entreprise --techno`) | Apify | Apify | PredictLeads (`--source predictleads` : détections datées, `first_seen_at`, sans diff à faire) | `scrapemint/website-tech-stack-detector` ; PredictLeads `companies/{domaine}/technology_detections` |
 | scraper_pubs (`enrichir-entreprise --pubs`) | Apify | Apify | aucun | `curious_coder/facebook-ads-library-scraper` (Meta), `s-r/linkedin-ads-library` (LinkedIn) |
 | qualifier_liste | interne (Claude) | interne | aucun | lit `05_Departements/Go-to-Market/contexte.md` |
 | dedoublonner | interne + HubSpot | interne + HubSpot | aucun | HubSpot search API |
@@ -70,3 +71,5 @@ Les prix servent aux estimations affichées par les scripts avant tout run (`api
 | Ocean.io | [ ] | | |
 | Lemlist | [ ] | | |
 | HubSpot | [ ] | | |
+| PredictLeads (optionnel) | [ ] | | |
+| TheirStack (optionnel) | [ ] | | |

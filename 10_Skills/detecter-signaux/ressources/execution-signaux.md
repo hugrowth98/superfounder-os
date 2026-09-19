@@ -1,4 +1,4 @@
-# Exécution : le script Signalbase (verbe detecter_signal)
+# Exécution : le script des signaux (verbe detecter_signal, trois sources)
 
 > Lu par le master et ses sous-skills au moment de lancer une détection. Le script est `{SKILL_BASE}/scripts/detecter_signal.py`.
 
@@ -77,3 +77,32 @@ Deux runs sur la même fenêtre produisent des doublons : `dedoublonner` sur `si
 | `amount_min` sans effet | montant donné en cents | donner des dollars, le script convertit |
 | Liste suivie : 0 signal | URLs non normalisées ou domaines absents | remplir `linkedin_entreprise_url` et `domaine` via `enrichir-entreprise`, relancer |
 | HTTP 402 Apify | crédit épuisé | recharger le compte Apify |
+
+
+## Les deux sources optionnelles : PredictLeads et TheirStack
+
+Même script, `--source predictleads` ou `--source theirstack`, si `OUTILS.md` dit `signaux_secours:` avec l'outil et que la clé est dans `.env`. Sinon le script s'arrête proprement et renvoie vers `connecter-outils`.
+
+| Type | Signalbase (Apify, défaut) | PredictLeads | TheirStack |
+|---|---|---|---|
+| `funding` | oui, 0,04 $ par résultat | oui (`discover/financing_events`, filtres `--round`, `--du`, `--au`, `--pays`, `--taille-equipe`) | non |
+| `acquisitions` | oui | via `events` (catégorie `acquires`, `merges_with`) | non |
+| `hiring` | oui | oui (`discover/job_openings`, `--search` = intitulé, `--seniorites`) | oui (`jobs/search`, `--search` = motifs d'intitulé, `--technos` = techno citée, `--effectif-min/max`) |
+| `job-changes` | oui | non | non |
+| `events` | non | **oui** : expansion, nouveau bureau, partenariat, lancement, nomination, prix, nouveau client (`discover/news_events`, `--categories` pour restreindre) | non |
+| `intent` | non | non | **oui** : entreprises qui recrutent (`--nb-offres-min`) et utilisent une techno (`--technos`), `companies/search` |
+
+Coûts : PredictLeads facture un quota mensuel de requêtes (pas de coût par résultat, mais pas de pagination gratuite non plus : `--pages 1` par défaut). TheirStack facture 1 crédit par offre ou entreprise renvoyée ; le script compte d'abord gratuitement (aperçu flouté) et annonce combien seront facturés avant de lancer.
+
+Exemples :
+
+```
+python3 scripts/detecter_signal.py --type events --source predictleads --pays FR --du 2026-09-01 --limite 100 --dry-run
+python3 scripts/detecter_signal.py --type funding --source predictleads --pays FR --round "seed,series_a" --du 2026-08-01
+python3 scripts/detecter_signal.py --type intent --source theirstack --pays FR --technos hubspot,pipedrive --nb-offres-min 3 --limite 50
+python3 scripts/detecter_signal.py --type hiring --source theirstack --pays FR --search "SDR|Business Developer" --periode last_14d --limite 100
+```
+
+Sortie : mêmes colonnes normalisées, `source` = `predictleads` ou `theirstack`, `signal_type` = `levee`, `evenement:<catégorie>`, `offre_emploi` ou `intent`, plus `url_source` (PredictLeads) et `technos` (TheirStack).
+
+Champs de sortie lus de façon tolérante (à vérifier au premier run) : les attributs JSON:API de PredictLeads (`company_lite` fusionné en `company_*`), `company_object` de TheirStack.

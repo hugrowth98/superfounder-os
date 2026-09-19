@@ -30,6 +30,7 @@ Trois signaux ou plus sur le même compte donnent 35 à 40 % de réponses contre
 
 | Étape | Verbe | Skill d'exécution | Paramètres et notes |
 |---|---|---|---|
+| 0 | detecter_signal | `detecter-signaux` (script `detecter_signal.py`, `--source theirstack`) | si TheirStack est branché : `--type intent --technos <techno de la couche 2> --nb-offres-min 3` donne d'un coup les entreprises qui recrutent et utilisent la techno, déjà empilées (offre 40 + techno) ; à fusionner avec les autres runs |
 | 1 | dedoublonner | `dedoublonner` | fusion multi-sources par `linkedin_url`, `email`, puis nom + entreprise ; rapprochement HubSpot (client, deal ouvert, déjà en séquence : on sort ou on marque) |
 | 2 | calcul | interne (Claude) | points × multiplicateur par signal, somme, arrondi ; bonus comité par `domaine` ; classement |
 | 3 | qualifier_liste | `qualifier-liste` | `score_icp` et `tier` : un score signal élevé sur un compte hors ICP reste Froid |
