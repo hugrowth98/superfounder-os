@@ -40,6 +40,7 @@ du commentaire, ou "a réagi (LIKE) au post"), `fraicheur`, plus `post_url`, `re
 
 1. Vérifiez l'URL : le script refuse un lien sans id de post. Dry-run :
    `python3 scripts/scraper_engagement.py --post "<url>" --dry-run`
+   ou, sans URL, vos derniers posts : `python3 scripts/scraper_engagement.py --mes-posts 5 --dry-run` (ceux d'une autre personne : `--mes-posts 5 --posts-de <slug>`)
 2. Lancez. Exemples :
    `python3 scripts/scraper_engagement.py --post "<url>"` (commentaires + réactions, Unipile)
    `python3 scripts/scraper_engagement.py --posts posts.txt --type commentaires`

@@ -59,7 +59,7 @@ La doc part d'abord, le rendez-vous vient après. Si la ressource n'existe pas e
 ```
 Entendu {{prenom}}, je reviens vers vous {{mois précis}}.
 
-D'ici là, une chose qui peut servir sans engagement : {{ressource ou conseil concret}}.
+D'ici là, une chose qui peut servir : {{ressource ou conseil concret}}.
 
 Bon {{trimestre, été, lancement}}.
 ```
@@ -106,17 +106,11 @@ Bonne question {{prenom}}. Votre adresse vient de {{source réelle : annuaire pr
 Si vous préférez ne plus recevoir de message de ma part, dites-le moi et je vous retire de ma liste aujourd'hui.
 ```
 
-Répondre en 24 heures, sans se justifier au-delà. Le détail des obligations est dans `delivrabilite.md` (section RGPD).
+Répondre en 24 heures, sans se justifier au-delà ; un retrait demandé est appliqué sous 48 heures. Le détail des obligations est dans `delivrabilite.md` (section RGPD).
 
 ### Le no-show (rendez-vous manqué)
 
-```
-{{prenom}}, on avait un créneau à {{heure}}. Rien de grave j'imagine, ces choses-là arrivent.
-
-{{jour}} à {{heure}} ou {{jour}} à {{heure}}, lequel vous arrange ?
-```
-
-Une relance, deux créneaux, pas de reproche. Sans réponse après deux jours, un dernier message avec la ressource promise et la porte ouverte.
+La procédure appartient au sous-skill `no-show` du master `cold-call` (`10_Skills/cold-call/sous-skills/no-show/SKILL.md`) : appel dix minutes après l'heure, puis message de deux lignes avec deux créneaux, sans reproche.
 
 ## 4. Les réponses de rattrapage
 

@@ -12,17 +12,16 @@ description: >
 
 ## Outil
 
-Lisez `05_Departements/Go-to-Market/OUTILS.md` : `canal_email: lemlist` (MCP Lemlist, OAuth ou clé), `canal_linkedin:
+Lisez `05_Departements/Go-to-Market/OUTILS.md` : `canal_email: lemlist` (API Lemlist, clé `LEMLIST_API_KEY`), `canal_linkedin:
 unipile` (scripts de ce skill, compte LinkedIn de l'utilisateur) ou `lemlist` (étapes LinkedIn
 dans la séquence Lemlist). Lisez `05_Departements/Go-to-Market/GARDE-FOUS.md` avant tout envoi. Outil non branché : dites-le,
 renvoyez vers `connecter-outils`, n'envoyez rien par un autre moyen.
 
-Email, via les outils MCP Lemlist : `get_campaigns` (choisir une campagne existante) ou
-`create_campaign_with_sequence` (créer, avec les étapes écrites par `cold-email`),
-`add_sequence_step` (relances, 3 à 4 jours d'écart), `set_campaign_senders`,
-`import_leads_to_campaign` ou `add_leads_to_campaign` (le CSV préparé ici),
-`validate_campaign_readiness` et `preview_email` (contrôle), `launch_campaign` ou
-`set_campaign_state` (démarrer, pauser, reprendre), `get_campaigns_stats` (suivi).
+Email, par l'API Lemlist en CLI : `scripts/envoyer_lemlist.py` (filtre la liste, choisit ou crée la
+campagne, pousse les leads dédoublonnés avec leurs variables, démarre avec `--lancer`, met en pause avec
+`--pauser`, liste les campagnes avec `--lister`). La séquence elle-même (étapes, textes, expéditeurs,
+cadence) s'écrit dans Lemlist, avec les textes produits par `cold-email` ; l'API ne crée que la
+campagne et les leads. Le MCP Lemlist reste utilisable en plus (stats, aperçu d'email) s'il est branché.
 LinkedIn via Unipile : `scripts/envoyer_linkedin.py` (invitation puis message,
 `POST /api/v1/users/invite` et `POST /api/v1/chats`).
 
@@ -49,14 +48,14 @@ dans des colonnes nommées (`icebreaker`, `message_1`, `note_invitation`, `var_p
 1. Vérifiez l'amont : `qualifier-liste` fait, `dedoublonner --hubspot` (ou `--contre`) fait,
    emails vérifiés (couverture fiable au-dessus de 70 %), `verifier-reponses` passé sur les
    listes déjà contactées. Sinon, une étape manque : dites laquelle.
-2. Email. Préparez le fichier :
-   `python3 scripts/preparer_import_lemlist.py --in <csv> --colonne-message icebreaker`
+2. Email. Dry-run d'abord :
+   `python3 scripts/envoyer_lemlist.py --in <csv> --campagne "module GTM <cible> <date>" --colonne-message icebreaker --dry-run`
    Le script écarte exclus, `ne_plus_contacter`, emails vides, invalides, non vérifiés,
    catch-all (sauf `--avec-catch-all`), et affiche 3 leads avec leur message. Montrez-les,
-   attendez le oui. Puis MCP : choisissez ou créez la campagne (nom `module GTM <cible> <date>`),
-   importez le CSV, `validate_campaign_readiness`, `preview_email` sur un lead, récapitulez
-   (nombre de leads, expéditeur, première étape, cadence) et attendez un "oui, lance" explicite
-   avant `launch_campaign`.
+   attendez le oui, relancez avec `--confirmer` : la campagne est créée si elle n'existe pas et les
+   leads sont ajoutés (dédoublonnés par Lemlist). Vérifiez dans Lemlist que la séquence a ses étapes et
+   ses expéditeurs, récapitulez (nombre de leads, expéditeur, première étape, cadence) et attendez un
+   "oui, lance" explicite avant `--lancer` (ou `python3 scripts/envoyer_lemlist.py --in <csv> --campagne-id <id> --confirmer --lancer`).
 3. LinkedIn (Unipile). Quota : `python3 scripts/envoyer_linkedin.py quota`. Puis :
    `python3 scripts/envoyer_linkedin.py --in <csv> --etape invitation --colonne-message note_invitation --max 20`
    Le script affiche 3 messages et s'arrête. Montrez-les, attendez le oui, relancez avec

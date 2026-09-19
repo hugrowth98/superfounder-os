@@ -19,7 +19,7 @@ signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branché
 | Verbe | Principal (priorité apify) | Principal (priorité api) | Secours | Actor Apify / point d'entrée |
 |---|---|---|---|---|
 | trouver_entreprises | Apify | Crustdata | Unipile (Sales Nav comptes) | `compass/crawler-google-places` (local), `harvestapi/linkedin-company-search` (filtres LinkedIn), `code_crafter/leads-finder` (bases larges, une ligne par entreprise), `curious_coder/linkedin-sales-navigator-search-scraper` (URL Sales Nav comptes, cookies du .env) ; Crustdata `POST /v1/companies/search` |
-| trouver_lookalikes | Ocean.io | Ocean.io | aucun | MCP Ocean `search_companies` avec `lookalikeDomains` (10 domaines max par appel) ; `similar_customers` pour l'inverse (quels clients ressemblent à un prospect) |
+| trouver_lookalikes | Ocean.io | Ocean.io | aucun | API `POST /v3/search/companies` avec `lookalikeDomains` (10 domaines par lot, 0,2 crédit par résultat, `/preview` gratuit) ; MCP Ocean en option pour explorer à la main |
 | trouver_personnes | Apify | Crustdata | Unipile (recherche classique ou Sales Nav) | `harvestapi/linkedin-profile-search` (filtres, sans cookies), `harvestapi/linkedin-company-employees` (depuis des URLs entreprise), `curious_coder/linkedin-sales-navigator-search-scraper` (URL Sales Nav leads, cookies du .env) ; Crustdata `POST /screener/persondb/search/` |
 | enrichir_personne | Unipile (profil) + FullEnrich (contact) | idem | Apify `harvestapi/linkedin-profile-scraper` | Unipile `GET /api/v1/users/{id}` ; FullEnrich `POST /contact/enrich/bulk` |
 | enrichir_entreprise | Unipile (page) + Crustdata | idem | Apify `harvestapi/linkedin-company` | Unipile `GET /api/v1/linkedin/company/{id}` ; Crustdata `GET /screener/company?company_domain=` |
@@ -33,9 +33,9 @@ signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branché
 | qualifier_liste | interne (Claude) | interne | aucun | lit `05_Departements/Go-to-Market/contexte.md` |
 | dedoublonner | interne + HubSpot | interne + HubSpot | aucun | HubSpot search API |
 | lire_crm, pousser_crm | HubSpot | HubSpot | aucun | HubSpot `deals/search`, `contacts/batch/upsert`, `notes`, `tasks` (skill `crm`) |
-| envoyer_sequence (email) | Lemlist | Lemlist | aucun | MCP Lemlist |
+| envoyer_sequence (email) | Lemlist | Lemlist | aucun | API `POST /campaigns`, `POST /campaigns/{id}/leads/`, `/start`, `/pause` (script `envoyer_lemlist.py`) ; MCP Lemlist en option |
 | envoyer_sequence (LinkedIn) | selon `canal_linkedin` | idem | aucun | Unipile `POST /api/v1/users/invite` puis `POST /api/v1/chats` (script `envoyer-sequence`), ou Lemlist multicanal |
-| verifier_reponses | Unipile + Lemlist | idem | aucun | Unipile `GET /api/v1/chats`, `/messages`, `/attendees` ; Lemlist MCP `get_inbox_conversations` |
+| verifier_reponses | Unipile + Lemlist | idem | aucun | Unipile `GET /api/v1/chats`, `/messages`, `/attendees` ; Lemlist API `GET /activities?type=emailsReplied` et `linkedinReplied` |
 
 ## Actors Apify vérifiés (Store, palier BRONZE, le 2026-09-19)
 

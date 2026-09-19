@@ -40,7 +40,8 @@ normalisées complétées (`entreprise`, `domaine`, `linkedin_entreprise_url`, `
 `secteur`, `effectif`) plus `effectif_tranche`, `site_web`, `abonnes`, `annee_creation`, `type`,
 `specialites`, `telephone_entreprise`, `tagline`, `description`, `nb_offres_emploi`,
 `chiffre_affaires_estime`, `stade_financement`, `unipile_id`,
-`date_enrichissement_entreprise`, `erreur_enrichissement_entreprise`.
+`date_enrichissement_entreprise`, `erreur_enrichissement_entreprise` ; avec `--posts`, `posts_recents`
+(les 5 derniers posts de la page via Unipile, séparés par ` || `).
 
 ## Procédure
 
@@ -66,13 +67,15 @@ Deux enrichissements de plus, sur le même CSV, sans skill séparé :
 
 | Option | Verbe | Ce que ça ajoute | Actor Apify | Coût |
 |---|---|---|---|---|
-| `--techno` | detecter_techno | une colonne par catégorie (`cms`, `ecommerce`, `analytics`, `marketing`, `chat`, `crm`, `paiement`, `hebergement`, `framework`), `technos`, `techno_cible` avec `--cherche`, et le mode `--diff` (ajouts, retraits depuis le dernier run) | `scrapemint/website-tech-stack-detector` | 0,01 $ par domaine détecté |
+| `--techno` | detecter_techno | une colonne par catégorie (`cms`, `ecommerce`, `analytics`, `marketing`, `chat`, `crm`, `paiement`, `hebergement`, `framework`), `technos`, `techno_cible` avec `--cherche`, et le mode `--diff` (ajouts, retraits depuis le dernier run). Avec `--techno-source predictleads` : détections datées (`first_seen_at`), et `--recentes-jours 60` sort une ligne `techno_ajout` par techno vue pour la première fois depuis 60 jours, sans attendre deux runs | `scrapemint/website-tech-stack-detector` ; PredictLeads `companies/{domaine}/technology_detections` | 0,01 $ par domaine détecté ; PredictLeads sur quota mensuel |
 | `--pubs` | scraper_pubs | une ligne par pub active : plateforme, dates, texte, CTA, page d'atterrissage | `curious_coder/facebook-ads-library-scraper`, `s-r/linkedin-ads-library` | 0,00075 $ (Meta) et 0,005 $ (LinkedIn) par pub |
 
 ```
 python3 scripts/enrichir_entreprise.py --in <csv> --techno --cherche "hubspot,pipedrive" --dry-run
 python3 scripts/enrichir_entreprise.py --in <csv> --sans-base --pubs --plateforme meta --dry-run
-python3 scripts/enrichir_entreprise.py --in Signaux/comptes-suivis.csv --sans-base --techno --diff
+python3 scripts/enrichir_entreprise.py --in 05_Departements/Go-to-Market/Signaux/comptes-suivis.csv --sans-base --techno --diff
+python3 scripts/enrichir_entreprise.py --in 05_Departements/Go-to-Market/Signaux/comptes-suivis.csv --sans-base --techno --techno-source predictleads --recentes-jours 60
+python3 scripts/enrichir_entreprise.py --in <csv> --posts
 ```
 
 `--sans-base` saute l'enrichissement de base et ne fait que l'option. Chaque option écrit son propre CSV (`enrichir-entreprise_techno_...`, `enrichir-entreprise_pubs_...`). Procédure détaillée, lecture des colonnes, garde-fous et erreurs : `techno.md` et `pubs.md` dans ce dossier. Règle commune : on ne déduit jamais une absence ("ils n'utilisent pas X", "ils ne font pas de pub"), seulement ce qui a été vu.

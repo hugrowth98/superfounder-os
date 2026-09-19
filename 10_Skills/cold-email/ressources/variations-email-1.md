@@ -240,7 +240,7 @@ Il est pensé pour une équipe de 3 commerciaux qui démarre, votre cas d'après
 Vous voulez qu'on regarde ensemble ce qui s'applique chez Novapress ?
 ```
 
-## Email 3 : le nouvel angle (J+14 à J+17, nouvel objet)
+## Email 3 : le nouvel angle (J+10, nouvel objet, dernier email de la séquence)
 
 Nouvel objet, nouveau fil. Une variante d'email 1 différente de celle de départ. CTA très doux : n'importe quelle réponse est bonne à prendre, y compris "pas moi, voyez X".
 

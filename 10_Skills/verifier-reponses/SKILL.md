@@ -7,7 +7,7 @@ description: >
   déclenche sur : "qui a répondu", "des nouvelles réponses ?", "vérifie les réponses", "check
   les conversations", "avant de relancer", "qui a dit oui", "mets à jour la liste avec les
   réponses". Ne pas utiliser pour : envoyer (voir `envoyer-sequence`), répondre à un prospect
-  (l'utilisateur répond lui-même), ni analyser une campagne (stats Lemlist via le MCP).
+  (l'utilisateur répond lui-même), ni analyser une campagne (stats dans Lemlist).
 ---
 
 ## Outil
@@ -15,7 +15,7 @@ description: >
 Lisez `05_Departements/Go-to-Market/OUTILS.md`. LinkedIn : Unipile `GET /api/v1/chats`, `/chats/{id}/messages` et
 `/chats/{id}/attendees` avec le compte de l'utilisateur (abonnement), le script
 `scripts/verifier_reponses.py` garde les conversations où le dernier message vient du prospect
-(`is_sender` du message, ou comparaison avec `UNIPILE_OWN_PROVIDER_ID`). Email : MCP Lemlist
+(`is_sender` du message, ou comparaison avec `UNIPILE_OWN_PROVIDER_ID`). Email : API Lemlist (activités `emailsReplied` et `linkedinReplied`, clé `LEMLIST_API_KEY`), lue par le script lui-même ; à défaut, le JSON du MCP
 `get_inbox_conversations` (et `get_inbox_conversation` pour le fil complet), résultat sauvé en
 JSON puis normalisé par le même script. Pas de webhook : c'est une vérification à la demande,
 à lancer avant chaque étape de séquence et chaque matin de session d'appels. Outil non
@@ -30,16 +30,17 @@ répondants, et le JSON des conversations Lemlist (`--lemlist-json`).
 
 `Listes-prospection/verifier-reponses_<sujet>_<date>.csv`, une ligne par personne qui a
 répondu, la plus récente en premier : `prenom`, `nom`, `entreprise`, `email`, `linkedin_url`,
-`source` (`unipile` ou `lemlist`), `date_extraction`, plus `canal` (`linkedin` ou `email`),
-`date_reponse`, `dernier_message`, `ne_plus_contacter` (`oui`), `provider_id`, `chat_id`,
+`source` (`unipile` ou `lemlist`), `date_extraction`, plus `reponse_canal` (`linkedin` ou `email`),
+`reponse_date`, `reponse_texte`, `ne_plus_contacter` (`oui`), `provider_id`, `chat_id`,
 `campagne`, `lemlist_lead_id`, `sentiment` (si Lemlist le donne). Avec `--in` : une copie
-`<liste>_maj.csv` où les répondants portent `ne_plus_contacter = oui`, `canal_reponse`,
-`date_reponse`, `dernier_message`.
+`<liste>_maj.csv` où les répondants portent `ne_plus_contacter = oui`, `reponse_canal`,
+`reponse_date`, `reponse_texte` (mêmes noms). Le script ne lit que les réponses, jamais les
+ouvertures ni les clics.
 
 ## Procédure
 
 1. LinkedIn : `python3 scripts/verifier_reponses.py` (ou `--depuis 7` pour la semaine).
-2. Email : appelez le MCP Lemlist `get_inbox_conversations` (filtre sur la campagne en cours si
+2. Email : le script interroge l'API Lemlist tout seul (`--campagne-id` pour limiter à une campagne, `--depuis N` jours) ; si vous préférez le MCP, `get_inbox_conversations` (filtre sur la campagne en cours si
    possible), écrivez la réponse telle quelle dans un fichier JSON à côté de la liste, puis
    `python3 scripts/verifier_reponses.py --lemlist-json inbox.json --in <liste en cours>`.
 3. Lisez les 3 derniers messages affichés et classez chaque réponse en deux mots pour

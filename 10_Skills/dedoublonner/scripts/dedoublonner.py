@@ -8,8 +8,9 @@ recent, sources concatenees, exclu = oui si l'une des deux l'est).
 
 Usage :
   python3 dedoublonner.py --in a.csv [--in b.csv ...] [--sujet x]
-  python3 dedoublonner.py --in liste.csv --hubspot                     marque et exclut ce qui existe dans HubSpot (email, domaine)
-  python3 dedoublonner.py --in liste.csv --hubspot --sans-exclure       annote seulement (dans_crm, hubspot_contact_id)
+  python3 dedoublonner.py --in liste.csv --hubspot                     annote ce qui existe dans HubSpot (dans_crm, hubspot_contact_id)
+  python3 dedoublonner.py --in liste.csv --hubspot --exclure-crm        annote et met exclu = oui sur ces lignes
+  python3 dedoublonner.py --in liste.csv --max-par-entreprise 3         garde au plus 3 personnes par domaine (defaut 5, 0 = illimite)
   python3 dedoublonner.py --in liste.csv --contre deja_contactes.csv    exclut ce qui est dans un fichier de reference
   python3 dedoublonner.py --in liste.csv --dry-run                      compte sans ecrire
 Sorties : Listes-prospection/dedoublonner_<sujet>_<date>.csv et ..._doublons.csv (journal)
@@ -191,11 +192,35 @@ def croiser_fichier(lignes: list[dict], reference: str, personnes: bool) -> int:
     return n
 
 
+
+def plafonner(lignes: list[dict], n: int, journal: list[dict]) -> int:
+    """Garde au plus n personnes par domaine (ou par entreprise si pas de domaine) : meilleur score_icp, puis ligne la plus remplie."""
+    groupes: dict[str, list[dict]] = {}
+    for l in lignes:
+        cle = domaine(l.get("domaine") or "") or norm_texte(l.get("entreprise") or "")
+        if cle:
+            groupes.setdefault(cle, []).append(l)
+    retires = 0
+    for cle, grp in groupes.items():
+        if len(grp) <= n:
+            continue
+        grp.sort(key=lambda l: (-float(l.get("score_icp") or 0), -sum(1 for v in l.values() if v)))
+        for l in grp[n:]:
+            if (l.get("exclu") or "").lower() != "oui":
+                l["exclu"] = "oui"
+                l["raison_exclusion"] = l.get("raison_exclusion") or f"plafond {n} par entreprise"
+                journal.append({"cle": cle, "raison": f"plafond {n} par entreprise", "email": l.get("email", ""), "linkedin_url": l.get("linkedin_url", "")})
+                retires += 1
+    return retires
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--in", dest="entrees", action="append", required=True, help="un ou plusieurs CSV (repetable)")
     ap.add_argument("--hubspot", action="store_true", help="croiser avec HubSpot (HUBSPOT_ACCESS_TOKEN)")
-    ap.add_argument("--sans-exclure", action="store_true", help="avec --hubspot : annoter dans_crm sans mettre exclu = oui")
+    ap.add_argument("--exclure-crm", action="store_true", help="avec --hubspot : mettre exclu = oui sur les lignes deja dans HubSpot (par defaut : annoter seulement dans_crm)")
+    ap.add_argument("--sans-exclure", action="store_true", help=argparse.SUPPRESS)
+    ap.add_argument("--max-par-entreprise", type=int, default=5, help="garder au plus N personnes par domaine (meilleur score_icp puis plus complet), 0 = illimite")
     ap.add_argument("--contre", action="append", help="CSV de reference (deja contactes, ne plus contacter), repetable")
     ap.add_argument("--type", choices=["personnes", "entreprises"], help="forcer le type de liste (detecte sinon)")
     ap.add_argument("--sujet", default="")
@@ -213,7 +238,10 @@ def main() -> None:
     personnes = (a.type == "personnes") if a.type else est_liste_personnes(lignes)
     uniques, journal = dedoublonner(lignes, personnes)
     afficher(f"  [{'personnes' if personnes else 'entreprises'}] {len(lignes)} lignes lues dans {len(a.entrees)} fichier(s), {len(uniques)} uniques, {len(journal)} fusion(s)")
-    n_crm = croiser_hubspot(uniques, personnes, not a.sans_exclure, a.dry_run) if a.hubspot else 0
+    n_crm = croiser_hubspot(uniques, personnes, bool(a.exclure_crm), a.dry_run) if a.hubspot else 0
+    n_plafond = plafonner(uniques, a.max_par_entreprise, journal) if (personnes and a.max_par_entreprise) else 0
+    if n_plafond:
+        afficher(f"  [plafond] {n_plafond} personne(s) au-dela de {a.max_par_entreprise} par entreprise : exclu = oui")
     n_ref = sum(croiser_fichier(uniques, r, personnes) for r in (a.contre or []))
     if a.dry_run:
         afficher(f"[dry-run] {n_ref} ligne(s) presentes dans les fichiers de reference ; rien ecrit")

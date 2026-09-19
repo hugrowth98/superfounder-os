@@ -3,7 +3,8 @@ name: qualifier-comptes
 description: >
   Qualifie un CSV d'entreprises ou de personnes selon l'ICP de contexte.md : huit portes
   dans l'ordre (dédoublonnage, titre, taille, secteur, B2C, concurrent, score ICP, tier),
-  un score sur 100, un tier A, B ou C, et une raison d'exclusion par ligne écartée. Se
+  un score sur 100, un tier A, B, C ou D (sous le seuil C, exclu), et une raison d'exclusion
+  par ligne écartée. Se
   déclenche sur : "qualifie cette liste", "score ces prospects", "trie", "qui est
   prioritaire", "tier", "enlève les B2C", "enlève les concurrents", "garde ceux qui
   matchent mon ICP", "cet export est trop large". Ne pas utiliser pour définir l'ICP
@@ -22,26 +23,26 @@ Qualifier, c'est faire passer chaque ligne par huit portes dans un ordre fixe, l
 
 ## Méthode
 
-1. Lisez la section 2 de `05_Departements/Go-to-Market/contexte.md` (couches et points, seuils, exclusions : B2C, concurrents nommés, secteurs exclus, tailles exclues), la section 3 (titres ATL et BTL), la section 4 (signaux prioritaires), la section 7 (clients, partenaires, listes à croiser) et la section 8 (mots-clés propres au marché). Si la section 2 contient des crochets ou si un point manque (pas de tailles exclues, pas de concurrents nommés), demandez avant de juger. Vous n'inventez aucun critère.
+1. Lisez la section 2 de `05_Departements/Go-to-Market/contexte.md` (couches et points, seuils, exclusions : B2C, concurrents nommés, secteurs exclus, tailles exclues), la section 3 (titres ATL et BTL), la section 4 (signaux prioritaires), la section 7 (clients, partenaires, listes à croiser), et `05_Departements/Go-to-Market/Ciblage/mots-cles-exclusion.md` (mots-clés B2C et concurrents propres au marché). Si la section 2 contient des crochets ou si un point manque (pas de tailles exclues, pas de concurrents nommés), demandez avant de juger. Vous n'inventez aucun critère.
 2. Lisez le CSV en entier, sans sauter de ligne. Repérez les colonnes de fit disponibles (`titre`, `effectif`, `secteur`, `pays`, `ville`, description) et celles qui manquent. Si seule `entreprise` est remplie, prévenez : la qualification sera dégradée, et demandez si on enrichit d'abord ou si on continue.
 3. Deux niveaux de tri, dans cet ordre. Le tri structurel, déterministe, sur le titre et l'effectif (portes 1 et 2) : il dégrossit un gros export en quelques secondes. Puis le tri fin, au jugement, sur le fit ICP (portes 3 à 7) : il ne s'applique qu'à ce qui a passé le tri structurel.
-4. Porte 0 : doublons dans le fichier, exclusions fixes de `05_Departements/Go-to-Market/contexte.md`, clients et affaires en cours si HubSpot est branché.
-5. Porte 1 : `titre` contre les personas. Le poste actuel prime sur l'accroche. Stagiaires, indépendants (sauf persona dédié), opérationnels hors persona sortent. `seniorite` se remplit pour tous. Une personne sans ligne entreprise reçoit l'effectif et le secteur de son `domaine` si une autre ligne les porte.
+4. Porte 0 : doublons dans le fichier, exclusions fixes de `05_Departements/Go-to-Market/contexte.md`, et si HubSpot est branché : lignes déjà dans HubSpot (`dedoublonner --hubspot --exclure-crm`), clients gagnés et perdus récents (`crm lire --statut gagnes` et `--statut perdus`, passés en `--contre`).
+5. Porte 1 : `titre` contre les personas. Le poste actuel prime sur l'accroche. Stagiaires, indépendants (sauf persona dédié), exécutants hors persona sortent. `categorie_titre` et `seniorite` se remplissent pour tous (`pre_qualifier.py`). Une personne sans ligne entreprise reçoit l'effectif et le secteur de son `domaine` si une autre ligne les porte.
 6. Portes 2 et 3 : `effectif` hors bornes dures, `secteur` exclu. Une valeur vide laisse passer et se note dans le rapport.
 7. Portes 4 et 5 : B2C et concurrent. Mots-clés d'abord, jugement ensuite sur les lignes qui ont matché ou qui restent ambiguës, avec toutes les colonnes descriptives. Qui paie décide du B2C. Un produit logiciel n'est pas un concurrent, une agence qui vend le même service l'est. Doute franc : la ligne passe.
-8. Porte 6 : `score_icp` sur 100 avec les points de `05_Departements/Go-to-Market/contexte.md`, exact, adjacent ou zéro par critère de la couche 1, présent ou neutre pour la couche 2, signaux datés pour la couche 3 ; donnée manquante = 0 ou neutre, jamais négatif. Les colonnes `signal_type` et `signal_date`, si présentes, comptent dans la couche 3. Sous le seuil D : exclu.
-9. Porte 7 : `tier`. Plafond de contacts par entreprise (2 à 4 en A, 1 à 2 en B, 1 en C), séniorité la plus haute gardée. Le tier C ne reçoit pas d'appel : nurturing seulement. Dans un tier, départagez par signal le plus récent, décideur identifié, activité LinkedIn récente.
-10. Écrivez un seul CSV avec toutes les lignes, `score_icp`, `tier`, `exclu`, `raison_exclusion`. Rendez l'entonnoir, la répartition par tier, les trois raisons d'exclusion les plus fréquentes, cinq lignes tier A avec le détail de leur score, cinq lignes exclues au hasard. Une seule question si une porte a retiré plus de la moitié du fichier. Next step : `sourcer-personnes` sur les tiers A et B si le fichier est une liste d'entreprises, `nettoyer-verifier` si c'est une liste de personnes.
+8. Porte 6 : `score_icp` sur 100 avec les points de `05_Departements/Go-to-Market/contexte.md`, exact, adjacent ou zéro par critère de la couche 1, présent ou neutre pour la couche 2, signaux datés pour la couche 3 ; donnée manquante = 0 ou neutre, jamais négatif. Les colonnes `signal_type` et `signal_date`, si présentes, comptent dans la couche 3. Sous le seuil C : `tier = D`, exclu.
+9. Porte 7 : `tier`. Plafond de contacts par entreprise (2 à 4 en A, 1 à 2 en B, 1 en C, 5 au plus par entreprise, appliqué par `dedoublonner --max-par-entreprise 5`), séniorité la plus haute gardée. Le tier C ne reçoit pas d'appel : nurturing seulement. Dans un tier, départagez par signal le plus récent, décideur identifié, activité LinkedIn récente.
+10. Écrivez `qualifier-liste_<sujet>_<date>.csv` (toutes les lignes, avec `score_icp`, `tier`, `exclu`, `raison_exclusion`) et sa copie `..._exclus.csv` (les lignes exclues, pour lecture). Rendez l'entonnoir, la répartition par tier, les trois raisons d'exclusion les plus fréquentes, cinq lignes tier A avec le détail de leur score, cinq lignes exclues au hasard. Une seule question si une porte a retiré plus de la moitié du fichier. Next step : `sourcer-personnes` sur les tiers A et B si le fichier est une liste d'entreprises, `nettoyer-verifier` si c'est une liste de personnes.
 
 ## Exécution
 
 | Étape | Verbe | Skill d'exécution | Entrée | Sortie |
 |---|---|---|---|---|
-| 4 | `dedoublonner` (porte 0, dans le fichier et contre le CRM) | `dedoublonner` | le CSV, `linkedin_url`, `email`, `domaine` | `exclu`, `raison_exclusion = doublon` ou `= deja client` ou `= affaire en cours` |
-| 5 à 9 | `qualifier_liste` | `qualifier-liste` | le CSV avec `titre`, `entreprise`, `domaine`, `secteur`, `effectif`, `ville`, `pays`, et si présents `signal_type`, `signal_date`, `score_signal` | mêmes colonnes, plus `seniorite`, `score_icp`, `tier`, `exclu`, `raison_exclusion` |
-| après, si demandé | `enrichir_entreprise` | `enrichir-entreprise` | `domaine` des lignes gardées où `effectif` ou `secteur` est vide, et des lignes entre le seuil D et le seuil C | colonnes complétées, puis nouveau passage par `qualifier_liste` |
+| 4 | `dedoublonner` (porte 0 : `--hubspot --exclure-crm`, `--contre` avec les exports de `crm lire --statut gagnes` et `--statut perdus`) | `dedoublonner`, `crm` | le CSV, `linkedin_url`, `email`, `domaine` | doublons fusionnés (journal `dedoublonner_<sujet>_<date>_doublons.csv`), `dans_crm`, `exclu`, `raison_exclusion = deja dans HubSpot (contact)` ou `= deja dans <fichier>` |
+| 5 à 9 | `qualifier_liste` | `qualifier-liste` | le CSV avec `titre`, `entreprise`, `domaine`, `secteur`, `effectif`, `ville`, `pays`, et si présents `signal_type`, `signal_date`, `score_signal` | mêmes colonnes, plus `categorie_titre`, `seniorite`, `score_icp`, `detail_score`, `tier`, `exclu`, `raison_exclusion` |
+| après, si demandé | `enrichir_entreprise` | `enrichir-entreprise` | `domaine` des lignes gardées où `effectif` ou `secteur` est vide, et des lignes en tier C | colonnes complétées, puis nouveau passage par `qualifier_liste` |
 
-`qualifier_liste` est interne : il lit `05_Departements/Go-to-Market/contexte.md` et le CSV, sans appel payant. Sortie : `qualifier-liste_<sujet>_<date>.csv`.
+`qualifier_liste` est interne : il lit `05_Departements/Go-to-Market/contexte.md` et le CSV, sans appel payant. Sortie : `qualifier-liste_<sujet>_<date>.csv` (toutes les lignes, colonne `exclu`) et sa copie `..._exclus.csv`.
 
 **Où ça s'écrit** : les mots-clés B2C et concurrents découverts en qualifiant (au-delà de ceux de `contexte.md`) dans `05_Departements/Go-to-Market/Ciblage/mots-cles-exclusion.md`, relus au run suivant.
 
@@ -49,11 +50,11 @@ Qualifier, c'est faire passer chaque ligne par huit portes dans un ordre fixe, l
 
 | Repère | Valeur |
 |---|---|
-| Seuils de tiers | dans `05_Departements/Go-to-Market/contexte.md` ; défaut A 75, B 55, C 35 |
+| Seuils de tiers | dans `05_Departements/Go-to-Market/contexte.md` ; défaut A 75, B 55, C 35, D en dessous (exclu) |
 | Donnée manquante | 0 point, jamais une exclusion |
 | Lignes sorties avant le score sur un export brut | souvent la moitié |
 | Plafond de contacts par entreprise | 2 à 4 (A), 1 à 2 (B), 1 (C), 5 maximum |
-| Candidates à l'enrichissement | les lignes entre le seuil D et le seuil C |
+| Candidates à l'enrichissement | les lignes en tier C, une donnée de plus les fait souvent monter en B |
 | Échantillon à montrer | 5 tier A avec détail du score, 5 exclues au hasard |
 | Fichier trop gros pour un passage au jugement | au-delà de 500 lignes, par lots de 200, avec un point après chaque lot |
 
@@ -70,7 +71,7 @@ Porte 5  concurrent                      -<n>  -> <n>
 Porte 6  score ICP < <seuil>             -<n>  -> <n>
 Porte 7  tiers                           A <n>, B <n>, C <n>
 Manquant : <colonne> vide sur <n> lignes gardées
-Sortie : qualifier-liste_<sujet>_<date>.csv (<n> lignes, <n> exclues)
+Sortie : qualifier-liste_<sujet>_<date>.csv (<n> lignes, <n> exclues) + qualifier-liste_<sujet>_<date>_exclus.csv
 Tier A, 5 lignes : <entreprise> <score> (<détail par critère>)
 Exclues, 5 lignes : <entreprise> : <raison>
 ```

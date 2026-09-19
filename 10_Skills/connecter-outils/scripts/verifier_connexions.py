@@ -90,7 +90,7 @@ def tester_ocean() -> tuple[bool, str]:
 def tester_lemlist() -> tuple[bool, str]:
     cle = env("LEMLIST_API_KEY", obligatoire=False)
     if not cle:
-        return True, "pas de cle dans .env : connexion par MCP OAuth (claude mcp add --transport http lemlist https://app.lemlist.com/mcp)"
+        return False, "LEMLIST_API_KEY absente : l'envoi et la lecture des reponses passent par l'API (cle sur app.lemlist.com, Settings, Integrations)"
     st, corps = http("GET", "https://api.lemlist.com/api/team", auth=("", cle))
     if st != 200:
         return False, f"HTTP {st}"

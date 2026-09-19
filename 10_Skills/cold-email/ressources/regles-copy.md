@@ -4,7 +4,7 @@ Les limites, le langage, l'anatomie d'un message, les contrôles de qualité, le
 
 ## 1. Les limites
 
-- Deux ou trois emails par séquence. Quatre au plus pour un compte à plusieurs interlocuteurs.
+- Deux ou trois emails par séquence, jamais plus (J0, J+3, J+10) ; 3 relances au plus après un silence, tous canaux confondus. La variante 4 emails de `sequences.md` sort de la règle et se réserve à une liste qui a déjà répondu une fois.
 - 50 à 90 mots par email, cible 60 à 80. Le français est 15 % plus long que l'anglais : 3 à 6 lignes.
 - Chaque phrase sous 20 mots.
 - Une idée et un CTA par email. Jamais deux demandes.
@@ -43,7 +43,7 @@ Ce que vous pouvez utiliser dans un message, du CSV et de `05_Departements/Go-to
 
 ## 5. Les 8 frameworks autorisés côté commercial
 
-Quand une équipe écrit ses propres messages, elle choisit parmi ces huit, décrits dans `frameworks-13.md` : Avant / Après, Rupture de schéma, La question avant le pitch, La valeur d'abord, Faites le calcul, Le défi des entreprises semblables, L'insight neutre, Problèmes typiques du rôle. Les autres frameworks de la liste des 13 (analogie, humour, email écrit à la main, contenu comme porte d'entrée, persona pas si différent, trouvaille-valeur-question) demandent une validation de l'utilisateur ou d'un responsable avant envoi.
+Quand une équipe écrit ses propres messages, elle choisit parmi ces huit, décrits dans `frameworks-13.md` : Avant / Après, Rupture de schéma, La question avant le pitch, La valeur d'abord, Faites le calcul, Le défi des entreprises semblables, L'insight neutre, Problèmes typiques du rôle. Les autres frameworks de la liste des 13 (email écrit à la main, contenu comme porte d'entrée, persona pas si différent, trouvaille-valeur-question, déclencheur court, responsabilités du rôle, pourquoi vous payez ça, le problème d'abord) demandent une validation de l'utilisateur ou d'un responsable avant envoi. L'analogie et l'humour sont des templates de `templates-34.md` (#2 et #28), pas des frameworks.
 
 ## 6. Le ton par type d'offre
 

@@ -6,14 +6,14 @@ Usage :
   python3 detecter_signal.py --type job-changes --pays FR --positions "ceo,vp of sales" --periode last_14d --limite 50
   python3 detecter_signal.py --type hiring --pays FR --search "SDR" --departements sales --periode last_7d --limite 100
   python3 detecter_signal.py --type acquisitions --pays FR,BE --periode last_90d --limite 50
-  python3 detecter_signal.py --type job-changes --liste-suivie Signaux/comptes-suivis.csv --periode last_30d --limite 100
+  python3 detecter_signal.py --type job-changes --liste-suivie 05_Departements/Go-to-Market/Signaux/comptes-suivis.csv --periode last_30d --limite 100
   python3 detecter_signal.py --type job-changes --liste-suivie comptes.csv --par-cible     (une requete par entreprise suivie)
 Ajoutez --dry-run pour voir l'input et le cout. --pages N enchaine N pages de --limite resultats.
 
 Mode "liste suivie" : --liste-suivie <csv> lit les colonnes linkedin_entreprise_url, domaine, entreprise et linkedin_url
 du fichier et ne garde que les signaux qui concernent ces entreprises ou ces personnes (filtre apres coup, donc le
 cout est celui du run complet). --par-cible (job-changes) lance une requete exacte par entreprise suivie a la place.
-Sortie : Listes-prospection/detecter-signal_<type>-<sujet>_<date>.csv
+Sortie : 05_Departements/Go-to-Market/Signaux/detecter-signaux_<type>-<source>-<sujet>_<date>.csv
 """
 from __future__ import annotations
 
@@ -25,13 +25,16 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import (PredictLeads, TheirStack, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine, ecrire_csv, fraicheur, lire_csv,  # noqa: E402
+from gtm_common import (PredictLeads, TheirStack, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, dossier_gtm, domaine, ecrire_csv, fraicheur, lire_csv,  # noqa: E402
                         norm_linkedin_url, norm_texte, seniorite_depuis_titre)
 from apify_run import lancer, prix  # noqa: E402
 
-VERBE = "detecter-signal"
+VERBE = "detecter-signaux"
 ACTOR = "signalbase/signalbase-api"
 TYPES = ["funding", "acquisitions", "hiring", "job-changes", "investors", "companies", "events", "intent"]
+# valeur canonique de signal_type par type demande (docs/conventions-gtm.md section 8)
+SIGNAL_TYPE_CANON = {"funding": "levee", "acquisitions": "acquisition", "hiring": "offre_emploi", "job-changes": "changement_poste",
+                     "investors": "investisseur", "companies": "profil_entreprise", "intent": "intent"}
 # quelle source sait faire quel type
 SOURCES_PAR_TYPE = {
     "signalbase": ["funding", "acquisitions", "hiring", "job-changes", "investors", "companies"],
@@ -87,7 +90,7 @@ def _date(*vals) -> str:
 
 
 def normaliser(it: dict, typ: str) -> dict:
-    base = {"source": ACTOR, "date_extraction": aujourd_hui(), "signal_type": typ, "signal_id": _g(it, "signalId", "id")}
+    base = {"source": ACTOR, "date_extraction": aujourd_hui(), "signal_type": SIGNAL_TYPE_CANON.get(typ, typ), "signal_id": _g(it, "signalId", "id")}
     if typ == "funding":
         inv = it.get("investors") or []
         inv = ", ".join((i.get("name") if isinstance(i, dict) else str(i)) for i in inv[:4])
@@ -139,6 +142,13 @@ def normaliser(it: dict, typ: str) -> dict:
             "secteur": _g(it, "industry"), "effectif": _g(it, "employeeCount"), "signal_date": _date(it.get("updatedAt"), it.get("createdAt")),
             "signal_detail": (_g(it, "description") or "")[:200], "annee_creation": _g(it, "foundedYear"),
             "mots_cles": ", ".join(it.get("keywords") or [])[:200]}
+
+
+def sortie_signaux(nom: str) -> Path:
+    """Les runs de signaux vont dans 05_Departements/Go-to-Market/Signaux/."""
+    d = dossier_gtm() / "Signaux"
+    d.mkdir(parents=True, exist_ok=True)
+    return d / chemin_sortie(VERBE, nom).name
 
 
 def _pl_base(it: dict) -> dict:
@@ -308,6 +318,8 @@ def construire_input(a) -> dict:
         e["personLinkedinUrl"] = a.personne_linkedin_url
     if a.entreprise_linkedin_url:
         e["companyLinkedinUrl"] = a.entreprise_linkedin_url
+    if getattr(a, "verification", None):
+        e["verification_status"] = a.verification
     return e
 
 
@@ -366,10 +378,11 @@ def main() -> None:
     ap.add_argument("--effectif-max", type=int)
     ap.add_argument("--personne-linkedin-url", help="job-changes : URL exacte d'une personne")
     ap.add_argument("--entreprise-linkedin-url", help="job-changes : URL exacte d'une entreprise")
+    ap.add_argument("--verification", help="signalbase : verified,unverified,pending (verification_status)")
     ap.add_argument("--limite", type=int, default=50, help="resultats par page (max 100)")
     ap.add_argument("--pages", type=int, default=1, help="nombre de pages a enchainer")
     ap.add_argument("--liste-suivie", help="CSV d'entreprises ou de personnes : ne garder que les signaux qui les concernent")
-    ap.add_argument("--par-cible", action="store_true", help="job-changes : une requete exacte par entreprise de la liste suivie")
+    ap.add_argument("--par-cible", action="store_true", help="job-changes : une requete exacte par entreprise (linkedin_entreprise_url) et par personne (linkedin_url) de la liste suivie")
     ap.add_argument("--sujet", default="")
     ap.add_argument("--out")
     ap.add_argument("--dry-run", action="store_true")
@@ -391,19 +404,22 @@ def main() -> None:
             vus.add(cle)
             garde.append(l)
         sujet = a.sujet or (a.pays or "") + ("-" + (a.search or a.technos or "").split(",")[0] if (a.search or a.technos) else "")
-        sortie = Path(a.out) if a.out else chemin_sortie(VERBE, f"{a.type}-{a.source}-{sujet}" if sujet else f"{a.type}-{a.source}")
+        sortie = Path(a.out) if a.out else sortie_signaux(f"{a.type}-{a.source}-{sujet}" if sujet else f"{a.type}-{a.source}")
         ecrire_csv(garde, sortie)
         afficher(f"{len(garde)} signal(aux) {a.type} via {a.source}" + (" (liste suivie)" if suivis else "") + f" -> {sortie}")
         return
     entrees = []
     if a.par_cible:
         if a.type != "job-changes" or not suivis:
-            arret("--par-cible ne vaut que pour --type job-changes avec --liste-suivie (colonne linkedin_entreprise_url)")
+            arret("--par-cible ne vaut que pour --type job-changes avec --liste-suivie (colonnes linkedin_entreprise_url ou linkedin_url)")
         for u in sorted(suivis["urls_e"]):
-            a.entreprise_linkedin_url = u
+            a.entreprise_linkedin_url, a.personne_linkedin_url = u, None
+            entrees.append(construire_input(a))
+        for u in sorted(suivis.get("urls_p", set())):
+            a.entreprise_linkedin_url, a.personne_linkedin_url = None, u
             entrees.append(construire_input(a))
         if not entrees:
-            arret("aucune linkedin_entreprise_url dans la liste suivie")
+            arret("aucune linkedin_entreprise_url ni linkedin_url dans la liste suivie")
     else:
         base = construire_input(a)
         for p in range(1, a.pages + 1):
@@ -435,7 +451,7 @@ def main() -> None:
     if a.dry_run:
         return
     sujet = a.sujet or (a.pays or "") + ("-" + (a.search or a.round or a.positions or "").split(",")[0] if (a.search or a.round or a.positions) else "")
-    sortie = Path(a.out) if a.out else chemin_sortie(VERBE, f"{a.type}-{sujet}" if sujet else a.type)
+    sortie = Path(a.out) if a.out else sortie_signaux(f"{a.type}-signalbase-{sujet}" if sujet else f"{a.type}-signalbase")
     ecrire_csv(lignes, sortie)
     afficher(f"{len(lignes)} signal(aux) {a.type}" + (" (liste suivie)" if suivis else "") + f" -> {sortie}")
 

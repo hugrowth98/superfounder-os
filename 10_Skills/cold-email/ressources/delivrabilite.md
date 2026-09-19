@@ -18,25 +18,24 @@ Les valeurs exactes, la vérification et le dépannage sont dans `infra-email-gu
 
 | Âge du domaine | État | Ce qu'on fait |
 |---|---|---|
-| 0 à 2 semaines | tout neuf | aucun email ; DNS, boîtes, chauffe activée |
-| 2 à 4 semaines | frais | chauffe seule, aucun email à froid |
-| 4 à 8 semaines | en chauffe | premiers envois à froid, montée progressive |
+| 0 à 2 semaines | tout neuf | aucun email ; DNS, boîtes, repos après les DNS |
+| 2 à 5 semaines | frais | chauffe seule (3 semaines), aucun email à froid |
+| 5 à 8 semaines | en chauffe | premiers envois à froid, montée progressive |
 | 8 à 12 semaines | en construction | volume modéré, 20 à 30 par boîte et par jour |
 | plus de 12 semaines | établi | plein volume, surveillance continue |
 
-Minimum avant le premier email à froid : 4 semaines (2 de repos, 2 de chauffe). Idéal : 6 à 8 semaines. La chauffe ne s'arrête jamais : 10 à 20 emails de chauffe par jour et par boîte pendant toute la vie de la campagne. Une boîte dont on coupe la chauffe perd sa réputation en quelques semaines.
+Minimum avant le premier email à froid : 5 semaines (2 de repos après les DNS, 3 de chauffe). Idéal : 6 à 8 semaines. La chauffe ne s'arrête jamais : 10 à 20 emails de chauffe par jour et par boîte pendant toute la vie de la campagne. Une boîte dont on coupe la chauffe perd sa réputation en quelques semaines.
 
-Le calendrier de montée en charge d'un domaine neuf :
+Le calendrier de montée en charge d'un domaine neuf, à compter de l'activation de la chauffe (après les 2 semaines de repos DNS) :
 
 | Semaine | Emails à froid par jour et par boîte | Emails de chauffe |
 |---|---|---|
 | 1 | 0 | 5 à 10 |
 | 2 | 0 | 10 à 20 |
-| 3 | 5 à 10 | 15 à 25 |
-| 4 | 10 à 20 | 20 à 30 |
-| 5 et 6 | 20 à 30 | 20 à 30 |
-| 7 et 8 | 30 | 15 à 20 |
-| 9 et plus | 30 | 10 à 20 |
+| 3 | 0 | 15 à 25 |
+| 4 | 10 | 20 à 30 |
+| 5 | 20 | 20 à 30 |
+| 6 et plus | 30 | 10 à 20 |
 
 ## 3. Le placement en boîte de réception
 
@@ -86,7 +85,7 @@ Une mention d'information plus complète peut vivre dans la signature ou en une 
 
 ### Les obligations concrètes
 
-- Une demande de retrait est exécutée dans les 24 heures, sur tous les outils (Lemlist `add_unsubscribe`, colonne `ne_plus_contacter` du CSV, CRM).
+- Une demande de retrait est exécutée sous 48 heures, sur tous les outils (Lemlist `add_unsubscribe`, colonne `ne_plus_contacter` du CSV, CRM).
 - Une demande d'accès ("d'où vient mon adresse ?") reçoit une réponse honnête sous un mois, en pratique sous 24 heures (`reponses.md`).
 - La source des adresses est notée dans la colonne `source` du CSV : c'est ce qui permet de répondre.
 - Aucune adresse personnelle (gmail.com, orange.fr) dans une campagne B2B.
@@ -117,28 +116,27 @@ Vérification : `run_deliverability_audit` dans Lemlist, ou un vérificateur pub
 | Taux de rebond | État | Action |
 |---|---|---|
 | moins de 1 % | excellent | continuer |
-| 1 à 2 % | acceptable | surveiller |
-| 2 à 3 % | alerte | revérifier la liste |
-| 3 à 5 % | dangereux | pause, nettoyage |
-| plus de 5 % | critique | arrêt immédiat |
+| 1 à 3 % | acceptable | surveiller |
+| 3 à 5 % | alerte | revérifier la liste |
+| 5 % et plus | critique | arrêt de la campagne, nettoyage, reprise à 50 % |
 
 ### Vérifier avant d'envoyer
 
-- 100 % des adresses vérifiées avant toute campagne, via `trouver_email` (FullEnrich). Sans exception.
+- Chaque adresse passe par `trouver_email` (FullEnrich) avant toute campagne. Une adresse importée sans statut est non vérifiée : `trouver_email --force` la re-cherche (1 crédit si trouvée), sinon elle ne part pas (`--sans-verification` déconseillé). On ne promet jamais "100 % vérifiés".
 - Une liste de plus de 30 jours se revérifie.
-- `email_statut` "valide" part ; "catch-all" (le serveur accepte tout) part avec prudence, sur 10 % de la campagne d'abord ; "inconnu" et "invalide" ne partent pas.
+- `email_statut` `DELIVERABLE` et `HIGH_PROBABILITY` partent ; `CATCH_ALL` (le serveur accepte tout) et `UNKNOWN` partent avec prudence, 20 % de la liste au plus (`--avec-catch-all`) ; `INVALID`, `INVALID_DOMAIN`, `NOT_FOUND` et les adresses sans statut ne partent pas.
 - Les adresses de rôle (info@, contact@, rh@) sont retirées.
 - Les adresses de fournisseurs grand public sont retirées.
 - Le coût de vérification (quelques centimes par adresse) est négligeable face à un domaine brûlé.
 
 ## 7. La checklist avant lancement
 
-- Domaines d'envoi séparés du domaine principal, de plus de 2 semaines.
+- Domaines d'envoi séparés du domaine principal, de plus de 5 semaines (2 de repos après les DNS, 3 de chauffe).
 - Google Workspace ou Microsoft 365 sur chaque domaine, 2 boîtes au plus par domaine.
 - SPF, DKIM, DMARC vérifiés sur chaque domaine (`check_domain_health`).
 - Domaine de suivi personnalisé si le suivi de clic est activé ; suivi d'ouverture désactivé.
 - Chauffe active sur chaque boîte depuis 3 semaines, score de santé au-dessus de 70 %, idéalement 90 %.
-- 100 % des adresses vérifiées.
+- Adresses filtrées sur `email_statut` : `DELIVERABLE` et `HIGH_PROBABILITY`, catch-all et `UNKNOWN` à 20 % au plus.
 - Surveillance des listes noires en place.
 - Mention d'opt-out dans chaque email, évaluation d'intérêt légitime écrite.
 - Trois emails montrés à l'utilisateur et validés.
@@ -147,9 +145,9 @@ Vérification : `run_deliverability_audit` dans Lemlist, ou un vérificateur pub
 ## 8. La surveillance en campagne
 
 - Volume : 15 à 30 par boîte et par jour, chauffe maintenue à 10 à 20.
-- Rebond sous 2 %, plainte sous 0,1 %, réponse au-dessus de 5 %.
+- Rebond sous 3 % (alerte à 3 %, arrêt à 5 %), plainte sous 0,1 %, réponse au-dessus de 3 % (en dessous, la délivrabilité se dégrade).
 - Listes noires et Google Postmaster Tools chaque semaine.
 - Texte brut, envois aux heures ouvrées du destinataire.
-- Désabonnements traités sous 24 heures.
+- Désabonnements traités sous 48 heures.
 - Rotation des boîtes entre campagnes.
 - Listes de plus de 30 jours revérifiées.

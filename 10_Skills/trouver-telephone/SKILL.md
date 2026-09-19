@@ -4,9 +4,10 @@ description: >
   Exécute le verbe trouver_telephone : trouve le mobile des lignes d'un CSV qui n'en ont pas avec
   FullEnrich (10 crédits par numéro trouvé), en annonçant le coût avant, réservé aux prospects à
   appeler. Se déclenche sur : "trouve les numéros", "il me faut les mobiles", "téléphone de ces
-  décideurs", "prépare ma session d'appels", "numéros des tiers A". Ne pas utiliser pour : un
-  email (voir `trouver-email`), une liste non qualifiée (passer par `qualifier-liste`), ni le
-  standard d'une entreprise (voir `enrichir-entreprise`, colonne `telephone_entreprise`).
+  décideurs", "numéros des tiers A". Ne pas utiliser pour : un email (voir `trouver-email`),
+  une liste non qualifiée (passer par `qualifier-liste`), préparer une session d'appels (master
+  `cold-call`, sous-skill `brief-avant-appel`), ni le standard d'une entreprise (voir
+  `enrichir-entreprise`, colonne `telephone_entreprise`).
 ---
 
 ## Outil

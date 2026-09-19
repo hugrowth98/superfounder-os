@@ -26,11 +26,11 @@ Un objet de 2 à 5 mots, en minuscules, sur le sujet de l'email et pas sur l'off
 
 Ce sous-skill n'appelle aucun verbe de collecte : il travaille sur un email déjà écrit et sur les colonnes du CSV (`signal_type`, `signal_detail`, `entreprise`, `secteur`) pour personnaliser l'objet.
 
-1. Rédaction (interne) : colonnes `objet`, `objet_b` (variante de test), `objet_email_3`.
-2. `envoyer_sequence` (skill `envoyer-sequence`) : les deux objets en variante A/B dans Lemlist (`set_ab_variant`), 50 % chacun, après validation.
-3. `verifier_reponses` (skill `verifier-reponses`) après 100 envois par variante : taux de réponse par objet, choix du gagnant, généralisation.
+1. Rédaction (interne) : colonnes `var_objet`, `var_objet_b` (variante de test), `var_objet_email_3` (préfixe `var_` : `envoyer_lemlist.py` les pousse comme variables Lemlist).
+2. `envoyer_sequence` (skill `envoyer-sequence`) : le script ne pousse que les leads et leurs variables ; la variante A/B d'objet (50 % chacun) s'écrit dans Lemlist, ou par le MCP Lemlist s'il est branché, après validation.
+3. `verifier_reponses` (skill `verifier-reponses`) après 100 envois par variante : les réponses par lead (`reponse_canal`, `reponse_date`, `reponse_texte`), rapprochées de la variante reçue dans Lemlist, donnent le taux de réponse par objet, le choix du gagnant, la généralisation. Le script ne lit jamais les ouvertures.
 
-Entrée : le CSV de campagne avec `email_1`. Sortie : le même CSV avec les colonnes d'objet, et le résultat du test noté dans `sequence_<sujet>_<date>.md`.
+Entrée : le CSV de campagne avec `var_email_1`. Sortie : le même CSV avec les colonnes d'objet, et le résultat du test noté dans `sequence_<sujet>_<date>.md`.
 
 ## Repères
 
@@ -85,4 +85,4 @@ Les formules par famille :
 
 - "Quel objet je mets pour cet email ?" : lecture du corps, 4 options (personnalisé, chiffre, curiosité, deux mots), test recommandé entre deux familles, objet de l'email 3.
 - "Mes emails ne sont pas ouverts" : vérification que le problème vient bien de l'objet et pas de la délivrabilité (rebond, placement), puis test de deux objets de familles opposées sur 100 envois chacun.
-- "Génère un objet pour chaque ligne de mon CSV" : prompt "objet en deux mots" de `prompts-personnalisation.md` sur `signal_detail` ou `secteur`, colonne `objet`, contrôle des mots de spam ligne par ligne, 10 exemples montrés avant de généraliser.
+- "Génère un objet pour chaque ligne de mon CSV" : prompt "objet en deux mots" de `prompts-personnalisation.md` sur `signal_detail` ou `secteur`, colonne `var_objet`, contrôle des mots de spam ligne par ligne, 10 exemples montrés avant de généraliser.

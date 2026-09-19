@@ -33,11 +33,11 @@ Un coach ou un consultant qui vend à un dirigeant de PME a souvent un comité d
 
 | Effectif | Qui décide | Qui vit le problème | Combien de contacts par compte |
 |---|---|---|---|
-| 1 à 10 | le dirigeant | le dirigeant | 1 |
-| 11 à 50 | le dirigeant, parfois un associé | un responsable de fonction (commercial, marketing, RH, ops) | 2 |
-| 51 à 250 | le directeur de fonction, validation du DG | un ou deux managers | 2 à 3 |
-| 251 à 1 000 | le VP ou directeur, budget arbitré par la DAF | des managers et des chefs de projet | 3 à 4 |
-| Plus de 1 000 | un comité formel avec les achats | des équipes entières | 4 à 5, par entité ou pays |
+| 1 à 19 | le dirigeant | le dirigeant | 1 |
+| 20 à 50 | le dirigeant, parfois un associé | un responsable de fonction (commercial, marketing, RH, ops) | 1 à 2 |
+| 51 à 250 | le directeur de fonction, validation du DG | un ou deux managers | 2 à 4 |
+| 251 à 1 000 | le VP ou directeur, budget arbitré par la DAF | des managers et des chefs de projet | 2 à 4 |
+| Plus de 1 000 | un comité formel avec les achats | des équipes entières | 2 à 4 par entité ou pays, 5 au plus par entreprise |
 
 ## Attributs à documenter pour chaque persona
 

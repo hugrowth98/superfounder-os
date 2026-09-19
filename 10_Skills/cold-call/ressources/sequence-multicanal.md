@@ -14,11 +14,11 @@ Le téléphone est la touche qui convertit. Les quatre premières servent à ce 
 | J+7 | LinkedIn : message ou geste | rappeler qu'on existe, juste avant l'appel | si l'invitation est acceptée : un DM de 2 phrases qui annonce l'appel ("je vous appelle jeudi matin, dites-moi si un autre moment vous arrange") ; sinon : une visite de profil et une réaction sur un post récent | 2 phrases | J+9 |
 | J+9 à J+12 | Téléphone | prendre le rendez-vous | le script en 5 temps de `script-appel`, avec le signal en raison d'appel ; deux tentatives à deux moments différents (matin, fin d'après-midi) | 90 secondes avant de demander le rendez-vous | rendez-vous, refus net, ou passage en nurturing |
 
-Après la touche 5 sans contact : un dernier email de deux lignes ("je n'ai pas réussi à vous joindre, si le sujet [X] revient chez vous, mon numéro est en signature"), puis nurturing 90 jours : rien, sauf si un nouveau signal apparaît. Pas de troisième relance email, pas de troisième appel dans la même séquence.
+Après la touche 5 sans contact : nurturing 90 jours, rien, sauf si un nouveau signal apparaît. Les trois relances après silence (email 2, LinkedIn J+7, téléphone) sont le plafond de `GARDE-FOUS.md` : pas de sixième touche, pas de troisième relance email, pas de troisième appel dans la même séquence. Si le téléphone n'a jamais décroché (aucun contact, aucune messagerie), le dernier message peut être un email de deux lignes à la place du second appel, jamais en plus.
 
 ## Le rôle de chaque canal
 
-- LinkedIn ouvre et rappelle. Il ne vend pas et ne demande pas de rendez-vous en premier message. Une invitation acceptée est un signal d'engagement (5 points, `05_Departements/Go-to-Market/contexte.md` couche 3) qui remonte le prospect dans la liste d'appel.
+- LinkedIn ouvre et rappelle. Il ne vend pas et ne demande pas de rendez-vous en premier message. Une invitation acceptée compte comme un engagement direct (5 points, `05_Departements/Go-to-Market/contexte.md` couche 3) qui remonte le prospect dans la liste d'appel, mais aucun script ne la détecte : elle se lit à la main sur LinkedIn et se note dans le CSV.
 - L'email argumente. C'est le seul endroit où le problème, la cause et la conséquence sont écrits noir sur blanc, avec la preuve. Il donne au prospect de quoi vous situer avant l'appel.
 - Le téléphone convertit. Il est réservé aux tiers A et B, aux personnes dont on a le mobile ou la ligne directe, et il arrive toujours après au moins une touche écrite quand c'est possible. En appel à froid pur (aucune touche avant), il faut un signal frais pour le rendre légitime.
 
@@ -26,7 +26,7 @@ Après la touche 5 sans contact : un dernier email de deux lignes ("je n'ai pas 
 
 - Les touches écrites partent du mardi au jeudi, entre 8h30 et 11h ou entre 14h et 17h, heure du prospect. Jamais le lundi matin, jamais le vendredi après-midi, jamais le week-end.
 - Les appels se font en sessions bloquées d'une heure, deux fois par semaine minimum, avec la liste prête et la fiche de `brief-avant-appel` sous les yeux. Le meilleur créneau pour joindre un dirigeant : 8h30 à 9h30 et 17h30 à 18h30.
-- Un prospect qui a émis un signal chaud (visite de profil, commentaire, réponse à un post) sort de la séquence standard : on l'appelle dans les 48 heures, avec le signal en raison d'appel.
+- Un prospect qui a émis un signal chaud (commentaire ou réaction à un post, détectés par `scraper_engagement` ; visite de profil ou invitation acceptée, à lire à la main sur LinkedIn) sort de la séquence standard : on l'appelle dans les 48 heures, avec ce que le signal implique en raison d'appel, jamais le signal brut.
 - Une prise de poste se travaille entre le jour 14 et le jour 45 ; une levée entre la semaine 2 et la semaine 8 ; une offre d'emploi tant qu'elle est ouverte.
 
 ## Ce qui arrête la séquence

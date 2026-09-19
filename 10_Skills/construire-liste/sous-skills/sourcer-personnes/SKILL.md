@@ -26,10 +26,10 @@ On part d'une liste d'entreprises qualifiées et de personas écrits, jamais d'u
 3. Choisissez le chemin. Liste d'entreprises précise (moins de 500 comptes, ABM, local) : les employés de chaque page entreprise, filtrés par titre. Critères larges (secteur, effectif, zone) : recherche par profil avec le booléen et les filtres d'entreprise. Sur Sales Navigator, si le total dépasse 2 500, découpez par région, par effectif, ou par première lettre du prénom.
 4. Fixez le plafond par compte avant de lancer : 2 à 4 sur un tier A, 1 à 2 sur un B, 1 sur un C. Séniorité la plus haute d'abord, dans la limite du persona.
 5. Annoncez volume et coût, lancez sur 10 comptes ou 25 lignes, mesurez le taux de match (comptes avec au moins une personne trouvée sur comptes cherchés). Sous 50 %, revoyez les titres avec `cartographier-personas` avant de continuer.
-6. Lancez le reste. Fusionnez les runs, dédoublonnez par `linkedin_url`.
+6. Lancez le reste. Fusionnez les runs et passez par `dedoublonner-liste` (dans la liste par `linkedin_url`, puis contre le CRM) avant toute étape payante.
 7. Enrichissez le profil seulement là où `titre`, `entreprise` ou `linkedin_url` manque : `enrichir_personne` sur ces lignes, pas sur les autres.
 8. Cherchez l'email seulement là où `email` est vide : `trouver_email` avec prénom, nom et domaine d'abord, le `linkedin_url` en second. Lisez le taux de trouvés sur les 50 premières lignes. Le téléphone (`trouver_telephone`) seulement sur les tiers A et si le canal téléphone est dans `05_Departements/Go-to-Market/contexte.md`.
-9. Rendez le CSV par persona, le taux de match, le taux d'emails trouvés, et le next step : `nettoyer-verifier` si des emails viennent d'une autre source, sinon `dedoublonner-liste` contre le CRM.
+9. Rendez le CSV par persona, le taux de match, le taux d'emails trouvés, et le next step : `nettoyer-verifier`.
 
 ## Exécution
 
@@ -37,11 +37,11 @@ On part d'une liste d'entreprises qualifiées et de personas écrits, jamais d'u
 |---|---|---|---|---|
 | 3, par page entreprise | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-company-employees`) | `linkedin_entreprise_url`, titres du persona, plafond par compte | `prenom`, `nom`, `titre`, `seniorite`, `entreprise`, `linkedin_url`, `linkedin_entreprise_url`, `ville`, `source`, `date_extraction` |
 | 3, par critères | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-profile-search`, Unipile Sales Navigator, ou Crustdata) | booléen de titres, secteur, effectif, zone | mêmes colonnes, plus `domaine` quand l'outil le donne |
-| 7 | `enrichir_personne` | `enrichir-personne` | `linkedin_url`, lignes où `titre` ou `entreprise` est vide | `titre`, `entreprise`, `domaine`, `ville`, `pays` complétés |
+| 7 | `enrichir_personne` | `enrichir-personne` | `linkedin_url`, lignes où `titre` ou `entreprise` est vide | `titre`, `entreprise`, `domaine`, `ville`, `pays` complétés, plus `headline`, `resume`, `anciennete_poste`, `experiences` (et `posts_recents` avec `--posts`) |
 | 8 | `trouver_email` | `trouver-email` | `prenom`, `nom`, `domaine`, puis `linkedin_url` ; lignes où `email` est vide | `email`, `email_statut` |
 | 8, tiers A | `trouver_telephone` | `trouver-telephone` | `linkedin_url` ou `prenom`, `nom`, `entreprise` | `telephone` |
 
-Sortie : `trouver-personnes_<persona>-<sujet>_<date>.csv`, colonnes de `CONVENTIONS.md` section 8, avec `score_icp` et `tier` recopiés depuis la ligne entreprise.
+Sortie : `trouver-personnes_<persona>-<sujet>_<date>.csv`, colonnes de `docs/conventions-gtm.md` section 8, avec `score_icp` et `tier` recopiés depuis la ligne entreprise.
 
 **Où ça s'écrit** : chaque requête booléenne validée (persona, requête Sales Navigator ou LinkedIn, filtres, volume obtenu, date) dans `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md`, pour être rejouée sans la reconstruire.
 
@@ -81,6 +81,6 @@ Fichier : trouver-personnes_<persona>-<sujet>_<date>.csv
 
 ## Exemples
 
-- "Trouve les DRH de ces 80 entreprises" : chemin page entreprise, booléen DRH avec variantes, plafond 2 ; réponse attendue : un CSV de 80 à 160 lignes, taux de match, taux d'emails, next step `dedoublonner-liste`.
+- "Trouve les DRH de ces 80 entreprises" : chemin page entreprise, booléen DRH avec variantes, plafond 2 ; réponse attendue : un CSV de 80 à 160 lignes, taux de match, taux d'emails, next step `nettoyer-verifier`.
 - "Les fondateurs de SaaS de 11 à 50 personnes en France" : `sourcer-entreprises` d'abord si aucune liste, puis recherche par critères en deux runs d'effectif ; réponse attendue : un CSV par persona, sous 2 500 par run, dédoublonné par `linkedin_url`.
 - "Ajoute les emails à ma liste de contacts" : `trouver_email` sur les lignes où `email` est vide, test sur 50 lignes ; réponse attendue : `email` et `email_statut` remplis, taux de trouvés, lignes restées vides listées.

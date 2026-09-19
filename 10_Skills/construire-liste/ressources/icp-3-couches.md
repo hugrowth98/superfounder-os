@@ -31,7 +31,7 @@ Le verbe `detecter_techno` renseigne cette couche sur un domaine. Sans détectio
 | Signal prioritaire n°1 de la section 4, daté de moins de 30 jours | 15 | `signal_type`, `signal_date` |
 | Signal prioritaire n°2 à n°5, daté de moins de 60 jours | 10 | idem |
 | Deux signaux ou plus qui s'empilent | 10 | `signal_type` avec plusieurs types séparés par `+` |
-| Engagement direct avec l'utilisateur (visite de profil, commentaire, réponse passée, événement) | 5 | `signal_type = engagement`, ou le CRM |
+| Engagement direct avec l'utilisateur (visite de profil, commentaire, réponse passée, événement) | 5 | `signal_type = commentaire` ou `like`, ou le CRM |
 
 Les fenêtres (30 et 60 jours) sont modifiables dans `05_Departements/Go-to-Market/contexte.md`. Ces signaux sont détectés par `detecter-signaux`, qui écrit aussi `score_signal` et `fraicheur`. Dans le score ICP, ils comptent quand le CSV les porte déjà. Signal absent = 0 point, jamais de point négatif : une entreprise sans signal connu plafonne à 60, tier B, et reste éligible ; le tier A demande un signal.
 
@@ -42,7 +42,7 @@ Les fenêtres (30 et 60 jours) sont modifiables dans `05_Departements/Go-to-Mark
 | A | 75 à 100 | contact cette semaine, message écrit à la main, téléphone en priorité |
 | B | 55 à 74 | séquence multicanal standard |
 | C | 35 à 54 | nurturing, pas de téléphone |
-| D | sous 35 | `exclu = oui`, `raison_exclusion = score ICP < 35` |
+| D | sous 35 | `exclu = oui`, `raison_exclusion = score <n> sous le seuil C (35)` |
 
 Les quatre lignes d'exclusion de la section 2 court-circuitent le score : B2C (oui ou non), concurrents nommés, secteurs exclus, tailles exclues et autres bornes dures. La section 7 ajoute les exclusions propres à l'utilisateur : clients actuels et passés à ne jamais contacter, partenaires et apporteurs d'affaires, listes ou fichiers à croiser, zones exclues. Une ligne qui tombe dans l'une de ces exclusions sort avant d'être notée, ce qui évite de payer un enrichissement pour rien.
 
@@ -57,7 +57,7 @@ Les quatre lignes d'exclusion de la section 2 court-circuitent le score : B2C (o
 | Les 5 signaux prioritaires et leur fraîcheur | 4 | couche 3 du score |
 | Nouveaux prospects par semaine, rendez-vous visés | 5 | test de volume de `definir-icp`, master pour "combien de lignes" |
 | Clients, partenaires, listes à croiser, zones exclues | 7 | porte 0, `dedoublonner-liste` |
-| Mots-clés B2C ou concurrents propres au marché de l'utilisateur | 8, Précisions libres | portes 4 et 5, en complément des listes de départ de `gates-qualification.md` |
+| Mots-clés B2C ou concurrents propres au marché de l'utilisateur | aucune : ils vivent dans `05_Departements/Go-to-Market/Ciblage/mots-cles-exclusion.md`, le seul endroit | portes 4 et 5, en complément des listes de départ de `gates-qualification.md` |
 
 Une valeur entre crochets dans la section 2 veut dire que l'OS n'est pas installé : `definir-icp` s'arrête et renvoie vers `installer-gtm`, sauf si l'utilisateur veut travailler son ICP maintenant.
 

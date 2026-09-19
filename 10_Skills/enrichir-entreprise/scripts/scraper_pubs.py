@@ -28,7 +28,7 @@ sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
 from gtm_common import afficher, arret, aujourd_hui, chemin_sortie, ecrire_csv, fraicheur, lire_csv, norm_texte, sujet_depuis_fichier  # noqa: E402
 from apify_run import lancer, prix  # noqa: E402
 
-VERBE = "scraper-pubs"
+VERBE = "enrichir-entreprise_pubs"
 ACTOR_META = "curious_coder/facebook-ads-library-scraper"
 ACTOR_LINKEDIN = "s-r/linkedin-ads-library"
 

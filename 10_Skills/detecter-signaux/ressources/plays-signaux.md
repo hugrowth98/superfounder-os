@@ -36,7 +36,7 @@ Qui s'en charge chez vous pendant que l'équipe grandit ?
 ## Play 2 : ciblage par compétences
 
 - **Signal** : le profil LinkedIn affiche une compétence qui prouve l'usage d'un outil ou d'une méthode liés à votre offre (un outil que vous complétez, une méthode que vous industrialisez).
-- **Verbes** : trouver_personnes (titre, secteur, pays), puis enrichir_personne (le profil complet contient la rubrique compétences), puis qualifier_liste (ne garder que les profils avec la compétence), puis trouver_email, puis envoyer_sequence.
+- **Verbes** : trouver_personnes par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, avec le filtre compétences, le titre, le secteur et le pays posés dans Sales Navigator : le profil enrichi par `enrichir-personne` n'a pas de colonne compétences), puis qualifier_liste, puis trouver_email, puis envoyer_sequence.
 - **Pourquoi** : plus précis qu'un titre. Un "responsable marketing" avec la compétence "automatisation" n'a pas le même quotidien qu'un autre sans.
 - **Message** : celui de votre séquence ICP, avec la compétence comme angle ("les équipes qui ont mis en place {{methode}} butent en général sur l'étape d'après : {{probleme}}").
 - **Timing** : en continu, par lots hebdomadaires.
@@ -124,7 +124,7 @@ Bonjour {{prenom}},
 
 {{Le_probleme_decrit_dans_l_avis}} revient chez presque tous les utilisateurs de {{categorie}} que je croise. On a pris le sujet à l'envers : {{votre_difference_concrete}}.
 
-Je vous envoie une comparaison en une page, sans engagement ?
+Je vous envoie une comparaison en une page ?
 ```
 
 - **Timing** : j0 à j60 après l'avis, frais 180 jours. Jamais de critique du concurrent dans le message : vous êtes une alternative, pas un règlement de comptes.
@@ -132,7 +132,7 @@ Je vous envoie une comparaison en une page, sans engagement ?
 ## Play 9 : trois idées, dont la vôtre
 
 - **Signal** : aucun. Vous créez la valeur : deux idées utiles pour son activité, produites à partir de son site et de sa page, et votre offre en troisième, annoncée comme telle.
-- **Verbes** : enrichir_entreprise (site, page LinkedIn, derniers posts), puis Claude produit deux idées à partir de ce que vous avez lu, puis trouver_email, puis envoyer_sequence.
+- **Verbes** : enrichir_entreprise (`--posts` : site, page LinkedIn, `posts_recents`), puis Claude produit deux idées à partir de ce que vous avez lu, puis trouver_email, puis envoyer_sequence.
 - **Message** :
 
 ```
@@ -151,7 +151,7 @@ J'en aurais de meilleures avec quinze minutes de contexte. Preneur ?
 ## Play 10 : champion qui change de poste
 
 - **Signal** : un ancien client, un ancien interlocuteur ou un ancien utilisateur de votre offre arrive dans un compte qui correspond à l'ICP. Le signal le plus fort du barème (75).
-- **Verbes** : detecter_signal (`job-changes`, `personLinkedinUrl` sur votre liste de champions, chaque jour), puis qualifier_liste (la nouvelle entreprise est-elle dans l'ICP), puis enrichir_personne, puis trouver_email, puis trouver_telephone, puis dedoublonner (HubSpot), puis envoyer_sequence (LinkedIn + email), puis verifier_reponses.
+- **Verbes** : detecter_signal (`--type job-changes --liste-suivie <csv des champions> --par-cible`, chaque jour), puis qualifier_liste (la nouvelle entreprise est-elle dans l'ICP), puis enrichir_personne, puis trouver_email, puis trouver_telephone, puis dedoublonner (HubSpot), puis envoyer_sequence (LinkedIn + email), puis verifier_reponses.
 - **Séquence** :
 
 | Jour | Canal | Contenu |
@@ -177,8 +177,8 @@ Un café dans les deux semaines pour voir si ça se rejoue ?
 
 ## Play 11 : nouveaux abonnés et engageurs
 
-- **Signal** : une personne dans l'ICP réagit à un de vos posts, commente, ou s'abonne à votre profil.
-- **Verbes** : scraper_engagement (vos 5 derniers posts, chaque jour ou chaque semaine), puis qualifier_liste (ICP, exclusion des concurrents), puis dedoublonner (déjà en séquence ? déjà client ?), puis enrichir_personne, puis trouver_email, puis envoyer_sequence.
+- **Signal** : une personne dans l'ICP réagit à un de vos posts, commente, ou s'abonne à votre profil (les abonnés ne se listent pas par l'API : relevez-les à la main dans vos notifications, les engageurs viennent du script).
+- **Verbes** : scraper_engagement (`--mes-posts 5`, chaque jour ou chaque semaine), puis qualifier_liste (ICP, exclusion des concurrents), puis dedoublonner (déjà en séquence ? déjà client ?), puis enrichir_personne, puis trouver_email, puis envoyer_sequence.
 - **Message** (un like ne se mentionne pas ; un commentaire se continue) :
 
 ```

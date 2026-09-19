@@ -28,8 +28,8 @@ Plus les colonnes sont remplies, plus le score est fiable : `enrichir-entreprise
 
 ## Sortie
 
-- `Listes-prospection/qualifier-liste_<sujet>_<date>.csv` : les lignes gardées, triées par
-  `score_icp` décroissant, avec `tier` (A, B, C), `exclu = non`, `detail_score` (les points par
+- `Listes-prospection/qualifier-liste_<sujet>_<date>.csv` : toutes les lignes, les gardées d'abord triées par
+  `score_icp` décroissant, puis les exclues (`exclu = oui`, `raison_exclusion`), avec `tier` (A, B, C, D), `detail_score` (les points par
   critère, lisibles), et les colonnes du pré-traitement : `categorie_titre` (dirigeant,
   marketing, sales, direction, manager, independant, executant, stagiaire, inconnu),
   `seniorite`, `independant`, `effectif_num`, `taille_tranche`, `domaine_generique`, `cle`.

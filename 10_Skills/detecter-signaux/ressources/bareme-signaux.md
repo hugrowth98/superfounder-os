@@ -17,7 +17,7 @@
 | Changement de poste d'un champion vers un compte cible | 75 | relation déjà construite, mandat de nouveauté | `changement-poste` |
 | Plusieurs interlocuteurs d'un même compte actifs en 30 jours | 70 | comité d'achat en formation | `multi-signaux` |
 | Inscription à un essai ou à une version gratuite de votre produit | 65 | évaluation en main | votre produit, votre CRM |
-| Introduction en bourse | 50 | transformation, conformité, budgets neufs | `evenements-entreprise` |
+| Introduction en bourse | 50 | transformation, conformité, budgets neufs | `levee-fonds` |
 | Client d'un concurrent qui a laissé un avis négatif | 50 | douleur documentée et publique | `signaux-concurrents` |
 
 ## 2. Tier 2 : signaux tièdes (20 à 49 points)
@@ -27,7 +27,9 @@
 | Levée Série B, Série C et au-delà | 45 | douleur d'échelle, remplacement des bricolages | `levee-fonds` |
 | Retrait d'un concurrent de la stack | 45 | remplacement en cours | `changement-techno` |
 | Évaluation en cours chez un concurrent (cycle d'achat ouvert) | 45 | fenêtre d'achat ouverte | `signaux-concurrents` |
+| Fin de contrat annuel chez un concurrent (date de signature connue) | 45 | fenêtre de changement prévisible, 60 à 90 jours avant l'échéance | `signaux-concurrents` |
 | Offre d'emploi pertinente pour votre offre | 40 | besoin budgété | `recrutement` |
+| Expansion d'un service (effectif de la fonction qui grimpe entre deux runs d'`enrichir-entreprise`) | 40 | montée en charge | le master, `detection-par-signal.md` (signal 10) |
 | Entreprise rachetée | 40 | revue des fournisseurs inévitable | `evenements-entreprise` |
 | Fusion | 40 | consolidation des outils | `evenements-entreprise` |
 | Nouveau dirigeant inconnu dans un compte cible | 40 (proposé) | mandat de 90 jours | `changement-poste` |
@@ -46,7 +48,7 @@
 | Engagement avec le contenu d'un concurrent | 25 | intérêt pour la catégorie | `signaux-concurrents` |
 | Levée Pre-seed ou Seed | 20 | budget limité, tout à construire | `levee-fonds` |
 | Engagement avec la page d'un de vos collaborateurs | 20 | notoriété par votre réseau | `engagement-contenu` |
-| Ajout d'un concurrent de votre catégorie | 20 | besoin couvert, à revoir au renouvellement | `changement-techno` |
+| Client d'un concurrent identifié (son outil sur le site, sa page clients) | 20 | besoin couvert, à revoir au renouvellement | `signaux-concurrents` |
 | Déménagement du siège | 20 | possible changement de fournisseurs | `evenements-entreprise` |
 
 ## 3. Tier 3 : signaux frais (5 à 19 points)
@@ -54,14 +56,13 @@
 | Signal | Points | Ce que ça révèle | Sous-skill |
 |---|---|---|---|
 | Actualité d'entreprise sans autre précision (expansion, prix, presse) | 15 | déclencheur possible | `evenements-entreprise` |
-| Abonnement à votre page ou à votre profil | 15 | notoriété | `engagement-contenu` |
+| Abonnement à votre page ou à votre profil (non listable : relevé à la main dans vos notifications) | 15 | notoriété | `engagement-contenu` |
 | Abonnement à votre newsletter | 15 | notoriété | votre outil d'emailing |
-| Clic dans un de vos emails | 15 | intérêt actif | `verifier-reponses` |
-| Abonné d'un concurrent | 15 | conscience de la catégorie | `signaux-concurrents` |
-| Mouvement marquant d'un concurrent (pub, lancement) | 15 | pression concurrentielle | `signaux-concurrents` |
+| Abonné d'un concurrent (non listable : à la main, ou passez par les engageurs) | 15 | conscience de la catégorie | `signaux-concurrents` |
+| Pub active d'un concurrent ou d'une entreprise de votre catégorie | 15 | budget marketing actif | `signaux-concurrents` |
+| Refonte du site (CMS ou framework changé entre deux relevés) | 15 | chantier en cours | `changement-techno` |
+| Partenariat ou nouvelle intégration annoncés | 15 | écosystème qui s'étend | `evenements-entreprise` |
 | Téléchargement d'un rapport sectoriel | 10 | intérêt général | votre site |
-| Ouvertures répétées de vos emails, sans clic | 10 | surveillance | `verifier-reponses` |
-| Ouverture d'un email, sans clic | 5 | engagement minimal | `verifier-reponses` |
 
 ### Signaux du barème d'origine que ce master ne détecte pas
 
@@ -101,7 +102,7 @@ Deux courbes, parce qu'un like de 20 jours ne vaut plus rien alors qu'une levée
 | après la fenêtre, signal encore frais | ×0,7 | contexte dans le message, pas d'accroche dessus |
 | signal expiré | ×0,3 | retirer du scoring, retour au ciblage ICP |
 
-La forme de cette seconde courbe est celle de la fenêtre du changement de poste (×1,5 au pic, ×1,0 ensuite, ×0,7 en fin de course), étendue aux autres signaux lents.
+La forme de cette seconde courbe est celle de la fenêtre d'une levée Seed à Série B (×1,5 au pic, ×1,0 ensuite, ×0,7 en fin de course, ×0,3 une fois expirée), étendue aux autres signaux lents. Un nouveau dirigeant inconnu n'a pas de phase ×0,7 : après j90 il est expiré.
 
 ## 5. Seuils d'action et délais
 
@@ -123,13 +124,13 @@ Additionnez les signaux d'une même personne, ou d'un même compte quand vous mu
 
 | Cas | Calcul | Score | Chaleur |
 |---|---|---|---|
-| Champion arrivé il y a 5 jours, levée Série B il y a 3 semaines (fenêtre optimale), commentaire hier | 75×1,2 + 45×1,5 + 35×1,5 = 90 + 67,5 + 52,5 | 210 | Brûlant |
+| Champion arrivé il y a 5 jours, levée Série B il y a 3 semaines (fenêtre optimale), commentaire hier | 75×1,2 + 45×1,5 + 35×1,2 = 90 + 67,5 + 42 | 200 | Brûlant |
 | Levée Série A il y a 3 semaines, offre d'emploi commerciale publiée il y a 18 jours | 35×1,5 + 40×1,5 = 52,5 + 60 | 113 | Chaud |
-| Like il y a 3 jours, abonnement à votre page il y a 10 jours, clic email il y a 2 jours | 25×1,2 + 15×1,0 + 15×1,2 = 30 + 15 + 18 | 63 | Tiède |
-| Nouveau bureau il y a 40 jours (dans la fenêtre), ouverture d'email il y a 6 semaines | 25×1,5 + 5×0,3 = 37,5 + 1,5 | 39 | Frais |
+| Like il y a 3 jours, abonnement à votre newsletter il y a 10 jours | 25×1,2 + 15×1,0 = 30 + 15 | 45 | Frais |
+| Nouveau bureau il y a 40 jours (semaine 6, fenêtre secondaire), abonnement à votre newsletter il y a 6 semaines | 25×1,0 + 15×0,3 = 25 + 4,5 | 30 | Frais |
 | Abonné d'un concurrent depuis 2 mois | 15×0,3 | 5 | Froid |
 
-Un seul signal frais de Tier 1 bat trois signaux vieux de Tier 2 : un champion arrivé hier vaut 75×1,5 = 113 (Chaud) ; une levée, une offre et un like vieux de 2 mois valent (45+40+25)×0,3 = 33 (Frais).
+Un seul signal frais de Tier 1 bat trois signaux vieux de Tier 2 : un champion arrivé ce matin vaut 75×1,5 = 113 (Chaud) ; une levée, une offre et un like vieux de 2 mois valent (45+40+25)×0,3 = 33 (Frais).
 
 Comité d'achat : quand 2 personnes ou plus du même `domaine` portent chacune un signal dans les 30 derniers jours, ajoutez 70 au compte et traitez-le comme une seule affaire à multi-threader (un message par rôle, coordonnés dans la même semaine).
 

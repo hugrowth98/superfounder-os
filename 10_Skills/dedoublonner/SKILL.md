@@ -35,29 +35,37 @@ Un ou plusieurs CSV normalisés de même nature (personnes, ou entreprises ; le 
   `email_statut` le plus fiable, `score_icp` le plus haut, signal le plus récent dans
   `signal_type` et `signal_date` et tous les signaux dans `signaux` (`type:date | ...`) avec
   `nb_signaux`. Avec `--hubspot` : `dans_crm`, `hubspot_contact_id`, `hubspot_entreprise_id`,
-  `hubspot_lifecycle`, et `exclu = oui` sauf `--sans-exclure`. Avec `--contre` : `exclu = oui`,
-  `raison_exclusion = deja dans <fichier>`.
+  `hubspot_lifecycle` (annotation seule) ; avec `--hubspot --exclure-crm` : en plus `exclu = oui`,
+  `raison_exclusion = deja dans HubSpot (contact)` ou `(entreprise)`. Avec `--contre` : `exclu = oui`,
+  `raison_exclusion = deja dans <fichier>`. Avec `--max-par-entreprise N` (défaut 5, `0` = illimité,
+  listes de personnes) : au-delà de N personnes par domaine, `exclu = oui`, `raison_exclusion =
+  plafond N par entreprise` (meilleur `score_icp` puis ligne la plus remplie gardés).
 - `..._doublons.csv` : le journal, une ligne par fusion (`groupe`, `type_cle`, `cle`,
-  `ligne_gardee`, `ligne_fusionnee`, `fichier`, `entreprise`, `nom`).
+  `ligne_gardee`, `ligne_fusionnee`, `fichier`, `entreprise`, `nom`) et une ligne par personne
+  retirée par le plafond (`cle`, `raison`, `email`, `linkedin_url`).
 
 ## Procédure
 
 1. Dry-run pour compter : `python3 scripts/dedoublonner.py --in a.csv --in b.csv --dry-run`.
 2. Lancez :
    `python3 scripts/dedoublonner.py --in a.csv --in b.csv --sujet "campagne-x"`
-   `python3 scripts/dedoublonner.py --in liste.csv --hubspot`
+   `python3 scripts/dedoublonner.py --in liste.csv --hubspot` (annote `dans_crm`) ou `--hubspot --exclure-crm` (exclut)
    `python3 scripts/dedoublonner.py --in liste.csv --contre Listes-prospection/ne_plus_contacter.csv --contre <derniere liste envoyee>`
+   `python3 scripts/dedoublonner.py --in liste.csv --contre Listes-prospection/crm_clients-gagnes_<date>.csv` (export de `crm lire --statut gagnes`, idem pour `perdus`)
 3. Lisez les compteurs : lignes lues, uniques, fusions, déjà dans HubSpot, déjà dans les
    références, prospectables. Ouvrez 3 lignes du journal pour vérifier qu'une fusion sur
    `domaine+nom` n'a pas confondu deux homonymes de la même entreprise (le journal le montre).
-4. Si `crm: hubspot`, demandez ce qu'on fait des lignes "dans le CRM sans deal" : exclues (par
-   défaut) ou gardées annotées (`--sans-exclure`, puis tri à la main). Le lifecycle est un indice,
+4. Si `crm: hubspot`, demandez ce qu'on fait des lignes `dans_crm = oui` sans affaire : gardées
+   annotées (par défaut) ou exclues (`--exclure-crm`). Les clients gagnés et les affaires perdues
+   s'excluent avec l'export de `crm lire --statut gagnes` ou `perdus` passé en `--contre` : le
+   script ne calcule aucune catégorie (client, affaire ouverte, churné). Le lifecycle est un indice,
    pas une preuve de relation.
 5. Lien cliquable vers les deux fichiers, un seul next step : `trouver-email` s'il manque des
    adresses, sinon `cold-email`.
 
-Règle d'ordre du master `construire-liste` : dédoublonner avant d'enrichir (on ne paie pas deux
-fois la même ligne), et contre le CRM avant tout envoi.
+Règle d'ordre du master `construire-liste` : dédoublonner (entre sources et contre le CRM) avant
+d'enrichir et de chercher les emails (on ne paie pas deux fois la même ligne), et contre le CRM
+avant tout envoi.
 
 ## Garde-fous
 

@@ -3,6 +3,22 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.2.0] - 2026-09-19
+
+Audit de cohérence du module GTM (20 bloquants, 12 doublons, 30 contradictions de chiffres corrigés) et tout en CLI.
+
+### Ajouté
+- Lemlist et Ocean.io par l'API en CLI, le MCP devient optionnel : `envoyer-sequence/scripts/envoyer_lemlist.py` (filtre, crée ou choisit la campagne, pousse les leads avec leurs variables, `--lancer`, `--pauser`, `--lister`), `verifier_reponses.py` lit les réponses email par l'API, `trouver-lookalikes/scripts/trouver_lookalikes.py` (aperçu gratuit puis recherche par lots de 10, 0,2 crédit par résultat).
+- `enrichir-entreprise --posts` et `enrichir-personne --posts` (5 derniers posts, Unipile), `enrichir-entreprise --techno --techno-source predictleads --recentes-jours N`, `scraper-engagement --mes-posts N`, `detecter_signal.py --verification` et `--par-cible` sur les personnes, `dedoublonner --exclure-crm` et `--max-par-entreprise N`.
+- Vocabulaires fixés dans `docs/conventions-gtm.md` section 8 : `email_statut` (valeurs FullEnrich), `seniorite`, `categorie_titre`, `tier`, `chaleur`, `signal_type` (une valeur canonique par signal), colonnes de réponse, `source`.
+- Le validateur `scripts/valider_gtm.py` bannit "Apollo", les références périmées et les formules de félicitation dans les templates, et confronte tout actor cité à `OUTILS.md`.
+
+### Changé
+- Les runs de signaux vont dans `05_Departements/Go-to-Market/Signaux/` (`detecter-signaux_<type>-<source>-<sujet>_<date>.csv`) ; `qualifier-liste` écrit un seul fichier (toutes les lignes, colonne `exclu`) plus une copie des exclues ; préfixes `enrichir-entreprise_techno_` et `enrichir-entreprise_pubs_`.
+- Fenêtres de fraîcheur alignées sur `detecter-signaux/ressources/fenetres-fraicheur.md` dans tout le module ; limites d'envoi alignées sur `GARDE-FOUS.md` (30 invitations, 50 DM, 100 interactions, note 300 caractères, 3 relances max tous canaux, chauffe 3 semaines, rebond alerte 3 % arrêt 5 %, catch-all 20 %, opt-out 48 h) ; séquence multicanal de référence LinkedIn J0, email J+2, email J+5, LinkedIn J+7, téléphone J+9 à J+12 ; email seul 3 emails max.
+- Propriétaires uniques : no-show dans `cold-call`, nomination dans `changement-poste`, IPO dans `levee-fonds`, client d'un concurrent dans `signaux-concurrents` ; ouvertures et clics d'email retirés du barème ; abonnés d'une page retirés (non listables) ; le signal brut ne s'écrit plus dans aucun template.
+- Colonnes citées par les sous-skills alignées sur celles que les scripts écrivent ; scopes HubSpot complétés (deals, notes, tâches).
+
 ## [5.1.0] - 2026-09-19
 
 Deux sources optionnelles pour les signaux.

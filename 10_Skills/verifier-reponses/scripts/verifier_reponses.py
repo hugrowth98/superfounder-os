@@ -25,7 +25,7 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import Unipile, afficher, aujourd_hui, bandeau_dry_run, chemin_sortie, ecrire_csv, lire_csv, norm_linkedin_url, sujet_depuis_fichier  # noqa: E402
+from gtm_common import Lemlist, Unipile, afficher, aujourd_hui, bandeau_dry_run, chemin_sortie, ecrire_csv, lire_csv, norm_linkedin_url, sujet_depuis_fichier  # noqa: E402
 
 VERBE = "verifier-reponses"
 
@@ -69,7 +69,7 @@ def linkedin(dry_run: bool) -> list[dict]:
         if not prenom:
             prenom, nom = _split_nom(r.get("nom_chat") or "")
         lignes.append({"prenom": prenom, "nom": nom, "linkedin_url": url, "source": "unipile", "date_extraction": aujourd_hui(),
-                       "canal": "linkedin", "date_reponse": r.get("date_reponse", ""), "dernier_message": (r.get("dernier_message") or "").replace("\n", " ")[:500],
+                       "reponse_canal": "linkedin", "reponse_date": r.get("date_reponse", ""), "reponse_texte": (r.get("dernier_message") or "").replace("\n", " ")[:500],
                        "ne_plus_contacter": "oui", "provider_id": pid, "chat_id": r["chat_id"]})
     return lignes
 
@@ -92,17 +92,43 @@ def lemlist(chemin: str) -> list[dict]:
             prenom, nom = _split_nom(_g(lead, "name"))
         lignes.append({"prenom": prenom, "nom": nom, "entreprise": _g(lead, "companyName", "company"), "email": (_g(lead, "email") or "").lower(),
                        "linkedin_url": norm_linkedin_url(_g(lead, "linkedinUrl", "linkedin_url")), "source": "lemlist", "date_extraction": aujourd_hui(),
-                       "canal": "email", "date_reponse": str(_g(c, "lastMessageAt", "updatedAt", "date", "createdAt") or _g(dernier, "date", "createdAt"))[:10],
-                       "dernier_message": (texte or "").replace("\n", " ")[:500], "ne_plus_contacter": "oui",
+                       "reponse_canal": "email", "reponse_date": str(_g(c, "lastMessageAt", "updatedAt", "date", "createdAt") or _g(dernier, "date", "createdAt"))[:10],
+                       "reponse_texte": (texte or "").replace("\n", " ")[:500], "ne_plus_contacter": "oui",
                        "campagne": _g(c, "campaignName", "campaign.name", "campaignId"), "lemlist_lead_id": _g(lead, "_id", "id", "leadId"),
                        "sentiment": _g(c, "sentiment", "interest", "label")})
+    return lignes
+
+
+def lemlist_api(depuis_jours: int | None, campagne_id: str | None) -> list[dict]:
+    """Reponses email et LinkedIn lues par l'API Lemlist (activites emailsReplied, linkedinReplied)."""
+    import datetime as _dt
+    lm = Lemlist()
+    depuis = (_dt.date.today() - _dt.timedelta(days=depuis_jours)).isoformat() if depuis_jours else None
+    lignes = []
+    for typ, canal in (("emailsReplied", "email"), ("linkedinReplied", "linkedin")):
+        try:
+            acts = lm.activites(typ, campagne_id, depuis)
+        except RuntimeError as e:
+            afficher(f"  [lemlist] {typ} : {e}")
+            continue
+        for ac in acts:
+            lignes.append({"prenom": _g(ac, "firstName", "leadFirstName"), "nom": _g(ac, "lastName", "leadLastName"),
+                           "entreprise": _g(ac, "companyName"), "email": (_g(ac, "leadEmail", "email") or "").lower(),
+                           "linkedin_url": norm_linkedin_url(_g(ac, "linkedinUrl", "leadLinkedinUrl")), "source": "lemlist",
+                           "date_extraction": aujourd_hui(), "reponse_canal": canal, "reponse_date": str(_g(ac, "createdAt", "date"))[:10],
+                           "reponse_texte": (_g(ac, "body", "text", "snippet") or "")[:300],
+                           "campagne": _g(ac, "campaignName", "campaignId"), "lemlist_lead_id": _g(ac, "leadId", "_id"),
+                           "ne_plus_contacter": "oui"})
+    afficher(f"  [lemlist] {len(lignes)} reponse(s) par API")
     return lignes
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--in", dest="entree", help="liste a marquer (ne_plus_contacter = oui sur les repondants)")
-    ap.add_argument("--lemlist-json", help="fichier JSON des conversations Lemlist (sortie du MCP get_inbox_conversations)")
+    ap.add_argument("--lemlist-json", help="fichier JSON des conversations Lemlist (sortie du MCP get_inbox_conversations), optionnel")
+    ap.add_argument("--sans-lemlist", action="store_true", help="ne pas interroger l'API Lemlist")
+    ap.add_argument("--campagne-id", help="lemlist : limiter a une campagne")
     ap.add_argument("--sans-linkedin", action="store_true", help="ne pas interroger Unipile")
     ap.add_argument("--depuis", type=int, help="ne garder que les reponses des N derniers jours (date connue)")
     ap.add_argument("--sujet", default="")
@@ -115,18 +141,26 @@ def main() -> None:
         lignes += linkedin(a.dry_run)
     if a.lemlist_json:
         lignes += lemlist(a.lemlist_json)
+    elif not a.sans_lemlist and not a.dry_run:
+        import os
+        from gtm_common import load_env
+        load_env()
+        if os.environ.get("LEMLIST_API_KEY"):
+            lignes += lemlist_api(a.depuis, a.campagne_id)
+        else:
+            afficher("  [lemlist] pas de LEMLIST_API_KEY : reponses email non lues (connecter-outils)")
     if a.dry_run:
         return
     if a.depuis:
         seuil = (date.today() - timedelta(days=a.depuis)).isoformat()
-        lignes = [l for l in lignes if not l.get("date_reponse") or l["date_reponse"] >= seuil]
-    lignes.sort(key=lambda l: l.get("date_reponse") or "", reverse=True)
+        lignes = [l for l in lignes if not l.get("reponse_date") or l["reponse_date"] >= seuil]
+    lignes.sort(key=lambda l: l.get("reponse_date") or "", reverse=True)
     sortie = Path(a.out) if a.out else chemin_sortie(VERBE, a.sujet or "inbox")
     ecrire_csv(lignes, sortie)
-    nl = sum(1 for l in lignes if l["canal"] == "linkedin")
+    nl = sum(1 for l in lignes if l["reponse_canal"] == "linkedin")
     afficher(f"{len(lignes)} reponse(s) : {nl} LinkedIn, {len(lignes) - nl} email -> {sortie}")
     for l in lignes[:3]:
-        afficher(f"  - {l.get('prenom')} {l.get('nom')} ({l['canal']}, {l.get('date_reponse') or 'date ?'}) : {(l.get('dernier_message') or '')[:120]}")
+        afficher(f"  - {l.get('prenom')} {l.get('nom')} ({l['reponse_canal']}, {l.get('reponse_date') or 'date ?'}) : {(l.get('reponse_texte') or '')[:120]}")
 
     if a.entree:
         liste = lire_csv(a.entree)
@@ -138,9 +172,9 @@ def main() -> None:
             rep = par_pid.get(l.get("provider_id") or "") or par_url.get(norm_linkedin_url(l.get("linkedin_url"))) or par_email.get((l.get("email") or "").lower())
             if rep:
                 l["ne_plus_contacter"] = "oui"
-                l["canal_reponse"] = rep["canal"]
-                l["date_reponse"] = rep.get("date_reponse", "")
-                l["dernier_message"] = rep.get("dernier_message", "")
+                l["reponse_canal"] = rep["reponse_canal"]
+                l["reponse_date"] = rep.get("reponse_date", "")
+                l["reponse_texte"] = rep.get("reponse_texte", "")
                 n += 1
         sortie2 = Path(a.out).with_name(Path(a.out).stem + "_maj.csv") if a.out else chemin_sortie(VERBE, sujet_depuis_fichier(a.entree, a.sujet), suffixe="maj")
         ecrire_csv(liste, sortie2)

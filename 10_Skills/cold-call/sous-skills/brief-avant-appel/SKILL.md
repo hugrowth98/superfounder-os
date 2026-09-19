@@ -5,11 +5,12 @@ description: >
   (qui, signal, entreprise, ouverture, les trois problèmes à citer, la preuve, les deux
   objections probables, la question d'après-créneau) ou prépare une session d'appels
   entière en triant la liste et en ajoutant l'ouverture à chaque ligne. Se déclenche sur :
-  "prépare l'appel", "brief", "fiche prospect", "j'appelle X dans 10 minutes", "prépare ma
-  session", "liste d'appel", "qui j'appelle en premier", "dans quel ordre". Ne pas utiliser
-  pour : construire la liste elle-même (voir construire-liste), trouver le numéro seul
-  (voir trouver-telephone), écrire le script générique d'un persona (voir script-appel),
-  après l'appel (voir debrief-apres-appel).
+  "prépare l'appel", "brief avant d'appeler", "fiche prospect", "j'appelle X dans 10 minutes",
+  "prépare ma session d'appels", "liste d'appel". Ne pas utiliser pour : construire la liste
+  elle-même (voir construire-liste), prioriser ou ordonner une liste par ses signaux, "qui
+  j'appelle en premier", "dans quel ordre" (master detecter-signaux, sous-skill multi-signaux,
+  colonne `chaleur`), trouver le numéro seul (voir trouver-telephone), écrire le script
+  générique d'un persona (voir script-appel), après l'appel (voir debrief-apres-appel).
 ---
 
 # Le brief avant l'appel
@@ -27,23 +28,24 @@ description: >
 ## Méthode
 
 1. Identifier la personne : nom, entreprise, ou une ligne d'un CSV. Vérifier qu'elle n'est pas exclue (`05_Departements/Go-to-Market/contexte.md` section 7, `exclu`, `ne_plus_contacter`) et qu'elle n'a pas répondu par écrit sans être lue.
-2. Compléter ce qui manque, dans cet ordre, en n'appelant un outil que si la colonne est vide : le profil (titre exact, ancienneté dans le poste, parcours, posts récents), l'entreprise (secteur, effectif, actualité, offres ouvertes), le signal (levée, prise de poste, recrutement, daté), l'engagement avec vous (réaction, commentaire, visite, invitation acceptée). Annoncer le coût avant, une seule fois pour la fiche.
+2. Compléter ce qui manque, dans cet ordre, en n'appelant un outil que si la colonne est vide : le profil (titre exact, `anciennete_poste`, `experiences`, et `posts_recents` avec `enrichir-personne --posts`), l'entreprise (secteur, effectif, `description`, `nb_offres_emploi`, et les posts de la page avec `enrichir-entreprise --posts`), le signal (levée, prise de poste, recrutement, daté), l'engagement avec vous (réaction ou commentaire par `scraper_engagement` ; visite de profil et invitation acceptée à lire à la main sur LinkedIn, aucun script ne les détecte). Annoncer le coût avant, une seule fois pour la fiche.
 3. Classer : persona ATL ou BTL, tier, signal prioritaire et sa fraîcheur. Si le score tombe sous le seuil du tier C, le dire et proposer de ne pas appeler.
 4. Écrire l'ouverture (temps 1 et 2) à partir de `scripts-par-signal.md`, en disant ce que le signal implique, jamais le signal brut.
 5. Écrire les trois problèmes à citer : ceux du persona dans `05_Departements/Go-to-Market/contexte.md`, reformulés avec ce qu'on a vu (un projet annoncé, une équipe qui grossit, une offre qui traîne depuis six semaines). Problème, cause, conséquence, en une ligne chacun.
 6. Choisir la preuve la plus proche (même secteur, même taille, même problème) dans `05_Departements/Go-to-Market/contexte.md` section 1.
 7. Anticiper les deux objections les plus probables pour ce profil, avec la réponse en une ligne.
 8. Préparer l'après-créneau : la question de qualification en oui ou non, et la ligne CRM à remplir.
-9. En mode session : trier la liste (rappels dus, puis tier A avec signal de moins de 30 jours, puis warm et engagés, puis le reste), garder 20 à 30 lignes pour une heure, ajouter à chaque ligne `ouverture`, `probleme_1`, `note_brief`, et proposer l'heure de la session (8h30 à 9h30 ou 17h30 à 18h30 pour des dirigeants).
+9. En mode session : trier la liste (rappels dus, puis par `chaleur` si `detecter-signaux` l'a écrite, sinon tier A avec signal de moins de 30 jours, puis warm et engagés, puis le reste), garder 20 à 30 lignes pour une heure, ajouter à chaque ligne `ouverture`, `probleme_1`, `note_brief`, et proposer l'heure de la session (8h30 à 9h30 ou 17h30 à 18h30 pour des dirigeants).
 
 ## Exécution
 
 | Étape | Verbe | Skill | Quand |
 |---|---|---|---|
-| Profil, parcours, posts récents | enrichir_personne | `enrichir-personne` | si `titre`, `seniorite` ou le parcours manquent |
-| Secteur, effectif, actualité, offres | enrichir_entreprise | `enrichir-entreprise` | si `secteur`, `effectif` ou `domaine` manquent |
+| Profil, parcours (`experiences`), posts récents (`posts_recents` avec `--posts`) | enrichir_personne | `enrichir-personne` | si `titre`, `seniorite` ou `experiences` manquent |
+| Secteur, effectif, `description`, offres (`nb_offres_emploi`), posts de la page (`posts_recents` avec `--posts`) | enrichir_entreprise | `enrichir-entreprise` | si `secteur`, `effectif` ou `domaine` manquent |
 | Levée, prise de poste, recrutement sur cette entreprise | detecter_signal | `detecter-signaux` (script `detecter_signal.py`) | si `signal_type` est vide ou plus vieux que la fenêtre |
-| A-t-il réagi à un de vos posts, accepté l'invitation | scraper_engagement | `scraper-engagement` | si un post ou une campagne LinkedIn récente existe |
+| A-t-il réagi à un de vos posts (`--mes-posts N` pour vos N derniers posts) | scraper_engagement | `scraper-engagement` | si un post ou une campagne LinkedIn récente existe |
+| A-t-il accepté l'invitation, visité votre profil | aucun script ne le détecte | à lire à la main sur LinkedIn, puis noté dans la fiche | si une campagne LinkedIn récente existe |
 | Numéro absent | trouver_telephone | `trouver-telephone` | seulement si `telephone` est vide, coût annoncé |
 
 Entrée : un nom et une entreprise, ou un CSV aux colonnes normalisées. Sortie : `05_Departements/Go-to-Market/Messages/brief-appel_<Nom>_<YYYY-MM-DD>.md` pour une personne ; pour une session, le même CSV trié avec `ouverture`, `probleme_1`, `note_brief`, `ordre_appel`, enregistré sous `Listes-prospection/session-appels_<sujet>_<YYYY-MM-DD>.csv`. Une colonne déjà remplie n'est jamais recalculée.
@@ -62,7 +64,7 @@ Entrée : un nom et une entreprise, ou un CSV aux colonnes normalisées. Sortie 
 ## Template
 
 > **Qui.** [Prénom Nom], [titre] chez [entreprise] depuis [durée]. Persona [ATL ou BTL], tier [A], score [82].
-> **Pourquoi maintenant.** [Signal, daté, et ce qu'il implique]. Engagement avec vous : [a accepté l'invitation le ..., a commenté ...].
+> **Pourquoi maintenant.** [Signal, daté, et ce qu'il implique]. Engagement avec vous : [a accepté l'invitation le ... (lu à la main sur LinkedIn), a commenté ...].
 > **L'entreprise en trois lignes.** [Secteur, effectif, actualité, ce qu'ils recrutent].
 > **Ouverture.** "Bonjour [prénom], je vous appelle parce que [signal rendu légitime], et j'aimerais beaucoup qu'on se rencontre." Silence. "[Prénom Nom], je ne sais pas si vous me remettez."
 > **Les trois problèmes à citer.** 1. [problème] à cause de [cause], ce qui fait que [conséquence]. 2. [...]. 3. [...].

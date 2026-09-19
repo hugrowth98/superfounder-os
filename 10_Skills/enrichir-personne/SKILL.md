@@ -33,7 +33,8 @@ seulement les tiers A et B : le profil coûte des vues LinkedIn, le contact coû
 `domaine`, `linkedin_entreprise_url`, `email`, `email_statut`, `telephone`, `ville`, `pays`)
 plus `headline`, `resume`, `anciennete_poste`, `experiences` (4 dernières), `formation`,
 `competences`, `langues`, `nb_relations`, `abonnes`, `degre_relation`, `provider_id`,
-`ouvert_au_poste`, `recrute`, `date_enrichissement`, `erreur_enrichissement`.
+`ouvert_au_poste`, `recrute`, `date_enrichissement`, `erreur_enrichissement` ; avec `--posts`, `posts_recents`
+(les 5 derniers posts de la personne via Unipile, séparés par ` || `).
 
 ## Procédure
 

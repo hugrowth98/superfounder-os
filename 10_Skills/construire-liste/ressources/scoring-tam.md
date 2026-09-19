@@ -51,7 +51,7 @@ Le tier du compte décide de l'effort, la séniorité du contact décide de l'an
 
 ## Livrer
 
-- Un seul CSV avec toutes les lignes, `score_icp`, `tier`, `exclu`, `raison_exclusion`. Les lignes gardées sont celles où `exclu = non`.
+- `qualifier-liste_<sujet>_<date>.csv` avec toutes les lignes, `score_icp`, `tier`, `exclu`, `raison_exclusion`, plus une copie `..._exclus.csv` pour lecture. Les lignes gardées sont celles où `exclu = non`.
 - Le rapport donne la répartition par tier, les trois raisons d'exclusion les plus fréquentes, et cinq lignes tirées au hasard dans le tier A avec le détail de leur score.
 - Avant de lancer un enrichissement ou une séquence sur la liste scorée, montrez ces cinq lignes et attendez le oui.
 - Quand de nouvelles données arrivent (enrichissement, signal), rescorez tout le fichier : un score n'est jamais figé.

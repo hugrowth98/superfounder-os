@@ -15,9 +15,12 @@ description: >
 FullEnrich, quelle que soit la priorité de `05_Departements/Go-to-Market/OUTILS.md` : c'est le seul outil d'enrichissement
 contact de la stack. `POST /contact/enrich/bulk` par lots de 100, polling jusqu'à `FINISHED`.
 1 crédit par email pro trouvé, 0 si rien n'est trouvé, 0 si le contact a déjà été enrichi il y a
-moins de 3 mois. Les emails visibles sur un profil LinkedIn de 1er degré (Unipile) et ceux des
-actors Apify ne sont pas vérifiés : ils passent aussi par ici avant un envoi. Pas de clé : dites-le
-et renvoyez vers `connecter-outils`.
+moins de 3 mois. Il n'y a pas de mode "vérifier" une adresse existante : FullEnrich ne vérifie
+que les emails qu'il trouve. Les emails visibles sur un profil LinkedIn de 1er degré (Unipile) et
+ceux des actors Apify arrivent sans statut, donc non vérifiés : ils passent aussi par ici avant un
+envoi, avec `--force` (la colonne `email` est déjà remplie ; 1 crédit si FullEnrich trouve une
+adresse, et son statut remplace). Sinon la ligne reste non vérifiée et ne part qu'avec
+`--sans-verification` d'`envoyer-sequence`. Pas de clé : dites-le et renvoyez vers `connecter-outils`.
 
 ## Entrée
 
@@ -30,8 +33,9 @@ quelles.
 
 `Listes-prospection/trouver-email_<sujet>_<date>.csv`, mêmes lignes, `email` et `email_statut`
 remplis : `DELIVERABLE` (bounce autour de 2 %, à privilégier), `HIGH_PROBABILITY` (autour de 9 %,
-acceptable), `CATCH_ALL` (domaine qui accepte tout, à envoyer en dernier), `INVALID` ou
-`INVALID_DOMAIN` (ne pas envoyer), `NOT_FOUND` (rien trouvé, pas facturé). `titre` est complété
+acceptable), `CATCH_ALL` (domaine qui accepte tout, à envoyer en dernier), `UNKNOWN` (traité
+comme un `CATCH_ALL`), `INVALID` ou `INVALID_DOMAIN` (ne pas envoyer), `NOT_FOUND` (rien trouvé,
+pas facturé). Une ligne dont `email_statut` reste vide n'est pas vérifiée. `titre` est complété
 si FullEnrich renvoie le poste actuel et que la colonne était vide.
 
 ## Procédure
@@ -56,7 +60,8 @@ Un seul contact ("l'email de Jean Dupont chez Acme") : écrivez un CSV d'une lig
 ## Garde-fous
 
 - Ne lance que si la colonne `email` est vide ou le statut invalide. Jamais de relance sur un
-  `DELIVERABLE`. `--force` sur demande explicite seulement.
+  `DELIVERABLE`. `--force` sur demande explicite seulement, ou pour les adresses importées sans
+  statut (facturé si trouvé). On ne promet jamais une liste "100 % vérifiée".
 - Coût annoncé avant tout appel, solde vérifié, arrêt si le solde ne couvre pas l'estimation.
 - Pas plus de 100 contacts par requête (le script découpe), 1 s entre deux lots (limite 60
   requêtes par minute).

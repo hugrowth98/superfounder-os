@@ -30,10 +30,10 @@ L'expert est un dirigeant qui a pris des centaines de rendez-vous au téléphone
 
 | Demande | Sous-skill | Phrases déclencheuses | Fichier à lire |
 |---|---|---|---|
-| Écrire ou adapter un script d'appel, par persona ou par signal | `script-appel` | "script", "qu'est-ce que je dis", "accroche", "pitch téléphone", "adapte le script pour un DRH", "j'appelle quelqu'un qui recrute" | `sous-skills/script-appel/SKILL.md` |
+| Écrire ou adapter un script d'appel, par persona ou par signal | `script-appel` | "script", "qu'est-ce que je dis", "ouverture d'appel", "pitch téléphone", "adapte le script pour un DRH", "j'appelle quelqu'un qui recrute" | `sous-skills/script-appel/SKILL.md` |
 | Répondre à une objection, s'entraîner | `objections` | "il m'a dit", "envoyez-moi un mail", "pas le moment", "on a déjà", "comment vous avez mon numéro", "joue le prospect", "entraîne-moi" | `sous-skills/objections/SKILL.md` |
 | Relancer un rendez-vous manqué ou annulé | `no-show` | "il n'est pas venu", "no-show", "lapin", "il a annulé", "je relance comment" | `sous-skills/no-show/SKILL.md` |
-| Préparer un appel ou une session d'appels | `brief-avant-appel` | "prépare l'appel", "brief", "fiche prospect", "j'appelle X dans 10 minutes", "prépare ma session", "liste d'appel" | `sous-skills/brief-avant-appel/SKILL.md` |
+| Préparer un appel ou une session d'appels | `brief-avant-appel` | "prépare l'appel", "brief avant d'appeler", "fiche prospect", "j'appelle X dans 10 minutes", "prépare ma session d'appels", "liste d'appel" | `sous-skills/brief-avant-appel/SKILL.md` |
 | Analyser un appel passé, écrire la ligne CRM | `debrief-apres-appel` | "débriefe", "voici mes notes", "transcript de l'appel", "j'ai eu X", "il a dit oui", "qu'est-ce que je fais maintenant" | `sous-skills/debrief-apres-appel/SKILL.md` |
 
 ## Logique de routage
@@ -47,7 +47,7 @@ L'expert est un dirigeant qui a pris des centaines de rendez-vous au téléphone
 ## Ce que le master fait lui-même
 
 - Une question de posture, de confiance, de "je n'ose pas", de "combien d'appels je dois faire" : répondre avec `ressources/posture.md`, sans ouvrir de sous-skill. Une seule idée à la fois, la première marche avant le plan.
-- Le plan d'une session d'appels : combien de lignes (20 à 30 pour une heure), quel ordre (tiers A et signaux chauds d'abord, puis warm, puis cold avec signal), quelle heure, avec `ressources/sequence-multicanal.md` pour caler l'appel après les touches écrites.
+- Le plan d'une session d'appels : combien de lignes (20 à 30 pour une heure), quel ordre (tier A et `chaleur` brûlant ou chaud d'abord, puis warm, puis cold avec signal ; la priorisation fine, "qui j'appelle en premier", "dans quel ordre", est écrite par `detecter-signaux`, sous-skill `multi-signaux`, dans la colonne `chaleur`), quelle heure, avec `ressources/sequence-multicanal.md` pour caler l'appel après les touches écrites.
 - La relecture d'un script écrit par l'utilisateur : la passer au filtre des règles négatives de `posture.md` (pas de présentation en premier, pas de question qui commence par "comment", pas de solution décrite, pas de question de découverte) et proposer la correction en montrant les deux versions.
 - Le lien avec les autres masters : une liste à appeler vient de `construire-liste` ou de `detecter-signaux` ; les touches écrites avant l'appel viennent de `cold-email` ; le numéro vient de `trouver-telephone`. Ce master ne fait rien de tout ça, il le demande.
 

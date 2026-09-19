@@ -72,7 +72,7 @@ Le prix : "On parle pas de ça."
 
 > "Pour l'instant, je vous l'offre. Je ne sais même pas encore si je peux vous aider : je veux d'abord qu'on se fasse une bonne discussion sur [sujet], 20 minutes la semaine prochaine."
 
-Le budget, posture : "Je comprends, et c'est normal de ne pas avoir de ligne pour quelque chose qu'on n'a pas encore vu. Ce que je remarque chez les [persona] sans budget dessus, c'est que [conséquence du problème] leur coûte déjà plus cher. On en parle 20 minutes, sans engagement ?"
+Le budget, posture : "Je comprends, et c'est normal de ne pas avoir de ligne pour quelque chose qu'on n'a pas encore vu. Ce que je remarque chez les [persona] sans budget dessus, c'est que [conséquence du problème] leur coûte déjà plus cher. On en parle 20 minutes, cette semaine ou la prochaine ?"
 
 ## 9. "Je ne suis pas intéressé", "tout va bien chez nous"
 

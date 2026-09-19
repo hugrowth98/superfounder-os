@@ -9,7 +9,7 @@ Règles communes à tous les prompts : sortie en minuscules sauf noms propres, p
 Utile quand vous vendez à des gens qui prospectent (agences, éditeurs, cabinets) : leur cible devient votre accroche.
 
 ```
-À partir de {{domaine}} (à défaut {{description_entreprise}}), trouve les 3 profils que cette entreprise prospecte le plus probablement.
+À partir de {{domaine}} (à défaut {{description}}), trouve les 3 profils que cette entreprise prospecte le plus probablement.
 
 Règles :
 - uniquement des intitulés de poste, 3 maximum
@@ -25,7 +25,7 @@ Sortie type pour un éditeur de CRM : "des directeurs commerciaux, des responsab
 ## 2. Décrire l'entreprise en une ligne
 
 ```
-Décris ce que fait l'entreprise en une phrase courte à partir de {{domaine}} (à défaut {{description_entreprise}}).
+Décris ce que fait l'entreprise en une phrase courte à partir de {{domaine}} (à défaut {{description}}).
 
 Règles :
 - sans citer le nom de l'entreprise ni sa cible
@@ -42,7 +42,7 @@ Sortie type : "l'automatisation de la prospection (pour équipes commerciales B2
 ## 3. Catégoriser le produit ou le service
 
 ```
-Catégorise le type de produit ou service à partir de {{domaine}} (à défaut {{description_entreprise}}).
+Catégorise le type de produit ou service à partir de {{domaine}} (à défaut {{description}}).
 
 Règles :
 - 6 mots maximum
@@ -58,7 +58,7 @@ Sortie type pour un outil de prise de rendez-vous : "logiciel de planification d
 ## 4. Les trois problèmes de leur cible
 
 ```
-Identifie les 3 problèmes principaux de la cible de cette entreprise à partir de {{domaine}} (à défaut {{description_entreprise}}).
+Identifie les 3 problèmes principaux de la cible de cette entreprise à partir de {{domaine}} (à défaut {{description}}).
 
 Règles :
 - des problèmes reliés à un indicateur de résultat (chiffre d'affaires, délai, coût, churn)
@@ -77,7 +77,7 @@ Sortie type pour un logiciel RH : "recruter vite, retenir les nouvelles recrues 
 ## 5. L'objet en deux mots
 
 ```
-Écris un objet d'email de deux mots exactement à partir de {{domaine}} (à défaut {{description_entreprise}}).
+Écris un objet d'email de deux mots exactement à partir de {{domaine}} (à défaut {{description}}).
 
 Règles :
 - 2 mots, pas un de plus
@@ -125,7 +125,7 @@ Correspondance des variables :
 | Variable | Vient de | Utilisée dans |
 |---|---|---|
 | `domaine` | CSV (`enrichir_entreprise`) | prompts 1 à 5 |
-| `description_entreprise` | CSV, repli | prompts 1 à 5 |
+| `description` | CSV (`enrichir_entreprise`), repli | prompts 1 à 5 |
 | `prenom` | CSV | templates 6 et 7 |
 | sortie 1 (ICP) | prompt 1 | templates 6 et 7 |
 | sortie 2 (description) | prompt 2 | template 7 |
@@ -133,6 +133,8 @@ Correspondance des variables :
 | sortie 4 (trois problèmes) | prompt 4 | templates 6 et 7 |
 
 ## 8. La première ligne à partir d'un post (seau 1)
+
+Le texte du post vient de la colonne `posts_recents` (`enrichir_personne --posts`, les 5 derniers posts séparés par ` || `) : on prend le plus récent relié au problème.
 
 ```
 Voici le dernier post LinkedIn de {{prenom}} {{nom}} ({{entreprise}}) : {{texte du post}}.

@@ -38,7 +38,7 @@ except ImportError:  # pragma: no cover
     sys.exit("Le module 'requests' manque : pip3 install requests")
 
 __all__ = [
-    "COLONNES", "PredictLeads", "TheirStack", "racine", "dossier_gtm", "load_env", "env", "lire_outils", "dossier_listes", "chemin_sortie",
+    "COLONNES", "PredictLeads", "TheirStack", "Lemlist", "Ocean", "racine", "dossier_gtm", "load_env", "env", "lire_outils", "dossier_listes", "chemin_sortie",
     "slug", "norm_texte", "norm_linkedin_url", "slug_linkedin", "domaine", "aujourd_hui",
     "seniorite_depuis_titre", "sujet_depuis_fichier", "fraicheur", "lire_csv", "ecrire_csv", "http", "afficher", "bandeau_dry_run", "estimer",
     "Unipile", "FullEnrich", "Crustdata", "HubSpot", "extraire_post_id", "arret",
@@ -413,6 +413,26 @@ class Unipile:
         if complet:
             params["linkedin_sections"] = "*"
         return self.get(f"/api/v1/users/{identifiant}", params)
+
+    def posts(self, identifiant: str, entreprise: bool = False, limite: int = 5) -> list[str]:
+        """Les derniers posts d'une personne (provider_id ou slug) ou d'une page entreprise, en texte court avec la date."""
+        chemin = f"/api/v1/linkedin/company/{identifiant}/posts" if entreprise else f"/api/v1/users/{identifiant}/posts"
+        try:
+            rep = self.get(chemin, {"account_id": self.account_id, "limit": limite})
+        except RuntimeError as e:
+            if "404" in str(e):
+                return []
+            raise
+        items = rep.get("items", rep) if isinstance(rep, dict) else rep
+        out = []
+        for it in (items or [])[:limite]:
+            if not isinstance(it, dict):
+                continue
+            texte = (it.get("text") or it.get("commentary") or "").replace("\n", " ").strip()
+            date = str(it.get("date") or it.get("created_at") or it.get("parsed_datetime") or "")[:10]
+            if texte:
+                out.append(f"[{date}] {texte[:220]}")
+        return out
 
     def entreprise(self, identifiant: str) -> dict:
         try:
@@ -868,3 +888,131 @@ class TheirStack:
     def entreprises(self, body: dict, limit: int = 50, page: int = 0) -> list[dict]:
         rep = self._post("/companies/search", {**body, "limit": min(limit, 500), "page": page, "blur_company_data": False, "expand_technology_slugs": True})
         return rep.get("data", []) or []
+
+
+# ---------------------------------------------------------------- Lemlist (API REST, sans MCP)
+
+class Lemlist:
+    """Client REST Lemlist. Cle : LEMLIST_API_KEY. Authentification Basic avec login vide (":cle" en base64).
+    20 requetes par 2 secondes. `version=v2` obligatoire sur /campaigns et /activities."""
+    BASE = "https://api.lemlist.com/api"
+
+    def __init__(self, exiger_cle: bool = True):
+        self.cle = env("LEMLIST_API_KEY", obligatoire=exiger_cle, aide="Cle sur app.lemlist.com, Settings, Integrations, API.")
+
+    def _req(self, methode: str, chemin: str, body=None, params=None):
+        st, corps = http(methode, f"{self.BASE}{chemin}", json_body=body, params=params, auth=("", self.cle))
+        if st == 401:
+            raise RuntimeError("Lemlist 401 : cle invalide (rappel : auth Basic, login vide)")
+        if st >= 400:
+            raise RuntimeError(f"Lemlist {methode} {chemin} -> HTTP {st} : {str(corps)[:300]}")
+        time.sleep(0.12)  # 20 req / 2 s
+        return corps
+
+    def test(self) -> dict:
+        return self._req("GET", "/team")
+
+    def campagnes(self) -> list[dict]:
+        items, offset = [], 0
+        while True:
+            lot = self._req("GET", "/campaigns", params={"version": "v2", "limit": 100, "offset": offset})
+            lot = lot.get("campaigns", lot) if isinstance(lot, dict) else lot
+            items += lot or []
+            if not lot or len(lot) < 100:
+                break
+            offset += 100
+        return items
+
+    def creer_campagne(self, nom: str) -> dict:
+        return self._req("POST", "/campaigns", {"name": nom})
+
+    def ajouter_lead(self, campagne_id: str, lead: dict, dedoublonner: bool = True) -> dict:
+        """lead : email, firstName, lastName, companyName, companyDomain, linkedinUrl, phone, jobTitle, icebreaker + variables libres."""
+        return self._req("POST", f"/campaigns/{campagne_id}/leads/", lead,
+                         params={"deduplicate": "true" if dedoublonner else "false"})
+
+    def leads_campagne(self, campagne_id: str, etat: str | None = None, limite: int = 500) -> list[dict]:
+        params = {"limit": min(limite, 500)}
+        if etat:
+            params["state"] = etat
+        rep = self._req("GET", f"/campaigns/{campagne_id}/leads/", params=params)
+        return rep.get("leads", rep) if isinstance(rep, dict) else rep
+
+    def demarrer(self, campagne_id: str) -> dict:
+        return self._req("POST", f"/campaigns/{campagne_id}/start")
+
+    def pauser(self, campagne_id: str) -> dict:
+        return self._req("POST", f"/campaigns/{campagne_id}/pause")
+
+    def activites(self, type_: str, campagne_id: str | None = None, depuis: str | None = None, max_items: int = 500) -> list[dict]:
+        """type_ : emailsReplied, linkedinReplied, emailsBounced, emailsUnsubscribed, linkedinInviteAccepted... (pluriel exact)."""
+        items, offset = [], 0
+        while len(items) < max_items:
+            params = {"version": "v2", "type": type_, "limit": 100, "offset": offset}
+            if campagne_id:
+                params["campaignId"] = campagne_id
+            if depuis:
+                params["minDate"] = depuis
+            lot = self._req("GET", "/activities", params=params)
+            lot = lot.get("activities", lot) if isinstance(lot, dict) else lot
+            items += lot or []
+            if not lot or len(lot) < 100:
+                break
+            offset += 100
+        return items
+
+    def desinscrire(self, email: str) -> dict:
+        return self._req("POST", f"/unsubscribes/{email}")
+
+
+# ---------------------------------------------------------------- Ocean.io (API REST, sans MCP)
+
+class Ocean:
+    """Client REST Ocean.io. Cle : OCEAN_API_KEY (en-tete X-Api-Token). Recherche lookalike : 0,2 credit par resultat,
+    l'apercu (/preview) est gratuit et donne le total."""
+    BASE = "https://api.ocean.io"
+
+    def __init__(self, exiger_cle: bool = True):
+        self.cle = env("OCEAN_API_KEY", obligatoire=exiger_cle, aide="Token sur app.ocean.io, Settings, API tokens (admin).")
+
+    def _req(self, methode: str, chemin: str, body=None, params=None):
+        h = {"X-Api-Token": self.cle, "Content-Type": "application/json"}
+        st, corps = http(methode, f"{self.BASE}{chemin}", headers=h, json_body=body, params=params)
+        if st in (401, 403):
+            raise RuntimeError(f"Ocean.io {st} : token invalide ou absent")
+        if st == 402:
+            raise RuntimeError("Ocean.io 402 : plus de credits")
+        if st >= 400:
+            raise RuntimeError(f"Ocean.io {methode} {chemin} -> HTTP {st} : {str(corps)[:300]}")
+        return corps
+
+    def credits(self) -> dict:
+        return self._req("GET", "/v2/credits/balance")
+
+    def _filtres(self, domaines: list[str], pays: list[str] | None, tailles: list[str] | None, exclure: list[str] | None) -> dict:
+        f = {"lookalikeDomains": domaines}
+        if pays:
+            f["primaryLocations"] = {"includeCountries": [p.lower() for p in pays]}
+        if tailles:
+            f["companySizes"] = tailles
+        if exclure:
+            f["excludeDomains"] = exclure
+        return f
+
+    def apercu_lookalikes(self, domaines, pays=None, tailles=None, exclure=None) -> int:
+        rep = self._req("POST", "/v3/search/companies/preview", {"companiesFilters": self._filtres(domaines, pays, tailles, exclure)})
+        return int(rep.get("total") or rep.get("count") or 0)
+
+    def lookalikes(self, domaines, taille_page: int = 50, max_resultats: int = 100, pays=None, tailles=None, exclure=None) -> list[dict]:
+        items, after = [], None
+        while len(items) < max_resultats:
+            body = {"companiesFilters": self._filtres(domaines, pays, tailles, exclure), "size": min(taille_page, max_resultats - len(items))}
+            if after:
+                body["searchAfter"] = after
+            rep = self._req("POST", "/v3/search/companies", body)
+            lot = rep.get("companies") or []
+            items += lot
+            after = rep.get("searchAfter")
+            if not lot or not after:
+                break
+        return items

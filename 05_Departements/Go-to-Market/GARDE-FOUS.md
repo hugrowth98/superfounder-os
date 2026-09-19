@@ -10,18 +10,18 @@ Claude prépare, montre, compte et attend un "oui" explicite. Il n'envoie pas, n
 
 | Canal | Plafond | Pourquoi | Compteur |
 |---|---|---|---|
-| Invitations LinkedIn | 30 par jour, 100 par semaine, moins de 500 en attente | au-delà, LinkedIn restreint le compte | fichier local du skill d'envoi, remis à zéro chaque jour |
-| Messages LinkedIn (DM) | 50 par jour | même risque, et le taux de réponse chute avec le volume | idem |
+| Invitations LinkedIn | 30 par jour (15 pour un compte récent ou déjà restreint), moins de 500 en attente | au-delà, LinkedIn restreint le compte | fichier local du skill d'envoi, remis à zéro chaque jour |
+| Messages LinkedIn (DM) | 50 par jour par défaut (20 pour un compte récent), 100 plafond dur | même risque, et le taux de réponse chute avec le volume | idem |
 | Emails à froid | 30 par boîte par jour, 2 séquences actives par boîte au plus | réputation du domaine | Lemlist |
 | Appels | pas de plafond technique ; 2 sessions d'une heure par semaine minimum pour que ça marche | | `cold-call` |
 | Total interactions LinkedIn (vues, likes, invitations, DM) | 100 par jour | c'est ce que LinkedIn mesure vraiment | |
 
 Warmup obligatoire :
-- Email : boîte neuve ou domaine neuf, 14 jours de chauffe avant le premier envoi à froid, puis 10 par jour la semaine 1, 20 la semaine 2, 30 ensuite. Un domaine dédié à la prospection, jamais le domaine principal.
+- Email : boîte neuve ou domaine neuf, 3 semaines de chauffe avant le premier envoi à froid (domaine neuf : 2 semaines de repos après les DNS, puis 3 semaines de chauffe), puis 10 par jour la semaine 1, 20 la semaine 2, 30 ensuite. Note d'invitation LinkedIn : 300 caractères (200 sur un compte gratuit). Un domaine dédié à la prospection, jamais le domaine principal.
 - LinkedIn : compte peu actif, récent ou sorti d'une restriction, 2 semaines d'activité manuelle (vues, commentaires, réponses), puis 5 à 10 invitations par jour la troisième semaine, puis le plafond.
 - Jours ouvrés et heures de bureau du prospect (8h à 19h), jamais le week-end. Un retrait des invitations en attente de plus de 3 semaines chaque mois.
 
-Signes d'alerte qui arrêtent tout : taux d'acceptation sous 15 %, un avertissement LinkedIn, un taux de bounce email au-dessus de 3 %, une plainte spam. On coupe, on prévient l'utilisateur, on reprend en manuel deux semaines.
+Signes d'alerte : taux d'acceptation sous 15 %, taux de bounce email à 3 % (alerte, on vérifie la liste) ; ce qui arrête tout : un avertissement LinkedIn, un taux de bounce à 5 %, une plainte spam. On coupe, on prévient l'utilisateur, on reprend en manuel deux semaines.
 
 ## 3. Règles de personnalisation
 
@@ -39,14 +39,14 @@ Signes d'alerte qui arrêtent tout : taux d'acceptation sous 15 %, un avertissem
 - Sans avoir montré un échantillon de 3 messages réels (avec les vrais noms) et obtenu un oui.
 - À quelqu'un qui a répondu, sur n'importe quel canal, tant que l'utilisateur n'a pas lu la réponse. `verifier_reponses` tourne avant chaque envoi et chaque relance.
 - À un exclu : `exclu = oui`, tier D, client, partenaire, concurrent, domaine listé dans `05_Departements/Go-to-Market/contexte.md` section 7, ou présent dans `ne_plus_contacter`.
-- À un email dont `email_statut` n'est pas vérifié. Un email deviné ne part pas.
-- Un même texte à plus de 50 personnes sans variation, ni plus de 2 relances après un message resté sans réponse.
+- À un email dont `email_statut` n'est pas `DELIVERABLE` ou `HIGH_PROBABILITY` (les `CATCH_ALL` et `UNKNOWN` au plus 20 % de la liste, jamais les `INVALID`, `NOT_FOUND` ni les adresses sans statut). Un email deviné ne part pas.
+- Un même texte à plus de 50 personnes sans variation, ni plus de 3 relances après un message resté sans réponse, tous canaux confondus.
 - Un message qui contient une donnée personnelle (téléphone perso, situation privée) ou qui mentionne d'où vient le numéro autrement que par la vérité.
 - Un envoi programmé pour un moment où l'utilisateur ne pourra pas lire les réponses (veille de congés, week-end).
 
 ## 5. Crédits : annoncer le coût avant tout appel payant
 
-- Avant tout appel à un outil payant : dire le nombre de lignes, le coût unitaire et le total estimé, attendre le oui. Grille indicative à tenir à jour dans `05_Departements/Go-to-Market/OUTILS.md` : enrichissement email 1 crédit, téléphone 5 à 10 crédits, recherche 1 crédit par résultat, run de scraping selon l'actor.
+- Avant tout appel à un outil payant : dire le nombre de lignes, le coût unitaire et le total estimé, attendre le oui. Grille indicative à tenir à jour dans `05_Departements/Go-to-Market/OUTILS.md` : enrichissement email 1 crédit, téléphone 10 crédits, recherche 1 crédit par résultat, run de scraping selon l'actor.
 - Ne relance que si vide : une colonne déjà remplie ne se recalcule pas. Un enrichissement se fait une fois, la valeur reste dans le CSV.
 - Dédoublonner avant d'enrichir (`dedoublonner`), jamais l'inverse.
 - Tester sur 50 lignes, regarder le taux de remplissage, puis lancer le reste.

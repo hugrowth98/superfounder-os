@@ -1,6 +1,6 @@
 # Bibliothèque des 34 templates de cold email
 
-23 templates de premier contact (1 à 26, la série ROI occupe les numéros 24 à 26), 4 de relance (27 à 30), 4 de réengagement (31 à 34). Chaque template garde le mécanisme d'origine (ce qui le fait répondre) avec des mots de B2B français : vouvoiement, 3 à 6 lignes, un seul CTA, un fait avant un adjectif.
+26 templates de premier contact (1 à 26, la série ROI occupe les numéros 24 à 26), 4 de relance (27 à 30), 4 de réengagement (31 à 34). Chaque template garde le mécanisme d'origine (ce qui le fait répondre) avec des mots de B2B français : vouvoiement, 3 à 6 lignes, un seul CTA, un fait avant un adjectif.
 
 Les variables entre doubles accolades correspondent aux colonnes du CSV (`prenom`, `entreprise`, `titre`, `secteur`, `signal_detail`) ou aux preuves de `05_Departements/Go-to-Market/contexte.md` (`client_similaire`, `resultat`, `delai`, `probleme`). `envoyer-sequence` les convertit en variables Lemlist. Tous les exemples chiffrés sont fictifs.
 
@@ -366,16 +366,14 @@ Chez {{ancienne_entreprise}}, vous utilisiez {{offre}} pour {{usage}}.
 
 ### #20 Le nouveau dirigeant (90 premiers jours)
 
-Cas d'usage : prise de poste entre 14 et 45 jours (le pic du signal). 8 à 12 % de réponse sur la source.
+Cas d'usage : prise de poste entre 14 et 45 jours (le pic du signal). 8 à 12 % de réponse sur la source. Aucune formule de félicitation : on écrit ce que la prise de poste implique, jamais le signal brut.
 
 ```
 Objet : 90 premiers jours
 
 Bonjour {{prenom}},
 
-Félicitations pour le poste de {{titre}} chez {{entreprise}}.
-
-La plupart des nouveaux {{titre}} que je rencontre attaquent par {{priorité courante}}.
+Les 90 premiers jours d'un {{titre}} servent à cadrer les priorités, et la plupart des nouveaux {{titre}} que je rencontre attaquent par {{priorité courante}}.
 
 Je peux vous partager ce que {{client_similaire}} a fait dans son premier trimestre.
 

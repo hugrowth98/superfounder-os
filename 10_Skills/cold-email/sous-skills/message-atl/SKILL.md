@@ -25,11 +25,11 @@ Un dirigeant lit 2 à 3 phrases sur son téléphone et décide en 4 secondes : i
 
 ## Exécution
 
-1. `enrichir_entreprise` (skill `enrichir-entreprise`) : chiffre d'affaires public, effectif, croissance, actualités, cas clients. Colonnes : `effectif`, `ca_public`, `croissance`, `actualite`.
+1. `enrichir_entreprise` (skill `enrichir-entreprise`) : effectif, chiffre d'affaires estimé, stade de financement, offres ouvertes, et les posts de la page avec `--posts`. Colonnes : `effectif`, `chiffre_affaires_estime`, `stade_financement`, `nb_offres_emploi`, `description`, `posts_recents` (avec `--posts`). Aucune colonne `ca_public`, `croissance` ni `actualite` : un chiffre public vient d'une source nommée ou n'apparaît pas.
 2. `detecter_signal` (skill `detecter-signaux` (script `detecter_signal.py`)) : levée, acquisition, prise de poste, ouverture de site. Colonnes : `signal_type`, `signal_date`, `signal_detail`.
-3. `enrichir_personne` (skill `enrichir-personne`) : ancienneté, parcours, prises de parole publiques. Colonnes : `anciennete`, `parcours`, `activite_recente`.
+3. `enrichir_personne` (skill `enrichir-personne`) : ancienneté, parcours, et les prises de parole récentes avec `--posts`. Colonnes : `anciennete_poste`, `experiences`, `headline`, `posts_recents` (avec `--posts`).
 4. `trouver_email` (skill `trouver-email`) : l'email vérifié du dirigeant, pas celui de l'assistante ni une adresse générique. Colonnes : `email`, `email_statut`.
-5. Rédaction (interne) : `persona` = ATL, `angle`, `objet`, `email_1`, puis `premier-contact` et `relance` pour la séquence.
+5. Rédaction (interne) : `persona` = ATL, `angle`, `var_objet`, `var_email_1`, puis `premier-contact` et `relance` pour la séquence.
 6. `envoyer_sequence` (skill `envoyer-sequence`) après validation sur trois exemples.
 
 Entrée et sortie : celles de `premier-contact`, avec `persona` = ATL et `seniorite` renseignée.

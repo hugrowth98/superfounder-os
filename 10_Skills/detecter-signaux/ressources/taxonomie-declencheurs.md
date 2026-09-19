@@ -55,8 +55,8 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 18 | Intention d'achat vue sur un comparateur de logiciels | comparaison en cours | non couvert par ce master | j7 à j30 | **60** |
 | 19 | Pic de recherche sur votre thème (donnée d'intention achetée) | recherche en cours | non couvert par ce master | j0 à j7 | **40** |
 | 20 | Visite de votre site | intérêt, de la simple visite à la page tarifs | non couvert par ce master | j0 à j7 | **10** à **80** |
-| 21 | Ouvertures répétées de vos emails marketing | surveillance | verifier_reponses (Lemlist) ou votre outil | j0 à j7 | **10** |
-| 22 | Clics répétés dans vos emails marketing | intérêt actif | verifier_reponses (Lemlist) ou votre outil | j0 à j7 | **15** |
+| 21 | Ouvertures répétées de vos emails marketing | surveillance | à la main (votre outil d'emailing ; `verifier-reponses` ne lit que les réponses, jamais les ouvertures) | j0 à j7 | n/a (hors barème) |
+| 22 | Clics répétés dans vos emails marketing | intérêt actif | à la main (votre outil d'emailing ; `verifier-reponses` ne lit pas les clics) | j0 à j7 | n/a (hors barème) |
 
 ### Influenceurs avec qui vous avez un partenariat
 
@@ -65,7 +65,7 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 23 | Leads transmis par l'influenceur | recommandation | à la main | j0 à j2 | n/a |
 | 24 | Engagé avec le profil de l'influenceur | intérêt pour le sujet | scraper_engagement (Unipile, ses posts) | j0 à j7 | 25* |
 | 25 | Abonné du profil de l'influenceur | notoriété du sujet | non listable | permanent | 15* |
-| 26 | Relations en commun avec l'influenceur | chemin d'intro | trouver_personnes (Sales Nav, filtre "relations de") | permanent | n/a |
+| 26 | Relations en commun avec l'influenceur | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 27 | Engagé avec la page entreprise de l'influenceur | intérêt pour le sujet | scraper_engagement | j0 à j7 | 25* |
 | 28 | Abonné de sa page entreprise | notoriété | non listable | permanent | 15* |
 | 29 | Vague "information" vers tous les post-contact | ils vous connaissent : message 1:many utile, sans vente | envoyer_sequence | selon l'action | selon l'action |
@@ -84,34 +84,34 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 7 | Abonné de la page entreprise d'un client clé | notoriété | non listable | permanent | 15* |
 | 8 | Recommandation d'un de vos dirigeants ou associés | confiance transférée | à la main | j0 à j2 | n/a |
 | 9 | Engagé avec le profil d'un de vos dirigeants ou associés | conscience de votre entreprise | scraper_engagement | j0 à j7 | **20** |
-| 10 | Relations en commun avec vos dirigeants ou associés | chemin d'intro | trouver_personnes (relations de) | permanent | n/a |
+| 10 | Relations en commun avec vos dirigeants ou associés | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 11 | Recommandation d'un de vos collaborateurs | confiance transférée | à la main | j0 à j2 | n/a |
 | 12 | Engagé avec le profil d'un de vos collaborateurs | conscience de votre entreprise | scraper_engagement | j0 à j7 | **20** |
-| 13 | Relations en commun avec vos collaborateurs | chemin d'intro | trouver_personnes (relations de) | permanent | n/a |
+| 13 | Relations en commun avec vos collaborateurs | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 14 | Anciens employeurs de vos collaborateurs | réseau interne connu | à la main (parcours de vos collaborateurs) | permanent | n/a |
 | 15 | Recommandation d'un partenaire investisseur | confiance transférée | à la main | j0 à j2 | n/a |
 | 16 | Engagé avec le profil d'un partenaire investisseur | intérêt pour son écosystème | scraper_engagement | j0 à j7 | 25* |
-| 17 | Relations en commun avec un partenaire investisseur | chemin d'intro | trouver_personnes | permanent | n/a |
+| 17 | Relations en commun avec un partenaire investisseur | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 18 | Engagé avec la page du fonds | intérêt pour son écosystème | scraper_engagement | j0 à j7 | 25* |
 | 19 | Abonné de la page du fonds | notoriété | non listable | permanent | 15* |
 | 20 | Recommandation d'un de vos conseillers | confiance transférée | à la main | j0 à j2 | n/a |
 | 21 | Engagé avec le profil d'un de vos conseillers | intérêt pour son sujet | scraper_engagement | j0 à j7 | 25* |
-| 22 | Relations en commun avec un de vos conseillers | chemin d'intro | trouver_personnes | permanent | n/a |
+| 22 | Relations en commun avec un de vos conseillers | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 23 | Recommandation d'un membre de votre board | confiance transférée | à la main | j0 à j2 | n/a |
 | 24 | Engagé avec le profil d'un membre de votre board | intérêt pour son sujet | scraper_engagement | j0 à j7 | 25* |
-| 25 | Relations en commun avec un membre de votre board | chemin d'intro | trouver_personnes | permanent | n/a |
+| 25 | Relations en commun avec un membre de votre board | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 26 | Recommandation d'un client conseiller (client qui vous conseille) | confiance transférée | à la main | j0 à j2 | n/a |
 | 27 | Engagé avec le profil d'un client conseiller | intérêt pour son sujet | scraper_engagement | j0 à j7 | 25* |
-| 28 | Relations en commun avec un client conseiller | chemin d'intro | trouver_personnes | permanent | n/a |
+| 28 | Relations en commun avec un client conseiller | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 29 | Engagé avec la page d'un partenaire de co-marketing | intérêt pour le sujet commun | scraper_engagement | j0 à j7 | 25* |
 | 30 | Abonné de la page d'un partenaire de co-marketing | notoriété | non listable | permanent | 15* |
 | 31 | Recommandation des salariés d'un partenaire | confiance transférée | à la main | j0 à j2 | n/a |
 | 32 | Engagé avec le profil d'un salarié d'un partenaire | intérêt pour le sujet | scraper_engagement | j0 à j7 | 25* |
-| 33 | Relations en commun avec les salariés d'un partenaire | chemin d'intro | trouver_personnes | permanent | n/a |
-| 34 | Décideur d'une entreprise cible déjà dans votre réseau | contact direct possible | HubSpot, trouver_personnes (1er niveau) | permanent | n/a |
-| 35 | Contact de votre réseau en poste dans une entreprise cible, sans être décideur | relais interne | trouver_personnes (1er niveau) | permanent | n/a |
-| 36 | Anciens salariés d'une entreprise cible | connaissance de l'intérieur | trouver_personnes (Sales Nav, ancienne entreprise) | permanent | n/a |
-| 37 | Relations en commun avec le décideur d'une entreprise cible | chemin d'intro | trouver_personnes (relations de) | permanent | n/a |
+| 33 | Relations en commun avec les salariés d'un partenaire | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
+| 34 | Décideur d'une entreprise cible déjà dans votre réseau | contact direct possible | HubSpot, trouver_personnes par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre 1er niveau) | permanent | n/a |
+| 35 | Contact de votre réseau en poste dans une entreprise cible, sans être décideur | relais interne | trouver_personnes par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre 1er niveau) | permanent | n/a |
+| 36 | Anciens salariés d'une entreprise cible | connaissance de l'intérieur | trouver_personnes par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre ancienne entreprise) | permanent | n/a |
+| 37 | Relations en commun avec le décideur d'une entreprise cible | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 38 | Prospect rencontré à un événement | contact humain établi | à la main (vos notes) | j0 à j7 | **25** |
 | 39 | Engagé avec votre profil | intérêt pour votre sujet | scraper_engagement (vos posts) | j0 à j7 | **25** like, **35** commentaire |
 
@@ -130,8 +130,8 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 9 | Ancien client parti dans une autre entreprise | confiance déjà là | detecter_signal (`job-changes`, `personLinkedinUrl`) | j0 à j14 | **75** |
 | 10 | Ancien client qui a changé de rôle en interne | nouveau périmètre, même confiance | idem | j14 à j45 | 40* |
 | 11 | Nouvel arrivant chez un client, qui n'a jamais utilisé votre offre | à convaincre avant qu'il remette en cause | detecter_signal (`job-changes`, `companyLinkedinUrl` sur vos clients) | j14 à j45 | 40* |
-| 12 | A ouvert vos emails de prospection | engagement minimal | verifier_reponses (Lemlist) | j0 à j7 | **5** |
-| 13 | Les a ouverts plusieurs fois | surveillance | verifier_reponses | j0 à j7 | **10** |
+| 12 | A ouvert vos emails de prospection | engagement minimal | non couvert : `verifier-reponses` ne lit que les réponses, jamais les ouvertures | j0 à j7 | n/a (hors barème) |
+| 13 | Les a ouverts plusieurs fois | surveillance | non couvert : idem | j0 à j7 | n/a (hors barème) |
 | 14 | Réponse automatique d'absence reçue | date de retour connue | verifier_reponses | à la date de retour | n/a (c'est un timing) |
 | 15 | Entreprise qui vous a vendu son produit | réciprocité | à la main (vos factures) | permanent | n/a |
 | 16 | Concurrents de vos clients actuels | même problème, même marché | trouver_lookalikes (Ocean.io) | permanent | n/a (ciblage) |
@@ -148,7 +148,7 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 4 | Engagé avec la page d'un fournisseur adjacent | intérêt pour la catégorie voisine | scraper_engagement | j0 à j7 | 25* |
 | 5 | Abonné de la page d'un fournisseur adjacent | notoriété | non listable | permanent | 15* |
 | 6 | Engagé avec les salariés d'un fournisseur adjacent | intérêt pour la catégorie | scraper_engagement | j0 à j7 | 25* |
-| 7 | Relations en commun avec ses salariés | chemin d'intro | trouver_personnes | permanent | n/a |
+| 7 | Relations en commun avec ses salariés | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 
 ### Concurrents
 
@@ -162,7 +162,7 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 13 | Engagé avec la page du concurrent | intérêt pour la catégorie | scraper_engagement | j0 à j7 | **25** |
 | 14 | Abonné du concurrent | conscience de la catégorie | non listable | permanent | **15** |
 | 15 | Engagé avec les salariés du concurrent | intérêt pour la catégorie | scraper_engagement | j0 à j7 | **25** |
-| 16 | Relations en commun avec les salariés du concurrent | chemin d'intro | trouver_personnes | permanent | n/a |
+| 16 | Relations en commun avec les salariés du concurrent | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 
 ### Calendrier
 
@@ -180,12 +180,12 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 | 1 | Problème visible sur le résultat (chiffre d'affaires en baisse, clients qui partent) | douleur de dirigeant | à la main : comptes publiés, avis clients, posts | permanent | 15* |
 | 2 | Problème visible sur la tactique (livraison lente, qualité, relances absentes) | douleur d'équipe | avis clients ; offres d'emploi qui disent "structurer", "reprendre", "mettre en place" (scraper_offres_emploi, `scrapeDetails: true`) | j0 à j30 | 15* |
 | 3 | Cause visible (outil absent ou daté, données éparpillées) | racine du problème | detecter_techno ; offres d'emploi | j0 à j30 | 15* |
-| 4 | Résultat positif absent (effectif plat depuis deux ans) | croissance qui manque | enrichir_entreprise (historique d'effectif) | permanent | 15* |
+| 4 | Résultat positif absent (effectif plat depuis deux ans) | croissance qui manque | enrichir_entreprise (colonne `effectif`, à comparer entre deux runs) | permanent | 15* |
 | 5 | Capacité absente (rien d'automatisé, tout à la main) | levier non actionné | detecter_techno (pas de CRM, pas d'outil marketing sur le site) | permanent | 15* |
 | 6 | Fondation absente (pas de données, pas de suivi) | tout à construire | detecter_techno, trouver_personnes (pas de rôle ops) | permanent | 15* |
 | 7 | Engagé avec le profil d'un influenceur du secteur (sans partenariat) | intérêt pour le sujet | scraper_engagement (ses posts) | j0 à j7 | 25* |
 | 8 | Abonné de cet influenceur | notoriété du sujet | non listable | permanent | 15* |
-| 9 | Relations en commun avec cet influenceur | chemin d'intro | trouver_personnes | permanent | n/a |
+| 9 | Relations en commun avec cet influenceur | chemin d'intro | trouver_personnes, par une URL Sales Navigator fournie par vous (`trouver-personnes --url`, filtre relations de) | permanent | n/a |
 | 10 | Engagé avec la page entreprise de cet influenceur | intérêt pour le sujet | scraper_engagement | j0 à j7 | 25* |
 | 11 | Abonné de sa page entreprise | notoriété | non listable | permanent | 15* |
 
@@ -201,7 +201,7 @@ Le déclencheur 7 est le plus rentable de cette famille pour une petite structur
 | 4 | A racheté une entreprise | intégration, doublons d'outils | detecter_signal (`acquisitions`) | semaines 2 à 6 | **35** |
 | 5 | A été rachetée | revue des fournisseurs | detecter_signal (`acquisitions`) | semaines 2 à 6 | **40** |
 | 6 | Fusion | consolidation | detecter_signal (`acquisitions`) | semaines 2 à 6 | **40** |
-| 7 | Hypercroissance | process qui cassent | enrichir_entreprise (effectif) + detecter_signal (`hiring`) | permanent | 25* |
+| 7 | Hypercroissance, expansion d'un service | process qui cassent | enrichir_entreprise (colonne `effectif`, à comparer entre deux runs) + scraper_offres_emploi (`--source signalbase`) | j30 à j90 | **40** |
 | 8 | A commencé à recruter | pression de montée en charge | scraper_offres_emploi, detecter_signal (`hiring`) | j14 à j30 | **40** |
 | 9 | Siège déménagé | fournisseurs remis à plat | à la main (page entreprise) | semaines 2 à 4 | **20** |
 | 10 | Nouveaux bureaux | équipe locale à monter | detecter_signal (`hiring`, `city`), scraper_offres_emploi (`location`) | semaines 2 à 4 | **25** |
@@ -209,7 +209,7 @@ Le déclencheur 7 est le plus rentable de cette famille pour une petite structur
 | 12 | Nouvelle fonctionnalité | investissement produit | posts de la page | j0 à j30 | 15* |
 | 13 | Nouvelle intégration | écosystème qui s'étend | posts de la page, detecter_techno | j0 à j30 | 15* |
 | 14 | Action marketing marquante (campagne, pubs, sponsoring) | budget disponible, ambition | scraper_pubs, posts de la page | pendant la campagne | 15* |
-| 15 | Un concurrent du prospect a fait un mouvement marquant | pression, urgence de répondre | scraper_pubs sur le concurrent, posts | j0 à j30 | **15** |
+| 15 | Un concurrent du prospect a fait un mouvement marquant | pression, urgence de répondre | scraper_pubs sur le concurrent, posts | j0 à j30 | 15* |
 
 ## Les 6 prémisses sortantes (sans signal)
 

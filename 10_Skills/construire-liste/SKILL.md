@@ -52,7 +52,7 @@ La chaîne "fais-moi une liste de X". Lisez `{SKILL_BASE}/ressources/conseils-li
 
 1. Relisez l'ICP et les personas de `05_Departements/Go-to-Market/contexte.md`. Les contraintes ajoutées dans la demande (une ville, un secteur, un effectif) s'appliquent par-dessus, sans modifier `05_Departements/Go-to-Market/contexte.md`.
 2. Annoncez le plan en cinq lignes : sources choisies (`{SKILL_BASE}/ressources/sources-par-besoin.md`), volume attendu, coût estimé par étape payante, nom du fichier final, canal visé. Attendez le oui.
-3. Enchaînez : `sourcer-entreprises`, puis `qualifier-comptes` (les portes d'exclusion et le score ICP sur les entreprises), puis `sourcer-personnes` sur les tiers A et B seulement, puis `nettoyer-verifier`, puis `dedoublonner-liste` (dans la liste, puis contre le CRM).
+3. Enchaînez : `sourcer-entreprises`, puis `qualifier-comptes` (les portes d'exclusion et le score ICP sur les entreprises), puis `sourcer-personnes` sur les tiers A et B seulement (la recherche, puis `dedoublonner-liste` dans la liste et contre le CRM, et seulement ensuite `enrichir_personne` et `trouver_email`), puis `nettoyer-verifier`.
 4. Rendez le rapport en entonnoir (une ligne par porte avec le nombre de lignes retirées), le lien vers le CSV final, et un seul next step : `cold-email` si les emails sont vérifiés, `detecter-signaux` si l'utilisateur veut prioriser par timing.
 
 Trois chaînes selon le point de départ :
@@ -60,20 +60,21 @@ Trois chaînes selon le point de départ :
 ```
 Liste large (l'utilisateur part de zéro)
   definir-icp (vérification) -> sourcer-entreprises -> qualifier-comptes
-  -> sourcer-personnes (tiers A et B) -> nettoyer-verifier -> dedoublonner-liste
+  -> sourcer-personnes (tiers A et B ; dedoublonner-liste avant enrichir_personne et trouver_email)
+  -> nettoyer-verifier
 
 Comptes choisis (ABM, 20 à 200 comptes)
-  selectionner-comptes -> cartographier-personas -> sourcer-personnes (par page entreprise)
-  -> nettoyer-verifier -> dedoublonner-liste
+  selectionner-comptes -> cartographier-personas -> sourcer-personnes (par page entreprise ;
+  dedoublonner-liste avant enrichir_personne et trouver_email) -> nettoyer-verifier
 
 Fichier existant (export, achat, ancienne liste)
-  dedoublonner-liste -> qualifier-comptes -> nettoyer-verifier
-  -> sourcer-personnes seulement pour les comptes tier A sans contact
+  dedoublonner-liste -> qualifier-comptes
+  -> sourcer-personnes seulement pour les comptes tier A sans contact -> nettoyer-verifier
 ```
 
-Chaque étape écrit son CSV dans `05_Departements/Go-to-Market/Listes-prospection/`, nommé `<verbe>_<sujet>_<AAAA-MM-JJ>.csv`, avec les colonnes de `CONVENTIONS.md` section 8 dans l'ordre. Une étape ne remplit jamais une colonne déjà remplie : elle ne relance un outil que si la cellule est vide. Le fichier final de la chaîne porte le sujet demandé par l'utilisateur, par exemple `dedoublonner_agences-immo-lyon_2026-09-19.csv`.
+Chaque étape écrit son CSV dans `05_Departements/Go-to-Market/Listes-prospection/`, nommé `<verbe>_<sujet>_<AAAA-MM-JJ>.csv`, avec les colonnes de `docs/conventions-gtm.md` section 8 dans l'ordre. Une étape ne remplit jamais une colonne déjà remplie : elle ne relance un outil que si la cellule est vide. Le fichier final de la chaîne porte le sujet demandé par l'utilisateur, par exemple `trouver-email_agences-immo-lyon_2026-09-19.csv`.
 
-Trois règles d'ordre que vous appliquez à chaque chaîne : qualifier les entreprises avant de chercher les personnes (on ne paie pas des contacts chez des comptes exclus), dédoublonner avant d'enrichir (on ne paie pas deux fois la même ligne), vérifier avant de remettre à `cold-email` (on n'envoie pas sur une adresse non vérifiée).
+Trois règles d'ordre que vous appliquez à chaque chaîne : qualifier les entreprises avant de chercher les personnes (on ne paie pas des contacts chez des comptes exclus), dédoublonner (entre sources et contre le CRM) avant d'enrichir et de chercher les emails (on ne paie pas deux fois la même ligne), nettoyer et vérifier après `trouver-email` et avant de remettre à `cold-email` (on n'envoie pas sur une adresse sans `email_statut` envoyable).
 
 Vous répondez aussi directement à "combien de lignes il me faut" : partez des nouveaux prospects entrés en séquence par semaine (section 5 de `05_Departements/Go-to-Market/contexte.md`), multipliez par 4 semaines, ajoutez 30 % pour les exclusions et les emails introuvables.
 
@@ -88,7 +89,7 @@ Vous répondez aussi directement à "combien de lignes il me faut" : partez des 
 | Décroissance annuelle des intitulés de poste | 30 à 35 % |
 | Taux de bounce visé | sous 1 % ; au-dessus de 3 %, on arrête d'envoyer |
 | Âge maximum d'une liste avant re-vérification | 30 jours |
-| Contacts par compte | 2 à 4 sur un compte tier A, 1 à 2 sur un tier B, plafond 5 |
+| Contacts par compte | 2 à 4 sur un compte tier A, 1 à 2 sur un tier B, 1 sur un tier C, plafond 5 par entreprise |
 | Couverture email minimum avant de lancer une séquence | 70 % des lignes |
 | Taille d'un segment pour rester personnalisable | sous 1 000 lignes |
 

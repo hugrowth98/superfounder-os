@@ -4,7 +4,7 @@ description: >
   Écrit ou adapte le script d'appel en 5 temps (accroche, raison de l'appel liée au signal,
   problème cause conséquence avec sa question, écoute, créneau) pour un persona ATL ou BTL
   et un signal donnés, à partir de contexte.md. Se déclenche sur : "script d'appel",
-  "qu'est-ce que je dis au téléphone", "accroche", "pitch téléphone", "adapte le script
+  "qu'est-ce que je dis au téléphone", "ouverture d'appel", "pitch téléphone", "adapte le script
   pour un DRH", "j'appelle quelqu'un qui recrute", "relis mon script", "prépare les
   ouvertures de ma liste". Ne pas utiliser pour : répondre à une objection précise (voir
   objections), relancer un rendez-vous manqué (voir no-show), préparer une personne

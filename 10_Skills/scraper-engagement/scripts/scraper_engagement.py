@@ -134,6 +134,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--post", action="append", help="URL d'un post (repetable)")
     ap.add_argument("--posts", help="fichier texte, une URL par ligne")
+    ap.add_argument("--mes-posts", type=int, help="prendre les N derniers posts de votre compte LinkedIn (Unipile), sans donner d'URL")
+    ap.add_argument("--posts-de", help="slug ou provider_id LinkedIn d'une personne dont on prend les derniers posts (avec --mes-posts N)")
     ap.add_argument("--type", choices=["both", "commentaires", "reactions"], default="both")
     ap.add_argument("--source", choices=["unipile", "apify"])
     ap.add_argument("--max-pages", type=int, default=10, help="unipile : pages de 100 par type (defaut 10)")
@@ -146,8 +148,25 @@ def main() -> None:
     posts = list(a.post or [])
     if a.posts:
         posts += [l.strip() for l in Path(a.posts).read_text(encoding="utf-8").splitlines() if l.strip() and not l.startswith("#")]
+    if a.mes_posts and not a.dry_run:
+        from gtm_common import Unipile
+        u = Unipile()
+        ident = a.posts_de or u.own_provider_id or "me"
+        rep = u.get(f"/api/v1/users/{ident}/posts", {"account_id": u.account_id, "limit": a.mes_posts})
+        items = rep.get("items", rep) if isinstance(rep, dict) else rep
+        for it in (items or [])[:a.mes_posts]:
+            url = (it.get("share_url") or it.get("url") or "") if isinstance(it, dict) else ""
+            pid = (it.get("social_id") or it.get("id") or "") if isinstance(it, dict) else ""
+            if url:
+                posts.append(url)
+            elif pid:
+                posts.append(f"https://www.linkedin.com/feed/update/{pid}")
+        afficher(f"  [unipile] {len(posts)} post(s) recents de {'vous' if not a.posts_de else a.posts_de}")
+    elif a.mes_posts and a.dry_run:
+        afficher(f"  [dry-run] --mes-posts {a.mes_posts} : les {a.mes_posts} derniers posts seraient lus via Unipile (gratuit)")
+        return
     if not posts:
-        arret("donnez au moins un post (--post URL ou --posts fichier.txt)")
+        arret("donnez au moins un post (--post URL, --posts fichier.txt ou --mes-posts N)")
     for p in posts:
         try:
             extraire_post_id(p)

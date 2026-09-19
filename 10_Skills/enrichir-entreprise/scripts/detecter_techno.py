@@ -24,7 +24,7 @@ from gtm_common import (PredictLeads, afficher, arret, aujourd_hui, bandeau_dry_
                         fraicheur, lire_csv, norm_texte, sujet_depuis_fichier)
 from apify_run import lancer, prix  # noqa: E402
 
-VERBE = "detecter-techno"
+VERBE = "enrichir-entreprise_techno"
 ACTOR = "scrapemint/website-tech-stack-detector"
 HISTORIQUE = Path(__file__).resolve().parent / "historique_technos.json"
 CATEGORIES = {"cms": ["cms"], "ecommerce": ["ecommerce", "e-commerce"], "analytics": ["analytics"], "marketing": ["marketing", "email", "automation"],
@@ -119,7 +119,7 @@ def source_predictleads(a, doms: list[str], lignes: list[dict]) -> None:
             ligne["techno_cible"] = "oui" if trouvees else "non"
             ligne["techno_cible_detail"] = " | ".join(trouvees)
         sortie.append(ligne)
-    out = Path(a.out) if a.out else chemin_sortie("enrichir-entreprise_techno", (a.sujet or (sujet_depuis_fichier(a.entree) if a.entree else "domaines")) + "-predictleads")
+    out = Path(a.out) if a.out else chemin_sortie(VERBE, (a.sujet or (sujet_depuis_fichier(a.entree) if a.entree else "domaines")) + "-predictleads")
     ecrire_csv(sortie, out)
     afficher(f"{len(sortie)} ligne(s) (technos datees PredictLeads) -> {out}")
 

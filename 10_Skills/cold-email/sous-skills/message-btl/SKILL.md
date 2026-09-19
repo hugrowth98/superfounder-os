@@ -26,11 +26,11 @@ Un manager ou un opérationnel vit dans le présent : il veut que le problème d
 
 ## Exécution
 
-1. `scraper_offres_emploi` (skill `scraper-offres-emploi`) : les fiches de poste de son service décrivent les tâches quotidiennes. Colonnes : `offres_emploi`, `taches_detectees`.
-2. `detecter_techno` (skill `enrichir-entreprise --techno`) : les outils qu'il utilise ou subit. Colonne : `techno`.
-3. `enrichir_personne` (skill `enrichir-personne`) : headline, posts, ancienneté. Colonnes : `headline`, `activite_recente`, `anciennete`.
+1. `scraper_offres_emploi` (skill `scraper-offres-emploi`) : les fiches de poste de son service décrivent les tâches quotidiennes. Colonnes réelles : `poste`, `url_offre`, `signal_detail` par offre, `nb_offres_emploi` par entreprise (`enrichir_entreprise`). Les tâches se déduisent par Claude en lisant la fiche à `url_offre` ; aucun verbe n'écrit `offres_emploi` ni `taches_detectees`.
+2. `detecter_techno` (skill `enrichir-entreprise --techno`) : les outils qu'il utilise ou subit. Colonne réelle : `technos` (liste des outils détectés) ; Claude en tire l'outil à citer, aucune colonne `techno`.
+3. `enrichir_personne` (skill `enrichir-personne`) : headline, ancienneté, et les posts avec `--posts`. Colonnes : `headline`, `anciennete_poste`, `posts_recents` (avec `--posts`).
 4. `trouver_email` (skill `trouver-email`) : email vérifié. Colonnes : `email`, `email_statut`.
-5. Rédaction (interne) : `persona` = BTL, `douleur`, `objet`, `email_1`, puis `premier-contact` et `relance` pour la séquence.
+5. Rédaction (interne) : `persona` = BTL, `douleur`, `var_objet`, `var_email_1`, puis `premier-contact` et `relance` pour la séquence.
 6. `envoyer_sequence` (skill `envoyer-sequence`) après validation sur trois exemples.
 
 Entrée et sortie : celles de `premier-contact`, avec `persona` = BTL.
@@ -45,7 +45,7 @@ Entrée et sortie : celles de `premier-contact`, avec `persona` = BTL.
 | Ce qui ne lui parle pas | le retour sur investissement, "l'impact stratégique", le conseil d'administration |
 | Angle le plus fort | la tâche manuelle nommée, chiffrée en heures |
 | Signal le plus fort | le recrutement d'un poste de son équipe, sa stack |
-| Réponse attendue | 6 à 8 % à froid, 18 à 22 % avec un signal de poste ou de techno |
+| Réponse attendue | 2 à 5 % à froid, 10 à 20 % avec un signal de poste ou de techno (6 à 8 % et 18 à 22 % sur les sources anglophones) |
 
 ## Template
 

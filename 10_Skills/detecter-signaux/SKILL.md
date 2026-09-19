@@ -1,7 +1,7 @@
 ---
 name: detecter-signaux
 description: >
-  Détecte les signaux d'achat d'un marché ou d'un compte (changement de poste, levée, recrutement, événement d'entreprise, changement d'outil, activité autour d'un concurrent, engagement avec votre contenu), les score, les empile, et dit à qui écrire, quand, et sur quel problème. Se déclenche sur : "signaux d'achat", "signaux", "pourquoi maintenant", "qui contacter en premier", "prospection sur signal", "changement de poste", "levée de fonds", "qui recrute", "offres d'emploi", "rachat", "nouveau bureau", "stack technique", "mes concurrents", "qui a commenté", "qui a liké", "empiler les signaux", "score de chaleur", "priorise ma liste", "déclencheur", "trigger", "fenêtre de contact", "timing d'approche". Ne pas utiliser pour : construire une liste d'entreprises ou de personnes sans signal (ciblage ICP), écrire une séquence complète ou un script d'appel, importer ou dédoublonner dans le CRM.
+  Détecte les signaux d'achat d'un marché ou d'un compte (changement de poste, levée, recrutement, événement d'entreprise, changement d'outil, activité autour d'un concurrent, engagement avec votre contenu), les score, les empile, et dit à qui écrire, quand, et sur quel problème. Se déclenche sur : "signaux d'achat", "signaux", "pourquoi maintenant", "qui contacter en premier", "prospection sur signal", "changement de poste", "levée de fonds", "qui recrute", "offres d'emploi", "rachat", "nouveau bureau", "stack technique", "mes concurrents", "qui a commenté", "qui a liké", "empiler les signaux", "score de chaleur", "priorise ma liste", "qui j'appelle en premier", "dans quel ordre", "déclencheur", "trigger", "fenêtre de contact", "timing d'approche". Ne pas utiliser pour : construire une liste d'entreprises ou de personnes sans signal (ciblage ICP), écrire une séquence complète ou un script d'appel, importer ou dédoublonner dans le CRM.
 ---
 
 ## Repérage
@@ -20,13 +20,13 @@ Vous êtes l'expert de la prospection sur signal : celui qui sait qu'un message 
 | Demande | Sous-skill | Phrases déclencheuses | Fichier à lire |
 |---|---|---|---|
 | Une personne prend un poste, un champion bouge, un nouveau dirigeant arrive | `changement-poste` | "changement de poste", "vient d'être nommé", "nouveau directeur commercial", "mes anciens clients", "90 premiers jours" | `{SKILL_BASE}/sous-skills/changement-poste/SKILL.md` |
-| Une entreprise lève des fonds, tour de table, portefeuille d'un fonds | `levee-fonds` | "levée", "qui a levé", "seed", "série A", "startups financées", "budget frais" | `{SKILL_BASE}/sous-skills/levee-fonds/SKILL.md` |
+| Une entreprise lève des fonds, tour de table, introduction en bourse, portefeuille d'un fonds | `levee-fonds` | "levée", "qui a levé", "seed", "série A", "introduction en bourse", "startups financées", "budget frais" | `{SKILL_BASE}/sous-skills/levee-fonds/SKILL.md` |
 | Offres d'emploi, vague de recrutement, rôle manquant, départ | `recrutement` | "qui recrute", "offre d'emploi", "recrute un SDR", "pas de responsable commercial", "quelqu'un est parti" | `{SKILL_BASE}/sous-skills/recrutement/SKILL.md` |
-| Rachat, fusion, bourse, nouveau bureau, partenariat, lancement, nomination dans une réorganisation | `evenements-entreprise` | "rachat", "acquisition", "fusion", "s'implante", "nouveau bureau", "lancement", "partenariat" | `{SKILL_BASE}/sous-skills/evenements-entreprise/SKILL.md` |
+| Rachat, fusion, nouveau bureau, partenariat, lancement, réorganisation | `evenements-entreprise` | "rachat", "acquisition", "fusion", "s'implante", "nouveau bureau", "lancement", "partenariat" | `{SKILL_BASE}/sous-skills/evenements-entreprise/SKILL.md` |
 | Un outil apparaît, disparaît, une migration se lit dans une offre | `changement-techno` | "stack", "quel outil ils utilisent", "ont changé de CRM", "migration", "outil adjacent" | `{SKILL_BASE}/sous-skills/changement-techno/SKILL.md` |
-| Engageurs et abonnés d'un concurrent, avis négatifs, clients d'un concurrent, pubs actives | `signaux-concurrents` | "mon concurrent", "insatisfaits de", "avis négatifs", "clients de", "leurs pubs", "alternative à" | `{SKILL_BASE}/sous-skills/signaux-concurrents/SKILL.md` |
-| Likes, commentaires, abonnés, webinar, newsletter, clics | `engagement-contenu` | "qui a liké", "qui a commenté", "mes abonnés", "participants du webinar", "ma newsletter" | `{SKILL_BASE}/sous-skills/engagement-contenu/SKILL.md` |
-| Plusieurs signaux, score cumulé, qui contacter en premier, seuils, délais | `multi-signaux` | "empiler", "score", "priorise", "qui j'appelle en premier", "système de scoring", "SLA" | `{SKILL_BASE}/sous-skills/multi-signaux/SKILL.md` |
+| Engageurs des posts d'un concurrent, avis négatifs, clients d'un concurrent, pubs actives | `signaux-concurrents` | "mon concurrent", "insatisfaits de", "avis négatifs", "clients de", "leurs pubs", "alternative à" | `{SKILL_BASE}/sous-skills/signaux-concurrents/SKILL.md` |
+| Likes, commentaires, webinar, abonnés à votre newsletter | `engagement-contenu` | "qui a liké", "qui a commenté", "mes abonnés", "participants du webinar", "ma newsletter" | `{SKILL_BASE}/sous-skills/engagement-contenu/SKILL.md` |
+| Plusieurs signaux, score cumulé, qui contacter en premier, seuils, délais | `multi-signaux` | "empiler", "score", "priorise", "qui j'appelle en premier", "dans quel ordre", "système de scoring", "SLA" | `{SKILL_BASE}/sous-skills/multi-signaux/SKILL.md` |
 | Quels signaux suivre, pourquoi écrire à quelqu'un, les 137 déclencheurs | le master | "quels signaux", "déclencheurs", "raisons de contacter", "taxonomie" | `{SKILL_BASE}/ressources/taxonomie-declencheurs.md` |
 | Passer d'un signal à une campagne | le master, puis le sous-skill | "play", "campagne sur signal", "séquence à partir de" | `{SKILL_BASE}/ressources/plays-signaux.md` |
 
@@ -94,7 +94,7 @@ Actor `signalbase/signalbase-api`, 0,04 $ par résultat, dry-run obligatoire ava
 | Valeur des contrats signés sur signal | 3 à 4 fois la référence |
 | Perte de valeur d'un signal | la moitié en 7 jours |
 | Demande entrante traitée en 5 minutes | 21 fois plus de chances de qualifier qu'en 30 minutes |
-| Coût de détection | 0,04 $ par signal (levée, rachat, poste, vague), 0,002 $ par offre d'emploi, 0,01 $ par site pour la techno, engagement inclus dans Unipile |
+| Coût de détection | 0,04 $ par signal (levée, rachat, poste, vague), 0,0018 $ par offre d'emploi, 0,01 $ par site pour la techno, engagement inclus dans Unipile |
 
 ## Avant de répondre
 
@@ -110,7 +110,7 @@ Actor `signalbase/signalbase-api`, 0,04 $ par résultat, dry-run obligatoire ava
 - "Un ancien client vient d'arriver comme DG dans une PME" : `changement-poste`, mode champion, 75 points, message de vous le jour même, séquence du play 10 sur dix jours.
 - "Quels signaux suivre pour vendre du coaching à des dirigeants d'agence ?" : le master, `signaux-6-coeur.md` puis la taxonomie, 5 signaux retenus avec leur cadence, écrits dans `05_Departements/Go-to-Market/contexte.md`.
 - "Voilà 40 prospects avec des signaux en vrac, qui j'appelle en premier ?" : `multi-signaux`, fusion, score × fraîcheur, file de priorité en tableau avec action et date limite.
-- "Récupère les gens qui commentent chez mon concurrent" : `signaux-concurrents`, scraper_engagement sur ses 10 derniers posts, exclusion de ses salariés et partenaires, 25 points, message LinkedIn sous 72 h.
+- "Récupère les gens qui commentent chez mon concurrent" : `signaux-concurrents`, scraper_engagement sur les URL de ses derniers posts de page et sur ceux de ses dirigeants qui publient (`--mes-posts 10 --posts-de <slug>`), exclusion de ses salariés et partenaires, 25 points, message LinkedIn sous 72 h.
 - "Cette boîte recrute deux SDR et vient de lever" : `multi-signaux` pour le score, `recrutement` et `levee-fonds` pour les fenêtres ; angle : une première équipe commerciale à construire sans process.
 - "Qu'est-ce qui se passe chez telle entreprise ?" : le master, tous les signaux du compte (postes, levée, rachat, offres, techno, engagement), puis `multi-signaux`.
 - "Je peux savoir qui visite mon site ?" : non couvert par ce master ; si la donnée existe ailleurs, elle se saisit à la main avec les points du barème.

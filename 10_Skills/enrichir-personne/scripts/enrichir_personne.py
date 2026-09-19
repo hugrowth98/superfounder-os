@@ -102,6 +102,9 @@ def fusion_profil(ligne: dict, prof: dict, source: str) -> None:
     ligne["source"] = (ligne.get("source") or "") + (f"+{source}" if ligne.get("source") else source)
 
 
+POSTS = False
+
+
 def profils_unipile(lignes: list[dict], cibles: list[int], dry_run: bool, pause: float) -> int:
     if dry_run:
         bandeau_dry_run("Unipile GET /api/v1/users/{identifiant}", [f"{len(cibles)} profil(s) a lire, une requete par profil, pause {pause}s",
@@ -115,6 +118,8 @@ def profils_unipile(lignes: list[dict], cibles: list[int], dry_run: bool, pause:
         try:
             prof = u.profil(ident)
             fusion_profil(l, prof, "unipile")
+            if POSTS:
+                l["posts_recents"] = " || ".join(u.posts(prof.get("provider_id") or ident))
             ok += 1
         except Exception as e:
             l["erreur_enrichissement"] = str(e)[:120]
@@ -155,7 +160,10 @@ def main() -> None:
     ap.add_argument("--sujet", default="")
     ap.add_argument("--out")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--posts", action="store_true", help="ajouter posts_recents (5 derniers posts de la personne, Unipile)")
     a = ap.parse_args()
+    global POSTS
+    POSTS = a.posts
 
     lignes = lire_csv(a.entree)
     sujet = sujet_depuis_fichier(a.entree, a.sujet)

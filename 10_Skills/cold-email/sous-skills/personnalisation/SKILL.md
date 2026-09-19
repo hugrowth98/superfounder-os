@@ -4,7 +4,7 @@ description: >
   Construit la personnalisation d'une campagne : quelle donnée utiliser (6 seaux), hook fort ou hook léger, ouverture de deux phrases par personne ou par segment, prompts qui produisent les variables. Se déclenche sur : "personnalise", "personnalisation", "première ligne", "icebreaker", "accroche", "ouverture personnalisée", "à l'échelle", "prompts de personnalisation", "hook", "comment je recherche mes prospects", "ligne d'ouverture". Ne pas utiliser pour écrire une séquence entière (voir premier-contact et relance), ni pour un objet seul (voir objets).
 ---
 
-Une ouverture qui cite un fait vérifié sur la personne, cousu au problème que vous résolvez, fait passer une campagne de 6 à 8 % de réponses à 18 à 22 %. La personnalisation à volume marche quand l'ouverture est la seule partie variable de l'email, quand elle ne porte aucune affirmation sur l'offre, et quand une ligne sans bon ancrage reste vide plutôt que générique.
+Une ouverture qui cite un fait vérifié sur la personne, cousu au problème que vous résolvez, fait passer une campagne de 2 à 5 % de réponses à 10 à 20 % (de 6 à 8 % à 18 à 22 % sur les sources anglophones). La personnalisation à volume marche quand l'ouverture est la seule partie variable de l'email, quand elle ne porte aucune affirmation sur l'offre, et quand une ligne sans bon ancrage reste vide plutôt que générique.
 
 ## Ressources
 
@@ -16,7 +16,7 @@ Une ouverture qui cite un fait vérifié sur la personne, cousu au problème que
 ## Méthode
 
 1. **Évaluer la donnée disponible** : quels seaux le CSV remplit-il déjà ? Posts (seau 1), engagement (seau 2), headline (seau 3), parcours (seau 5), signaux d'entreprise (seau 6) ?
-2. **Décider la profondeur** avec la matrice de `seaux-personnalisation.md` : par personne si panier élevé, tier 1, moins de 50 envois par jour, et si l'utilisateur peut relire les lignes ; par segment sinon. Le dire dans le brief.
+2. **Décider la profondeur** avec la matrice de `seaux-personnalisation.md` : par personne si panier élevé, tier A, moins de 50 envois par jour, et si l'utilisateur peut relire les lignes ; par segment sinon. Le dire dans le brief.
 3. **Choisir le hook** : fort (citation littérale) pour les comptes clés et le remplacement d'un concurrent ; léger (thème) pour le volume.
 4. **Fournir les faits du métier** par segment (la carte de `ouvertures-personnalisees.md`) : le générateur ne cite que le travail présent dans le segment.
 5. **Générer l'ouverture** de deux phrases (35 mots au plus) par ligne, avec le jugement `utilisable` et sa raison. Une ligne non utilisable prend l'ouverture de segment et se marque comme repli.
@@ -27,13 +27,13 @@ Une ouverture qui cite un fait vérifié sur la personne, cousu au problème que
 
 Chaque verbe seulement si sa colonne est vide :
 
-1. `enrichir_personne` (skill `enrichir-personne`) : headline, résumé, ancienneté, posts et commentaires récents. Colonnes : `titre`, `headline`, `resume`, `anciennete`, `activite_recente`.
-2. `scraper_engagement` (skill `scraper-engagement`) : la réaction ou le commentaire sur un post donné. Colonne : `engagement_detail`.
-3. `enrichir_entreprise` (skill `enrichir-entreprise`) : description, site, actualités. Colonnes : `description_entreprise`, `domaine`, `actualite`.
+1. `enrichir_personne` (skill `enrichir-personne`) : headline, résumé, ancienneté, parcours, et les 5 derniers posts avec `--posts`. Colonnes : `titre`, `headline`, `resume`, `anciennete_poste`, `experiences`, `posts_recents` (avec `--posts`).
+2. `scraper_engagement` (skill `scraper-engagement`) : la réaction ou le commentaire sur un post donné (`--post <url>`, ou `--mes-posts N` pour vos N derniers posts). Colonnes : `signal_type` (`commentaire` ou `like`), `signal_detail`.
+3. `enrichir_entreprise` (skill `enrichir-entreprise`) : description, site, et les 5 derniers posts de la page avec `--posts`. Colonnes : `description`, `tagline`, `domaine`, `posts_recents` (avec `--posts`). Aucune colonne `actualite` : l'actualité se lit dans `posts_recents` et dans `signal_detail`.
 4. `detecter_signal` (skill `detecter-signaux` (script `detecter_signal.py`)) : levée, recrutement, changement de poste. Colonnes : `signal_type`, `signal_date`, `signal_detail`.
-5. `detecter_techno` (skill `enrichir-entreprise --techno`) et `scraper_offres_emploi` (skill `scraper-offres-emploi`) quand l'angle le demande. Colonnes : `techno`, `offres_emploi`.
+5. `detecter_techno` (skill `enrichir-entreprise --techno`) et `scraper_offres_emploi` (skill `scraper-offres-emploi`) quand l'angle le demande. Colonnes réelles : `technos` (liste des outils détectés), `nb_offres_emploi` (`enrichir_entreprise`) et, par offre, `poste`, `url_offre`, `signal_detail` ; Claude en déduit l'outil ou l'offre à citer, aucun verbe n'écrit `techno` ni `offres_emploi`.
 6. Génération (interne, prompts de `prompts-personnalisation.md`) : colonnes `ouverture`, `ouverture_utilisable` (oui ou non), `ouverture_raison`, `ouverture_source`, `ouverture_seau` (1 à 6 ou repli).
-7. `envoyer_sequence` (skill `envoyer-sequence`) : la colonne `ouverture` devient une variable Lemlist insérée dans le corps fixe, après validation.
+7. `envoyer_sequence` (skill `envoyer-sequence`) : `envoyer_lemlist.py --colonne-message ouverture` pousse la colonne `ouverture` comme variable `icebreaker`, insérée dans le corps fixe écrit dans Lemlist (ou par le MCP), après validation.
 
 Entrée : CSV normalisé avec au moins `prenom`, `entreprise`, `titre`, `linkedin_url`. Sortie : le même CSV enrichi des colonnes d'ouverture, dans `05_Departements/Go-to-Market/Messages/messages_<sujet>_<YYYY-MM-DD>.csv`.
 
@@ -44,10 +44,10 @@ Entrée : CSV normalisé avec au moins `prenom`, `entreprise`, `titre`, `linkedi
 | Ouverture | 2 phrases, 35 mots au plus, aucune affirmation sur l'offre |
 | Fraîcheur d'un ancrage | moins de 90 jours ; un post de la semaine bat une levée d'il y a 2 ans |
 | Seaux par valeur | 1 publié, 2 engagé, 3 auto-description, 4 tiroir à bazar, 5 parcours, 6 entreprise |
-| Personnaliser si | panier > 25 k€, tier 1, < 50 envois par jour, signal faible |
-| S'en passer si | panier < 25 k€, tiers 2 et 3, > 100 envois par jour, signal fort |
+| Personnaliser si | panier > 25 k€, tier A, < 50 envois par jour, signal faible |
+| S'en passer si | panier < 25 k€, tiers B et C, > 100 envois par jour, signal fort |
 | Taux de repli acceptable | 30 à 60 % des lignes ; au-delà, changer de segment ou de donnée |
-| Réponse attendue | 6 à 8 % sans signal, 18 à 22 % avec, 35 à 40 % sur signaux empilés |
+| Réponse attendue | 2 à 5 % sans signal, 10 à 20 % avec ; les 6 à 8 %, 18 à 22 % et 35 à 40 % des sources anglophones sont des repères étrangers |
 | Effort à volume | la segmentation bat la personnalisation individuelle |
 
 ## Template

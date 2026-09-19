@@ -1,6 +1,6 @@
 # Métriques et repères
 
-Ce qu'on mesure, ce qu'on peut doubler, ce qu'on vise, et le diagnostic quand un chiffre décroche. Les chiffres viennent de campagnes anglophones à grand volume ; en France, sur des listes plus petites et mieux ciblées, les taux de réponse sont souvent plus hauts et les volumes plus bas. Remplacez ces repères par les vôtres dès que vous avez 500 envois.
+Ce qu'on mesure, ce qu'on peut doubler, ce qu'on vise, et le diagnostic quand un chiffre décroche. Les taux de réponse anglophones sont cités comme repères étrangers : comptez un tiers de moins en France. Les seuils (rebond, chauffe, volumes) sont ceux de `05_Departements/Go-to-Market/GARDE-FOUS.md`. Remplacez ces repères par les vôtres dès que vous avez 500 envois.
 
 ## 1. Les métriques à suivre
 
@@ -19,7 +19,7 @@ Le taux d'ouverture ne se mesure pas : le suivi d'ouverture (pixel) pèse sur la
 
 | Métrique | Point de départ courant | Bon | Très bon |
 |---|---|---|---|
-| Réponse à froid | 0,5 à 1 % | 2 à 3 % | 5 % et plus |
+| Réponse à froid | sous 2 % | 2 à 5 % | 5 % et plus |
 | Ouverture (si mesurée une fois) | 20 à 40 % | 50 % | 60 % et plus |
 | Clic (si un lien) | 2 à 5 % | 5 à 8 % | 10 % et plus |
 
@@ -27,9 +27,9 @@ Le taux d'ouverture ne se mesure pas : le suivi d'ouverture (pixel) pèse sur la
 
 | Type | Réponse |
 |---|---|
-| À froid, sans signal | 6 à 8 % |
-| Sur un signal | 18 à 22 % |
-| Sur plusieurs signaux empilés | 35 à 40 % |
+| À froid, sans signal | 2 à 5 % en France (6 à 8 % sur les sources anglophones) |
+| Sur un signal | 10 à 20 % en France (18 à 22 % sur les sources anglophones) |
+| Sur plusieurs signaux empilés | 35 à 40 % sur les sources anglophones, comptez un tiers de moins en France |
 | Visiteur du site relancé | 25 à 30 % |
 | Ancien client qui a changé d'entreprise | 20 à 25 % |
 | Après engagement (commentaire, webinaire) | 15 à 25 % |
@@ -49,7 +49,7 @@ Ouverture (déclencheur) + hypothèse + preuve chiffrée + question ouverte.
 
 | Métrique | Cible | Alerte | Critique |
 |---|---|---|---|
-| Rebond | moins de 2 % | 2 à 5 % | plus de 5 % : stop |
+| Rebond | moins de 3 % | 3 à 5 % : on vérifie la liste | 5 % et plus : arrêt de la campagne |
 | Plainte spam | moins de 0,1 % | 0,1 à 0,3 % | plus de 0,3 % |
 | Désabonnement | moins de 0,5 % | 0,5 à 1 % | plus de 1 % |
 | Réponse (signal de réputation) | plus de 5 % | 3 à 5 % | moins de 3 % : la délivrabilité se dégrade |
@@ -62,8 +62,8 @@ Le taux de réponse est le signal positif le plus fort pour les messageries : un
 |---|---|
 | 1 | 80 % des réponses positives ; le plus important à optimiser |
 | 2 (J+3) | 40 à 60 % de l'attention de l'email 1 ; angle différent, plus court |
-| 3 (J+14) | nouvel objet, nouvelle approche ; la question de routage marche bien |
-| 4 (rupture) | souvent le meilleur taux de réponse de la séquence, parce qu'il crée une échéance et une sortie propre |
+| 3 (J+10) | nouvel objet, nouvelle approche ; la question de routage marche bien ; dernier email de la séquence |
+| 4 (rupture, hors règle des 3 emails : seulement pour une liste qui a déjà répondu une fois) | souvent le meilleur taux de réponse, parce qu'il crée une échéance et une sortie propre |
 
 L'écart entre la pire et la meilleure variante d'email 1 atteint un facteur 13 : testez 3 ou 4 variantes en parallèle.
 
@@ -101,7 +101,7 @@ L'écart entre la pire et la meilleure variante d'email 1 atteint un facteur 13 
 - 15 à 25 emails par jour et par boîte Google, 10 à 15 par boîte Microsoft, 30 au maximum quelle que soit la boîte.
 - 2 boîtes par domaine, 2 à 3 domaines par expéditeur, jamais le domaine principal.
 - 3 semaines de chauffe avant le premier envoi à froid, chauffe jamais coupée.
-- 100 % des emails vérifiés avant la campagne, listes de plus de 30 jours revérifiées.
+- Seuls les emails `DELIVERABLE` ou `HIGH_PROBABILITY` partent (`CATCH_ALL` et `UNKNOWN` à 20 % de la liste au plus), listes de plus de 30 jours revérifiées.
 - Texte brut, un lien au plus, aucune image dans l'email 1.
 
 ## 11. Les repères LinkedIn

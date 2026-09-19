@@ -6,7 +6,7 @@
 
 - **Pourquoi ça marche** : la confiance est déjà là, la personne connaît votre méthode, la preuve de valeur arrive vite.
 - **Où on le voit** : un ancien client, un ancien interlocuteur, un ancien utilisateur de votre offre arrive dans une nouvelle entreprise.
-- **Détection** : detecter_signal (`signalbase/signalbase-api`, `signalType: job-changes`, `personLinkedinUrl` sur votre liste de champions), chaque jour.
+- **Détection** : detecter_signal (`signalbase/signalbase-api`, `--type job-changes --liste-suivie <csv des champions> --par-cible`), chaque jour.
 - **Quand écrire** : le jour même, fenêtre j0 à j14, frais 30 jours.
 - **Points** : 75 (Tier 1). Le premier fournisseur à écrire a 3 fois plus de chances de signer.
 - **Sous-skill** : `changement-poste`, mode champions.
@@ -22,11 +22,11 @@
 
 ## 3. Intention forte sur votre contenu
 
-- **Pourquoi ça marche** : la personne vous connaît déjà. Un commentaire, une participation à un webinar, un clic dans un email montrent une recherche en cours. Taux de réponse 25 à 30 %.
+- **Pourquoi ça marche** : la personne vous connaît déjà. Un commentaire, une participation à un webinar, un abonnement à votre newsletter montrent une recherche en cours. Taux de réponse 25 à 30 %.
 - **Où on le voit** : vos posts LinkedIn, vos webinars, vos emails, votre newsletter.
-- **Détection** : scraper_engagement (Unipile, réactions et commentaires de vos posts), vos listes d'inscrits, verifier_reponses pour les clics.
+- **Détection** : scraper_engagement (`--mes-posts 5`, réactions et commentaires de vos posts), vos listes d'inscrits et l'export de votre outil d'emailing.
 - **Quand écrire** : dans les 24 à 48 heures. Un commentaire vaut deux likes.
-- **Points** : commentaire 35, like 25, webinar 25, clic 15, abonnement 15.
+- **Points** : commentaire 35, like 25, webinar 25, abonnement à la newsletter 15.
 - **Ce que ce master ne couvre pas** : les visiteurs anonymes de votre site (page tarifs, page démo), qui font partie de ce signal dans le classement d'origine et valent 50 à 80 points quand vous avez la donnée.
 - **Sous-skill** : `engagement-contenu`.
 
@@ -43,7 +43,7 @@
 
 - **Pourquoi ça marche** : les objectifs fixés avec les investisseurs créent l'urgence, la douleur d'échelle apparaît, c'est le moment où l'entreprise remplace ses bricolages par des systèmes.
 - **Où on le voit** : tour de financement, nouveau bureau, lancement de produit, rachat.
-- **Détection** : detecter_signal (`signalType: funding`, `acquisitions`), detecter_signal `hiring` filtré par ville pour les nouveaux bureaux, posts de la page entreprise pour les lancements.
+- **Détection** : detecter_signal (`signalType: funding`, `acquisitions`), detecter_signal `hiring` filtré par ville pour les nouveaux bureaux, `enrichir-entreprise --posts` pour les lancements.
 - **Quand écrire** : semaines 2 à 4 après l'annonce (jusqu'à la semaine 8 pour une levée). Jamais la semaine 1.
 - **Points** : Série B et plus 45, Série A 35, Seed 20, rachat 35 à 40, nouveau bureau 25, lancement 30.
 - **Sous-skills** : `levee-fonds`, `evenements-entreprise`.
@@ -52,7 +52,7 @@
 
 - **Pourquoi ça marche** : recruter, c'est une pression de montée en charge et un besoin d'efficacité ; réduire, c'est un mandat "faire plus avec moins". Les postes ouverts disent où va le budget et ce que l'entreprise juge prioritaire.
 - **Où on le voit** : offres d'emploi, vagues de recrutement, départs, rôles absents de l'organigramme.
-- **Détection** : scraper_offres_emploi (`tagadanar/linkedin-jobs-scraper`, `borderline/indeed-scraper`), detecter_signal (`signalType: hiring`), trouver_personnes pour les rôles manquants.
+- **Détection** : scraper_offres_emploi (`tagadanar/linkedin-jobs-scraper`, `borderline/indeed-scraper`, `--source signalbase` pour les vagues), trouver_personnes pour les rôles manquants.
 - **Quand écrire** : jours 14 à 30 après la publication, frais 60 jours ; départ : semaines 1 à 2.
 - **Points** : offre pertinente 40, vague de 5 postes ou plus 40.
 - **Sous-skill** : `recrutement`.
@@ -68,7 +68,7 @@
 
 ## Quatre règles de travail
 
-1. Ne citez jamais le signal dans le message : le prospect reçoit dix "félicitations pour votre levée" par semaine. Citez le problème que le signal crée (`test-et-alors.md`).
+1. Ne citez jamais le signal dans le message : le prospect reçoit dix formules de félicitation sur sa levée par semaine. Citez le problème que le signal crée (`test-et-alors.md`).
 2. Agissez vite : un signal chaud expire en 3 à 7 jours, la moitié de sa valeur part en une semaine.
 3. Empilez : trois signaux sur le même compte, on écrit le jour même.
 4. Choisissez 5 signaux, pas 30. Ceux qui collent à votre offre et que la stack détecte sans effort. Les autres sont du contexte.

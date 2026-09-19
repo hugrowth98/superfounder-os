@@ -1,6 +1,6 @@
 """finaliser_qualification : applique les portes d'exclusion et le bareme ICP (tires de contexte.md par Claude, ecrits
-dans un fichier de regles JSON), puis les corrections ligne a ligne de Claude (fichier de scores), et ecrit deux CSV :
-la liste gardee triee par score, et les exclus avec leur raison. Aucun appel API.
+dans un fichier de regles JSON), puis les corrections ligne a ligne de Claude (fichier de scores), et ecrit un CSV avec toutes les lignes (gardees
+triees par score, puis exclues avec leur raison, colonne exclu) et une copie des exclues seules. Aucun appel API.
 
 Usage :
   python3 finaliser_qualification.py --in liste_pre.csv --regles regles.json [--scores scores.csv] [--sujet x]
@@ -19,7 +19,7 @@ regles.json (chaque bloc est optionnel) :
     {"nom": "effectif", "colonne": "effectif_num", "exact_min": 50, "exact_max": 500, "adjacent_min": 20, "adjacent_max": 1000, "points_exact": 10, "points_adjacent": 5},
     {"nom": "zone", "colonne": "pays", "exact": ["france", "fr"], "adjacent": ["belgique", "suisse"], "points_exact": 8, "points_adjacent": 4},
     {"nom": "techno", "colonne": "technos", "exact": ["hubspot"], "points_exact": 12, "points_absent": 6},
-    {"nom": "signal 1", "colonne": "signal_type", "exact": ["recrutement"], "fraicheur_max": 30, "points_exact": 15},
+    {"nom": "signal 1", "colonne": "signal_type", "exact": ["offre_emploi", "vague_recrutement"], "fraicheur_max": 30, "points_exact": 15},
     {"nom": "engagement", "colonne": "signal_type", "exact": ["commentaire", "like"], "fraicheur_max": 7, "points_exact": 5}
   ],
   "bonus_empilement": 10,
@@ -32,7 +32,7 @@ adjacent) n'est trouvee (cas "aucun concurrent visible"). Le score est plafonne 
 
 scores.csv (corrections de Claude, prioritaires) : colonnes cle, score_icp, tier, exclu, raison_exclusion, note.
 `cle` = valeur de la colonne cle de pre_qualifier (linkedin_url normalisee, sinon email, sinon entreprise|nom).
-Sorties : Listes-prospection/qualifier-liste_<sujet>_<date>.csv et ..._exclus.csv
+Sorties : Listes-prospection/qualifier-liste_<sujet>_<date>.csv (toutes les lignes) et ..._exclus.csv (copie des exclues)
 """
 from __future__ import annotations
 
@@ -168,9 +168,9 @@ def main() -> None:
     gardees.sort(key=lambda r: -(int(r.get("score_icp") or 0)))
     sujet = sujet_depuis_fichier(a.entree.replace("_pre", ""), a.sujet)
     sortie = Path(a.out) if a.out else chemin_sortie(VERBE, sujet)
-    ecrire_csv(gardees, sortie)
+    ecrire_csv(gardees + exclus, sortie)  # toutes les lignes : gardees triees par score, puis exclues (colonne exclu)
     sortie2 = sortie.with_name(sortie.stem + "_exclus.csv")
-    ecrire_csv(exclus, sortie2)
+    ecrire_csv(exclus, sortie2)  # copie des exclues seules, pour lecture
     par_tier: dict = {}
     for l in gardees:
         par_tier[l["tier"]] = par_tier.get(l["tier"], 0) + 1

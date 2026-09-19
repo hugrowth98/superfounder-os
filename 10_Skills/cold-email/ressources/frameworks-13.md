@@ -385,16 +385,16 @@ La douleur propre à une fonction, formulée pour que le lecteur se reconnaisse.
 
 ## Base de séquence : le déclencheur, en un tableau
 
-Un message par déclencheur, avec un CTA doux. Choisissez le vôtre :
+Un message par déclencheur, avec un CTA doux. Le signal brut ne s'écrit pas ("j'ai vu que vous recrutiez") : la phrase porte le problème que le signal crée. Choisissez le vôtre :
 
 | Déclencheur | Motif de phrase |
 |---|---|
 | Étude de cas | "{{résultat en une ligne}}, déjà fait chez {{client}}" |
-| Observation | "Vu que vous faites X" |
-| Recrutement | "Vous recrutez un {{poste}} qui devra {{mission}}" |
-| Croissance | "Votre équipe {{département}} a grossi de {{n}} personnes" |
-| Techno | "Vous utilisez {{logiciel}} pour {{sujet}}" |
-| Pubs | "Vous diffusez des pubs sur {{plateforme}}" |
+| Observation | "Quand on fait X, {{le problème que X entraîne}} arrive vite. C'est le cas chez {{entreprise}} ?" |
+| Recrutement | "Un {{poste}} qui devra {{mission}} arrive en général sur {{le problème que la mission révèle}}, et le poste reste ouvert pendant ce temps" |
+| Croissance | "Une équipe {{département}} qui grossit vite, c'est {{le process qui craque : onboarding, outils, pilotage}}" |
+| Techno | "Les équipes qui gèrent {{sujet}} sur {{logiciel}} butent sur {{la limite de l'outil}}" |
+| Pubs | "Des pubs sur {{plateforme}} sans {{ce qui manque derrière}}, c'est {{la conséquence chiffrée}}" |
 | Douleur / KPI | "Le problème qu'on voit chez {{secteur}}, c'est X, qui donne Y. Ça vous parle ?" |
 | Idée | "Vous avez un problème ? Voici une idée pour le régler" |
 | Rupture | "Le timing est mauvais, ou la priorité vient plus tard ?" |

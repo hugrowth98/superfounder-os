@@ -8,8 +8,8 @@ LinkedIn est un canal de conversation, pas un canal d'envoi. Les mêmes principe
 |---|---|---|
 | 1 | participants à un événement ou un webinaire LinkedIn | liste des participants, `scraper_engagement` sur le post de l'événement |
 | 1 | personnes qui réagissent aux posts de votre marché ou de vos concurrents | `scraper_engagement`, puis `qualifier_liste` pour garder l'ICP |
-| 1 | abonnés de votre page entreprise | Unipile |
-| 1 | visiteurs de votre profil | Unipile, à la main |
+| 1 | personnes qui réagissent aux posts de votre page entreprise (les abonnés d'une page ne sont pas listables) | `scraper_engagement` sur les posts de la page |
+| 1 | visiteurs de votre profil | à lire à la main sur LinkedIn, aucun script ne les détecte |
 | 2 | membres récents d'un groupe du secteur | à la main |
 | 2 | abonnés à votre newsletter LinkedIn | Unipile |
 | 2 | commentateurs de contenus | `scraper_engagement` |
@@ -58,13 +58,13 @@ Ce qui fait refuser : un pitch dans la note, un lien, "j'aimerais vous présente
 
 > Merci d'avoir accepté, {{prenom}}. Question rapide : qu'est-ce qui vous prend le plus de temps sur {{sujet}} en ce moment ?
 
-### Le visiteur de profil (28 à 35 % de réponse sur la source, contre 8 à 12 % à froid)
+### Le visiteur de profil (28 à 35 % de réponse sur la source, contre 8 à 12 % à froid ; visites relevées à la main sur LinkedIn)
 
-> Bonjour {{prenom}}, j'ai vu que vous étiez passé sur mon profil. Qu'est-ce qui a retenu votre attention ?
+> Bonjour {{prenom}}, si {{sujet de votre profil ou de votre dernier post}} est sur votre liste en ce moment, je peux vous dire en deux lignes comment {{client_similaire}} s'y est pris. C'est le cas chez {{entreprise}} ?
 
 ### La personne qui a réagi à un post
 
-> Bonjour {{prenom}}, vous avez réagi à mon post sur {{sujet}}. {{Douleur du post}} est un sujet chez {{entreprise}} en ce moment ?
+> Bonjour {{prenom}}, {{douleur du post}} revient dans la plupart de mes échanges avec des {{titre}} en ce moment. C'est un sujet chez {{entreprise}} ?
 
 ### Le commentateur
 
@@ -80,7 +80,7 @@ Ce qui fait refuser : un pitch dans la note, un lien, "j'aimerais vous présente
 
 ### L'abonné à la newsletter
 
-> Bonjour {{prenom}}, vous vous êtes abonné à ma newsletter. Qu'est-ce qui vous a décidé ? La plupart des abonnés avec qui je parle ont {{probleme}} en tête.
+> Bonjour {{prenom}}, la plupart des {{titre}} qui lisent ma newsletter ont {{probleme}} en tête en ce moment. C'est le cas chez {{entreprise}} ?
 
 ### Le membre d'un groupe
 
@@ -94,7 +94,7 @@ Ce qui fait refuser : un pitch dans la note, un lien, "j'aimerais vous présente
 
 > {{prenom}}, dernier message de ma part sur ce sujet. Si le timing est mauvais, dites-le moi et je reviens dans quelques mois.
 
-### Le message qui donne (touche J17 des séquences multicanal)
+### Le message qui donne (touche LinkedIn J+7 de la séquence multicanal de référence, ou J17 de la variante 7 touches)
 
 > {{prenom}}, sans rien attendre en retour : {{ressource concrète, une ligne sur son contenu}}. {{lien}} Si une seule idée vous sert, elle a rempli son rôle.
 
@@ -114,10 +114,10 @@ Ce qui fait refuser : un pitch dans la note, un lien, "j'aimerais vous présente
 | Limite | Valeur |
 |---|---|
 | Invitations par mois (compte standard) | 400 |
-| Invitations par jour | 10 à 15 |
-| Messages directs par jour | 15 à 20 |
+| Invitations par jour | 30 (15 pour un compte récent ou déjà restreint) |
+| Messages directs par jour | 50 par défaut (20 pour un compte récent), 100 plafond dur |
 | InMails ouverts par jour (compte premium) | 30 à 40, 800 par mois |
-| Interactions par jour, toutes confondues | 120 au plus, rester bien en dessous |
+| Interactions par jour, toutes confondues | 100 au plus |
 | Invitations en attente | moins de 500 ; au-dessus de 700, danger |
 
 Ce qui compte comme interaction : messages, invitations, InMails, visites de profil, réactions, commentaires, abonnements à des pages, recommandations, participations à des événements et des groupes.
@@ -158,7 +158,7 @@ Sous 15 % d'acceptation : retirez les invitations en attente de plus de 3 semain
 
 ## 8. Les sept facteurs de réussite
 
-1. Ne jamais dépasser les limites : 400 invitations par mois, 120 interactions par jour, avec une marge.
+1. Ne jamais dépasser les limites : 30 invitations par jour (15 sur un compte récent), 50 messages par jour, 100 interactions par jour, avec une marge.
 2. Ne cibler que des comptes actifs (publication dans les 30 jours).
 3. Des messages très courts : un paragraphe, 3 ou 4 phrases.
 4. Un contenu qui accroche l'œil dans le message : vidéo courte, post, live, newsletter.
@@ -172,7 +172,7 @@ Les erreurs courantes : le pitch dans l'invitation, un premier message génériq
 
 - Cibles filtrées sur l'activité des 30 derniers jours.
 - Messages sous 4 phrases, vouvoiement, aucun pitch dans l'invitation.
-- Moins de 15 invitations par jour, compteur en place.
+- 30 invitations par jour au plus (15 sur un compte récent ou déjà restreint), compteur en place.
 - Séquence avec délais aléatoires.
 - Envois aux heures de bureau de la cible.
 - Une ressource ou un contenu qui donne quelque chose.
@@ -182,6 +182,6 @@ Les erreurs courantes : le pitch dans l'invitation, un premier message génériq
 
 ## 10. Coordonner LinkedIn et l'email
 
-Les deux canaux se renforcent quand ils portent le même angle et se parlent. Dans une séquence multicanal (`sequences.md`, section 6), LinkedIn fait trois choses que l'email ne fait pas : montrer un visage (la visite de profil, la réaction), prouver qu'on lit (le commentaire de fond), et donner sans rien demander (la ressource en message). L'email porte le fond, les chiffres et la preuve.
+Les deux canaux se renforcent quand ils portent le même angle et se parlent. Dans une séquence multicanal (référence : `10_Skills/cold-call/ressources/sequence-multicanal.md` ; variante longue en `sequences.md`, section 6), LinkedIn fait trois choses que l'email ne fait pas : montrer un visage (la visite de profil, la réaction), prouver qu'on lit (le commentaire de fond), et donner sans rien demander (la ressource en message). L'email porte le fond, les chiffres et la preuve.
 
 Règles : jamais le même texte sur les deux canaux ; un canal ne relance pas ce que l'autre vient d'envoyer le même jour ; une réponse sur un canal arrête l'autre (`verifier_reponses`) ; sur un petit marché, un canal à la fois et jusqu'au bout.

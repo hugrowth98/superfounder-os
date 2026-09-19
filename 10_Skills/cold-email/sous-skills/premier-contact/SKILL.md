@@ -10,7 +10,7 @@ L'email 1 apporte 80 % des réponses positives d'une séquence : c'est là que v
 
 - `{SKILL_BASE}/ressources/principes-copywriting.md` : les règles par composant, à lire en premier.
 - `{SKILL_BASE}/ressources/variations-email-1.md` : les 7 variantes d'email 1 avec exemples.
-- `{SKILL_BASE}/ressources/templates-34.md` : les 23 templates de premier contact, par cas d'usage.
+- `{SKILL_BASE}/ressources/templates-34.md` : les 26 templates de premier contact (#1 à #26), par cas d'usage.
 - `{SKILL_BASE}/ressources/frameworks-13.md` : les frameworks nommés et les 8 autorisés côté commercial.
 - `{SKILL_BASE}/ressources/brief-strategie.md` : le brief à remplir avant d'écrire.
 - `{SKILL_BASE}/ressources/relecteurs.md` : les quatre relectures avant de rendre.
@@ -30,13 +30,13 @@ L'email 1 apporte 80 % des réponses positives d'une séquence : c'est là que v
 
 Séquence de collecte, chaque verbe seulement si sa colonne est vide :
 
-1. `enrichir_personne` (skill `enrichir-personne`) : titre, séniorité, ancienneté, posts récents, headline. Colonnes : `titre`, `seniorite`, `linkedin_url`, `activite_recente`.
+1. `enrichir_personne` (skill `enrichir-personne`) : titre, séniorité, ancienneté, headline, et les posts récents avec `--posts`. Colonnes : `titre`, `seniorite`, `linkedin_url`, `headline`, `anciennete_poste`, `experiences`, `posts_recents` (avec `--posts`).
 2. `detecter_signal` (skill `detecter-signaux` (script `detecter_signal.py`)) : levée, recrutement, changement de poste. Colonnes : `signal_type`, `signal_date`, `signal_detail`, `score_signal`, `fraicheur`.
 3. `scraper_engagement` (skill `scraper-engagement`) si la campagne vise les personnes qui ont réagi à un post. Colonne : `signal_detail` (le post, le commentaire).
-4. `enrichir_entreprise` (skill `enrichir-entreprise`) : effectif, secteur, site, description. Colonnes : `secteur`, `effectif`, `domaine`, `description_entreprise`.
-5. `trouver_email` (skill `trouver-email`) : email vérifié. Colonnes : `email`, `email_statut`. Seules les lignes `valide` partent ; `catch-all` sur 10 % d'abord.
-6. Rédaction (interne) : colonnes ajoutées `persona` (ATL ou BTL), `framework`, `objet`, `email_1`, `email_2`, `email_3`, `ouverture` (si personnalisée), `ouverture_source`.
-7. `envoyer_sequence` (skill `envoyer-sequence`) : Lemlist pour l'email, canal LinkedIn selon `05_Departements/Go-to-Market/OUTILS.md`. Après validation explicite sur trois exemples.
+4. `enrichir_entreprise` (skill `enrichir-entreprise`) : effectif, secteur, site, description, et les posts de la page avec `--posts`. Colonnes : `secteur`, `effectif`, `domaine`, `description`, `tagline`, `nb_offres_emploi`, `posts_recents` (avec `--posts`).
+5. `trouver_email` (skill `trouver-email`) : email vérifié. Colonnes : `email`, `email_statut`. Seules les lignes `DELIVERABLE` ou `HIGH_PROBABILITY` partent ; `CATCH_ALL` et `UNKNOWN` à 20 % de la liste au plus (`--avec-catch-all`) ; `INVALID`, `INVALID_DOMAIN`, `NOT_FOUND` et les adresses sans statut ne partent pas.
+6. Rédaction (interne) : colonnes ajoutées `persona` (ATL ou BTL), `framework`, `var_objet`, `var_email_1`, `var_email_2`, `var_email_3`, `ouverture` (si personnalisée), `ouverture_source`. Le préfixe `var_` compte : `envoyer_lemlist.py` pousse `icebreaker` et toute colonne `var_*` comme variable Lemlist (`var_email_1` devient `{{email_1}}` dans la séquence).
+7. `envoyer_sequence` (skill `envoyer-sequence`) : `envoyer_lemlist.py` pousse les leads et leurs variables dans la campagne Lemlist ; la séquence elle-même (étapes, objets, textes, variantes A/B) s'écrit dans Lemlist, ou par le MCP Lemlist s'il est branché. Canal LinkedIn selon `05_Departements/Go-to-Market/OUTILS.md`. Après validation explicite sur trois exemples.
 
 Entrée : CSV aux colonnes normalisées (`prenom`, `nom`, `titre`, `seniorite`, `entreprise`, `domaine`, `linkedin_url`, `email`, `email_statut`, `secteur`, `effectif`, `signal_type`, `signal_date`, `signal_detail`, `score_icp`, `tier`). Sortie : le même CSV enrichi des colonnes de rédaction, écrit dans `05_Departements/Go-to-Market/Messages/messages_<sujet>_<YYYY-MM-DD>.csv`, et la séquence de référence (objets, corps, variantes) dans `sequence_<sujet>_<YYYY-MM-DD>.md` au même endroit.
 
@@ -48,7 +48,7 @@ Entrée : CSV aux colonnes normalisées (`prenom`, `nom`, `titre`, `seniorite`, 
 | Objet | 2 à 5 mots, sur le sujet, pas sur l'offre |
 | CTA | un seul, une question d'intérêt ou de ressource |
 | Part des réponses | 80 % sur l'email 1 |
-| Réponse attendue | 6 à 8 % à froid, 18 à 22 % sur signal, 35 à 40 % sur signaux empilés |
+| Réponse attendue | à froid sans signal 2 à 5 %, avec signal 10 à 20 % (les 6 à 8 %, 18 à 22 % et 35 à 40 % des sources anglophones sont des repères étrangers) |
 | Fraîcheur du signal | moins de 30 jours ; prise de poste entre 14 et 45 jours |
 | Variantes à tester | 3 ou 4, 100 envois chacune avant de juger |
 | Écart entre variantes | jusqu'à un facteur 13 |

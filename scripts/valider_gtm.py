@@ -15,7 +15,8 @@ INTERDITS = ["ColdIQ","coldiq","Clay ","Clay.","Claygent","Trigify","RB2B","Bomb
              "6sense","Common Room","Koala","Serper","BuiltWith",
              "YALC","data workspace","Evaboot","PhantomBuster","ZoomInfo","Clearbit","NeverBounce",
              "ZeroBounce","MillionVerifier","Findymail","Prospeo","LeadMagic","Instantly","Smartlead",
-             "Crawford","Braun","Hey ","J'espère que vous allez bien","Je me permets"]
+             "Crawford","Braun","Hey ","J'espère que vous allez bien","Je me permets",
+             "Apollo","`CONVENTIONS.md`","scripts/valider.py","`GUIDE.md`","Félicitations pour","félicitations pour"]
 TOLERES = {"signalbase/signalbase-api": "Signalbase"}  # nom d'actor autorise
 
 GTM_DIRS = tuple("10_Skills/" + d for d in MASTERS + INSTALL + VERBES + ["_commun"])
@@ -106,9 +107,11 @@ def main():
     actors_skills = set()
     for p in fichiers:
         if "/10_Skills/" in p and MODULE_GTM(os.path.relpath(p, R)):
-            actors_skills |= set(re.findall(r"\b([a-z0-9_-]+/[a-z0-9_-]+(?:-scraper|-search|-employees|-api|-detector|-library|-places|-posts|-comments|-jobs-scraper))\b", lire(p)))
+            actors_skills |= set(re.findall(r"`([a-z0-9_-]+/[a-z][a-z0-9_-]*)`", lire(p)))
+    connus = {"apify", "compass", "harvestapi", "code_crafter", "curious_coder", "signalbase", "tagadanar", "borderline", "scrapemint", "s-r"}
     for act in sorted(actors_skills - actors_outils):
-        avert.append(f"[actor] utilise dans un skill mais absent de OUTILS.md : {act}")
+        if act.split("/")[0] in connus:
+            erreurs.append(f"[actor] utilise dans un skill mais absent de OUTILS.md : {act}")
 
     print(f"{len(fichiers)} fichiers verifies, {len(erreurs)} erreurs, {len(avert)} avertissements")
     for e in erreurs: print("ERREUR", e)

@@ -51,14 +51,17 @@ Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appe
 4. **FullEnrich** (`FULLENRICH_API_KEY`) : https://app.fullenrich.com/app/settings/api. Test :
    `/account/credits`, annoncez le solde (1 crédit par email, 10 par mobile).
 5. **Ocean.io** (`OCEAN_API_KEY`) : app.ocean.io, Settings, page "API tokens" (réservée aux admins),
-   bouton New token. Test : `/v2/credits/balance` (gratuit). Puis branchez le MCP :
+   bouton New token. Test : `/v2/credits/balance` (gratuit). Les lookalikes passent par l'API en CLI
+   (`trouver-lookalikes`) ; le MCP Ocean est optionnel :
    `claude mcp add --transport http ocean_data_api "https://api.ocean.io/mcp/?api-token=<cle>"`.
-6. **Lemlist** : deux voies. MCP OAuth (recommandée, aucune clé à copier) :
-   `claude mcp add --transport http lemlist https://app.lemlist.com/mcp`, la fenêtre de consentement
-   s'ouvre au premier appel. Ou clé API (`LEMLIST_API_KEY`) sur https://app.lemlist.com/settings/integrations,
-   testée sur `/api/team`.
+6. **Lemlist** (`LEMLIST_API_KEY`) : app.lemlist.com, Settings, Integrations, API, "Generate a new key".
+   Test : `GET /team`. L'envoi (`envoyer-sequence`) et la lecture des réponses (`verifier-reponses`)
+   passent par l'API en CLI. Le MCP Lemlist est optionnel, pour les stats et l'aperçu d'email :
+   `claude mcp add --transport http lemlist https://app.lemlist.com/mcp` (OAuth au premier appel).
 7. **HubSpot** (`HUBSPOT_ACCESS_TOKEN`) : Paramètres, Intégrations, Applications privées, créer une
-   app avec les scopes `crm.objects.contacts` et `crm.objects.companies` en lecture et écriture.
+   app avec les scopes `crm.objects.contacts` et `crm.objects.companies` (lecture et écriture), `crm.objects.deals`
+   (lecture), notes et tâches (`crm.objects.contacts.write` les couvre selon l'interface ; sinon cocher notes et tasks), et les
+   associations. Sans les deals, `crm lire` renvoie 403.
    Test : lecture d'un contact. Si présent, `crm: hubspot`.
 8. **PredictLeads et TheirStack (optionnels, seulement si l'utilisateur veut les événements d'entreprise,
    l'intent ou des offres filtrées par techno)**. PredictLeads (`PREDICTLEADS_API_KEY` + `PREDICTLEADS_API_TOKEN`) :

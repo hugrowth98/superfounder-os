@@ -28,7 +28,7 @@ Un ICP écrit en trois couches et noté sur 100 transforme "les PME B2B" en une 
 5. Remplissez la couche comportementale : les 2 à 3 signaux qui précèdent un achat chez lui (recrutement d'un commercial, levée, nouveau dirigeant, réaction à un post). Ils deviennent les signaux prioritaires de `detecter-signaux`.
 6. Posez les points. Partez des valeurs par défaut de la section 2 (couche 1 : 40, couche 2 : 20, couche 3 : 40), montez ce qui distingue les meilleurs clients, descendez le reste. La somme fait 100. Si l'offre ne dépend d'aucun outil, la couche 2 passe à 0 et ses points vont aux couches 1 et 3. Fixez les seuils A, B, C (défaut 75, 55, 35).
 7. Testez le modèle : les 10 meilleurs clients doivent sortir A ou B, les 5 pires C ou D. Sinon, ajustez avant d'aller plus loin.
-8. Testez le volume : lancez `trouver_entreprises` avec les critères de la couche 1, limité à 25 lignes. Lisez le total quand la source l'annonce (Sales Navigator via Unipile, Crustdata) ; avec un actor qui ne le donne pas, lancez 25 lignes par segment et extrapolez avec le nombre de pages. Comparez aux nouveaux prospects par semaine écrits en section 5 de `05_Departements/Go-to-Market/contexte.md` : le marché doit couvrir au moins six mois de prospection (26 fois ce volume), sinon élargissez un critère (zone secondaire, secteur adjacent). S'il couvre plus de dix ans, resserrez l'effectif ou le secteur : un marché qu'on ne contactera jamais dilue l'effort.
+8. Testez le volume : lancez `trouver_entreprises` avec les critères de la couche 1, limité à 25 lignes. Lisez le total quand la source l'annonce (Sales Navigator via Unipile, Crustdata) ; avec un actor qui ne le donne pas, lancez 25 lignes par segment et extrapolez avec le nombre de pages. Lecture du total, les mêmes bornes que `installer-gtm` : moins de 300 comptes, l'ICP est trop étroit ou le marché est petit, élargissez un critère (zone secondaire, secteur adjacent) ; plus de 5 000, c'est trop large pour du signal, resserrez l'effectif ou le secteur, un marché qu'on ne contactera jamais dilue l'effort ; entre les deux, c'est bon. Rapportez aussi le total aux nouveaux prospects par semaine écrits en section 5 de `05_Departements/Go-to-Market/contexte.md` pour dire combien de mois de prospection il couvre.
 9. Écrivez la section 2 de `05_Departements/Go-to-Market/contexte.md` remplie, au format décrit dans `icp-3-couches.md`. Montrez-la, attendez le oui, puis proposez de l'écrire. Vous ne modifiez `05_Departements/Go-to-Market/contexte.md` que sur ce oui explicite.
 
 ## Exécution
@@ -46,8 +46,8 @@ Le reste est du raisonnement avec l'utilisateur, sans appel payant. Le test de v
 | Repère | Valeur |
 |---|---|
 | Clients à analyser pour un ICP | 10 à 20 meilleurs, 5 pires |
-| Volume minimum d'un marché adressable | six mois de prospection, soit 26 fois les nouveaux prospects par semaine de la section 5 |
-| Volume au-delà duquel on resserre | dix ans de prospection au rythme actuel |
+| Volume minimum d'un marché adressable | 300 comptes ; en dessous, l'ICP est trop étroit ou le marché est petit |
+| Volume au-delà duquel on resserre | 5 000 comptes ; au-delà, trop large pour du signal |
 | Conversion d'une cible bien définie contre une cible large | 3 à 5 fois plus |
 | Seuils de tiers par défaut | A 75, B 55, C 35 |
 | Relecture de l'ICP | chaque trimestre, à partir des signés et des churnés |
@@ -87,6 +87,6 @@ Le format complet, avec les exemples en commentaire, est la section 2 de `05_Dep
 
 ## Exemples
 
-- "Ma cible c'est les PME B2B" : vous demandez les 10 derniers clients signés, vous en tirez secteurs et effectifs communs, puis un test de volume ; réponse attendue : une section ICP à trois couches et un marché dimensionné sur six mois à dix ans de prospection.
+- "Ma cible c'est les PME B2B" : vous demandez les 10 derniers clients signés, vous en tirez secteurs et effectifs communs, puis un test de volume ; réponse attendue : une section ICP à trois couches et un marché entre 300 et 5 000 comptes.
 - "Combien de boîtes correspondent à ma cible ?" : `trouver_entreprises` en comptage sur la couche 1 ; réponse attendue : le total, 25 lignes témoins, et un avis (élargir, resserrer, ou garder).
 - "Mes clients qui restent sont tous des cabinets de 10 à 30 personnes avec HubSpot" : vous montez la pondération de l'effectif et de la techno, vous descendez le secteur ; réponse attendue : le barème ajusté, testé sur les 10 clients, prêt à écrire dans `05_Departements/Go-to-Market/contexte.md`.

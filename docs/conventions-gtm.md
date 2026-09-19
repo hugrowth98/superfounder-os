@@ -47,8 +47,8 @@ Chaque skill de méthode décrit ses actions avec ces verbes, jamais avec un nom
 | Unipile | tout ce qui touche à LinkedIn avec le compte de l'utilisateur : Sales Nav, profils, posts, invitations, DM | `UNIPILE_API_KEY`, `UNIPILE_DSN`, `UNIPILE_ACCOUNT_ID` |
 | Crustdata | recherche d'entreprises et de personnes par API quand Apify n'est pas voulu | `CRUSTDATA_API_KEY` |
 | FullEnrich | email, vérification, téléphone. Seul outil d'enrichissement contact | `FULLENRICH_API_KEY` |
-| Ocean.io | lookalikes uniquement | `OCEAN_API_KEY` (MCP) |
-| Lemlist | envoi email, et LinkedIn si l'utilisateur le choisit | `LEMLIST_API_KEY` (MCP) |
+| Ocean.io | lookalikes uniquement, par l'API (`trouver-lookalikes`) ; MCP optionnel | `OCEAN_API_KEY` |
+| Lemlist | envoi email et lecture des réponses par l'API (`envoyer-sequence`, `verifier-reponses`), LinkedIn si l'utilisateur le choisit ; MCP optionnel pour les étapes de séquence et les stats | `LEMLIST_API_KEY` |
 | HubSpot | CRM : lecture des clients, import, dédup, pipeline | `HUBSPOT_ACCESS_TOKEN` |
 | PredictLeads (optionnel) | secours du verbe detecter_signal : événements d'entreprise (expansion, partenariat, lancement, nomination), levées, offres, détections techno datées | `PREDICTLEADS_API_KEY`, `PREDICTLEADS_API_TOKEN` |
 | TheirStack (optionnel) | secours du verbe detecter_signal : offres d'emploi filtrées par techno citée, intent (entreprises qui recrutent et utilisent une techno) | `THEIRSTACK_API_KEY` |
@@ -95,13 +95,26 @@ Règle de priorité, fixée à l'onboarding et écrite dans `05_Departements/Go-
 5. `## Garde-fous` : quotas, compteur journalier en fichier local, ce qui bloque.
 6. `## Erreurs fréquentes` : symptôme, cause, fix.
 
-Les scripts sont en Python 3.9+, `requests` seulement, lisent le `.env` de la racine (trouvée en remontant jusqu'à `05_Departements/Go-to-Market/OUTILS.md`), ne contiennent aucune clé, ont `--help` et `--dry-run` (affiche ce qui serait fait et le coût estimé, sans appel). La bibliothèque commune vit dans `10_Skills/_commun/` (`gtm_common.py` : racine, .env, OUTILS.md, CSV, clients HTTP ; `apify_run.py` : lancer un actor, attendre, lire le dataset, table des prix). Sorties en CSV UTF-8 : les listes et enrichissements dans `05_Departements/Go-to-Market/Listes-prospection/`, les runs de signaux dans `05_Departements/Go-to-Market/Signaux/`, les messages et séquences dans `05_Departements/Go-to-Market/Messages/`, nommés `<verbe>_<sujet>_<YYYY-MM-DD>.csv`.
+Les scripts sont en Python 3.9+, `requests` seulement, lisent le `.env` de la racine (trouvée en remontant jusqu'à `05_Departements/Go-to-Market/OUTILS.md`), ne contiennent aucune clé, ont `--help` et `--dry-run` (affiche ce qui serait fait et le coût estimé, sans appel). La bibliothèque commune vit dans `10_Skills/_commun/` (`gtm_common.py` : racine, .env, OUTILS.md, CSV, clients HTTP ; `apify_run.py` : lancer un actor, attendre, lire le dataset, table des prix). Sorties en CSV UTF-8 : les listes, enrichissements, offres, engagements, technos et pubs dans `05_Departements/Go-to-Market/Listes-prospection/` ; les runs de `detecter_signal` et `comptes-suivis.csv` dans `05_Departements/Go-to-Market/Signaux/` ; les messages, séquences et rapports d'infra dans `05_Departements/Go-to-Market/Messages/` ; nommés `<verbe>_<sujet>_<YYYY-MM-DD>.csv` (`enrichir-entreprise_techno_...`, `enrichir-entreprise_pubs_...`, `detecter-signaux_<type>-<source>-<sujet>_...`, journal de dédup `dedoublonner_<sujet>_<date>_doublons.csv`).
 
 ## 8. Colonnes CSV normalisées
 
 Toujours ces noms, dans cet ordre quand ils existent : `prenom`, `nom`, `titre`, `seniorite`, `entreprise`, `domaine`, `linkedin_url`, `linkedin_entreprise_url`, `email`, `email_statut`, `telephone`, `ville`, `pays`, `secteur`, `effectif`, `source`, `date_extraction`, `score_icp`, `tier`, `signal_type`, `signal_date`, `signal_detail`, `score_signal`, `fraicheur`, `exclu`, `raison_exclusion`, `ne_plus_contacter`.
 
-Conventions : `source` = nom complet de l'actor Apify (`signalbase/signalbase-api`) ou `unipile`, `crustdata`, `fullenrich`, `ocean`, `lemlist`, `hubspot` ; `fraicheur` = nombre entier de jours écoulés depuis `signal_date` ; un concurrent est encodé `exclu = oui` et `raison_exclusion = concurrent (famille)`.
+Conventions : `source` = nom complet de l'actor Apify (`signalbase/signalbase-api`) ou `unipile`, `crustdata`, `fullenrich`, `ocean`, `lemlist`, `hubspot`, `predictleads`, `theirstack`, plusieurs sources séparées par `+` ; `fraicheur` = nombre entier de jours écoulés depuis `signal_date` ; un concurrent est encodé `exclu = oui` et `raison_exclusion = concurrent (famille)`.
+
+Vocabulaires fixés (les scripts les écrivent, les docs les citent tels quels) :
+
+| Colonne | Valeurs |
+|---|---|
+| `email_statut` | `DELIVERABLE`, `HIGH_PROBABILITY` (envoyables) ; `CATCH_ALL`, `UNKNOWN` (20 % de la liste au plus) ; `INVALID`, `INVALID_DOMAIN`, `NOT_FOUND` (jamais) ; vide = non vérifié (jamais, sauf `--sans-verification`) |
+| `seniorite` | `fondateur`, `c_level`, `vp`, `directeur`, `head`, `manager`, `senior`, `junior`, `autre` |
+| `categorie_titre` | `dirigeant`, `direction`, `manager`, `marketing`, `sales`, `executant`, `independant`, `stagiaire`, `inconnu` (écrite par `qualifier-liste/scripts/pre_qualifier.py`) |
+| `tier` | `A`, `B`, `C`, `D` (tier ICP, jamais écrasé) |
+| `chaleur` | `brulant`, `chaud`, `tiede`, `frais`, `froid` (écrite par `detecter-signaux/multi-signaux`) |
+| `signal_type` | écrits par les scripts : `levee`, `acquisition`, `offre_emploi`, `vague_recrutement`, `changement_poste`, `champion`, `investisseur`, `profil_entreprise`, `evenement:<categorie>`, `intent`, `techno`, `techno_ajout`, `techno_retrait`, `commentaire`, `like`, `pub_active`, `pub_arretee`, `lookalike` ; saisis à la main (imports) : `avis_negatif`, `webinar_present`, `webinar_inscrit`, `newsletter_abonne`, `event_present`. Le détail va dans `signal_detail`. |
+| réponses | `reponse_canal` (`email`, `linkedin`), `reponse_date`, `reponse_texte`, `ne_plus_contacter` |
+| `linkedin_url` | `https://www.linkedin.com/in/<slug>`, sans paramètres ni slash final |
 
 ## 9. Fichiers racine que tout le monde lit
 

@@ -1,4 +1,4 @@
-# GUIDE.md : le mode d'emploi du module GTM
+# Le module GTM : mode d'emploi
 
 Vous n'avez presque rien à faire pour installer. Une phrase dans le chat, Claude fait le reste. Ce guide sert d'aide-mémoire : ce que c'est, ce qu'il faut avoir, les phrases à taper, où vont les fichiers.
 
@@ -44,9 +44,9 @@ Un master est un skill qui connaît une méthode entière et route votre demande
 
 ## Où vont les fichiers
 
-- Vos listes, enrichissements et signaux : `05_Departements/Go-to-Market/Listes-prospection/`, un CSV par étape, nommé par ce qu'il contient et daté.
+- Vos listes, enrichissements, offres d'emploi, engagements, technos et pubs : `05_Departements/Go-to-Market/Listes-prospection/`, un CSV par étape, nommé par ce qu'il contient et daté.
 - Vos messages, séquences et scripts d'appel : `05_Departements/Go-to-Market/Messages/`.
-- Vos runs de détection et les listes que vous suivez : `05_Departements/Go-to-Market/Signaux/`.
+- Vos runs de signaux (levées, changements de poste, recrutements, événements) et `comptes-suivis.csv`, la liste des comptes que vous surveillez : `05_Departements/Go-to-Market/Signaux/`.
 - Ce que Claude sait de vous : `05_Departements/Go-to-Market/contexte.md`. Ce que font vos outils : `05_Departements/Go-to-Market/OUTILS.md`. Vos clés : `.env`, jamais lu à voix haute.
 - Rien n'est supprimé par Claude : un fichier remplacé est renommé avec sa date.
 

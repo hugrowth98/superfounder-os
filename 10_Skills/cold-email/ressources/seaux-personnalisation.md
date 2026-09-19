@@ -5,10 +5,10 @@ La personnalisation part d'une donnée. Ce fichier classe les données disponibl
 ## 1. Les six seaux, classés par valeur
 
 ### Seau 1 : ce que la personne a publié (le plus fort)
-Interventions en conférence, webinaires, articles, posts LinkedIn, épisodes de podcast. La personne a choisi ses mots, vous les citez. Collecte : `enrichir_personne` (posts récents), recherche web sur "prénom nom + podcast / conférence".
+Interventions en conférence, webinaires, articles, posts LinkedIn, épisodes de podcast. La personne a choisi ses mots, vous les citez. Collecte : `enrichir_personne --posts` (colonne `posts_recents`, ses 5 derniers posts), recherche web sur "prénom nom + podcast / conférence".
 
 ### Seau 2 : ce avec quoi elle a interagi
-Posts commentés, partagés, aimés. Les commentaires qu'elle a écrits. Dit quels sujets l'occupent cette semaine. Collecte : `scraper_engagement` sur les posts de votre marché, `enrichir_personne` (activité récente).
+Posts commentés, partagés, aimés. Les commentaires qu'elle a écrits. Dit quels sujets l'occupent cette semaine. Collecte : `scraper_engagement` sur les posts de votre marché (`signal_type` = `commentaire` ou `like`, `signal_detail`), `enrichir_personne --posts` (colonne `posts_recents`) pour ce qu'elle a repartagé.
 
 ### Seau 3 : comment elle se décrit
 La ligne de titre LinkedIn, la section "Infos", la description de son poste (rôle, spécialité, réussites). Ses propres mots pour cadrer la pertinence. Collecte : `enrichir_personne`.
@@ -99,7 +99,7 @@ Entrant :
 > Merci pour votre demande de démo. On se cale 15 minutes pour voir comment {{produit}} marche chez des {{secteur}} ? {{lien agenda}}
 
 Après engagement :
-> Vu que vous avez regardé notre page tarifs. On travaille avec des éditeurs SaaS entre 5 et 20 M€ sur la prospection. Un échange rapide pour voir si ça colle ?
+> Comparer des offres de prospection, c'est en général le moment où la prévisibilité du pipeline devient le sujet. On travaille avec des éditeurs SaaS entre 5 et 20 M€ là-dessus. Un échange rapide pour voir si ça colle ?
 
 Sortant :
 > Question rapide : comment votre équipe gère la prévisibilité du pipeline en ce moment ? On travaille avec des éditeurs entre 5 et 20 M€ qui vivent avec un flux de leads en dents de scie. Ça vaut le coup d'en parler ?
@@ -110,7 +110,7 @@ Sortant :
 |---|---|---|
 | Panier | plus de 25 k€ par an | moins de 25 k€ |
 | Volume | moins de 50 envois par jour | plus de 100 par jour |
-| Fit ICP | comptes tier 1 | tiers 2 et 3 |
+| Fit ICP | comptes tier A | tiers B et C |
 | Force du signal | signal faible (il faut compenser) | signal fort (il porte l'email) |
 | Concurrence | marché saturé | marché calme |
 
@@ -128,9 +128,9 @@ Sortant :
 
 Faites tourner le signal le plus important en premier ; n'enrichissez pas la suite si le premier échoue ; changez le message selon le nombre de signaux vrais.
 
-**Les déclencheurs qui marchent** : le changement de poste reste fiable ("bravo pour le poste, maintenant que vous reprenez...") mais tout le monde l'utilise. Les signaux sociaux (posts sur un mot-clé, engagement sur un sujet) battent aujourd'hui les déclencheurs "logiques" (recrutement, levée, expansion) sur la plupart des comptes. Sur une entreprise de recrutement offshore, le déclencheur "a posté sur LinkedIn" a battu tous les autres.
+**Les déclencheurs qui marchent** : le changement de poste reste fiable (écrit sur ce qu'il implique, les 90 premiers jours qui servent à cadrer les priorités, jamais avec une formule de félicitation) mais tout le monde l'utilise. Les signaux sociaux (posts sur un mot-clé, engagement sur un sujet) battent aujourd'hui les déclencheurs "logiques" (recrutement, levée, expansion) sur la plupart des comptes. Sur une entreprise de recrutement offshore, le déclencheur "a posté sur LinkedIn" a battu tous les autres.
 
-**Taux de réponse selon le déclencheur** : à froid sans signal 6 à 8 %, sur signal 18 à 22 %, sur signaux empilés 35 à 40 %, visiteur du site 25 à 30 %, ancien client qui a changé de poste 20 à 25 %.
+**Taux de réponse selon le déclencheur** : à froid sans signal 2 à 5 %, sur signal 10 à 20 % en France. Les repères anglophones (6 à 8 % à froid, 18 à 22 % sur signal, 35 à 40 % sur signaux empilés, visiteur du site 25 à 30 %, ancien client qui a changé de poste 20 à 25 %) sont des repères étrangers : comptez un tiers de moins.
 
 ## 6. Utiliser l'IA sans se brûler
 
@@ -146,20 +146,20 @@ Faites tourner le signal le plus important en premier ; n'enrichissez pas la sui
 | Vidéo personnalisée | une vidéo courte qui dit "Bonjour {{prenom}}" avec son site en fond, le reste identique pour tous | enregistrement manuel, lien dans l'email 2 |
 | Image personnalisée | l'image d'une de ses pubs ou de son site insérée dans un visuel (fonction native de Lemlist) | `scraper_pubs`, puis l'image en relance |
 | Lookalikes | les entreprises semblables à vos meilleurs clients, message "les entreprises comme la vôtre" | `trouver_lookalikes` |
-| Abonnés d'un concurrent | les personnes qui suivent ou commentent un concurrent, message comparatif | `scraper_engagement` sur les posts du concurrent |
+| Engageurs d'un concurrent | les personnes qui commentent ou réagissent aux posts d'un concurrent (les abonnés d'une page ne sont pas listables), message comparatif | `scraper_engagement` sur les posts du concurrent |
 | Offre d'emploi | un poste ouvert révèle un besoin, message "les entreprises qui recrutent ce poste ont en général {{probleme}}" | `scraper_offres_emploi` |
 | Pubs actives | les pubs du prospect citées dans l'email ou reprises en image | `scraper_pubs` |
 | Avis clients | un avis Google du prospect cité, nom du client et sujet | `trouver_entreprises` (fiche locale), lecture des avis |
 
-Exemple abonnés d'un concurrent :
+Exemple engageurs d'un concurrent :
 
-> Bonjour {{prenom}}, vous suivez {{concurrent}} sur LinkedIn. Deux raisons pour lesquelles des équipes passent de {{concurrent}} à nous : {{limite 1}}, et {{limite 2}}. Un comparatif de 15 minutes vous serait utile ?
+> Bonjour {{prenom}}, les équipes qui utilisent {{concurrent}} nous parlent de deux limites : {{limite 1}}, et {{limite 2}}. Si l'une des deux vous concerne, un comparatif de 15 minutes vous serait utile ?
 
 Exemple avis client (contact après engagement) :
 
-> Bonjour {{prenom}}, vous avez réagi à notre post sur {{sujet}}. J'ai vu sur Google que {{nom du client}} a laissé un avis sur la façon dont {{entreprise}} l'a aidé sur {{sujet de l'avis}}. On aide des {{secteur}} exactement sur ce point, par exemple {{cas client}}. Un échange rapide ?
+> Bonjour {{prenom}}, {{sujet}} revient chez beaucoup de {{secteur}} en ce moment, et j'ai vu sur Google que {{nom du client}} a laissé un avis sur la façon dont {{entreprise}} l'a aidé sur {{sujet de l'avis}}. On aide des {{secteur}} exactement sur ce point, par exemple {{cas client}}. Un échange rapide ?
 
-Le nom du client de l'avis prouve que vous avez cherché ; le cas client du même secteur prouve que vous savez faire ; le post cité réchauffe le contact ; la fiche Google trouve les entreprises locales que LinkedIn ne montre pas.
+Le nom du client de l'avis prouve que vous avez cherché ; le cas client du même secteur prouve que vous savez faire ; le sujet du post réchauffe le contact sans citer sa réaction ; la fiche Google trouve les entreprises locales que LinkedIn ne montre pas.
 
 ## 8. Campagne multi-signaux : la structure de table
 

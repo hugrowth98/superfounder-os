@@ -8,7 +8,7 @@ Une entreprise qui change un outil a déjà décidé de changer : elle est ouver
 
 ## Ressources
 
-- `{SKILL_BASE}/ressources/bareme-signaux.md` : retrait 45, ajout adjacent 35, migration 30, concurrent ajouté 20, stack qui grossit 25.
+- `{SKILL_BASE}/ressources/bareme-signaux.md` : retrait 45, ajout adjacent 35, migration 30, stack qui grossit 25 (un concurrent qui apparaît dans la stack : `signaux-concurrents`, 20).
 - `{SKILL_BASE}/ressources/fenetres-fraicheur.md` : j0 à j30, frais 60 jours.
 - `{SKILL_BASE}/ressources/detection-par-signal.md` : lignes 11 à 14.
 - `{SKILL_BASE}/ressources/taxonomie-declencheurs.md` : famille 4, fournisseurs adjacents (déclencheurs 1 à 7).
@@ -29,20 +29,20 @@ Une entreprise qui change un outil a déjà décidé de changer : elle est ouver
 
 | Étape | Verbe | Skill d'exécution | Paramètres et notes |
 |---|---|---|---|
-| 1 | detecter_techno | `enrichir-entreprise --techno` | actor `scrapemint/website-tech-stack-detector`, `websites` = la colonne `domaine` de vos comptes cibles. 0,01 $ par site avec au moins une détection, gratuit sinon. Cadence mensuelle, relevé daté et conservé. |
-| 2 | comparaison | interne (Claude) | différence entre le relevé du mois et le précédent, par `domaine` : lignes ajoutées, lignes retirées ; classement selon votre carte (concurrent, adjacent, preuve de besoin) |
-| 3 | scraper_offres_emploi | `scraper-offres-emploi` | `tagadanar/linkedin-jobs-scraper`, `keywords` = noms de vos concurrents et adjacents, `scrapeDetails: true` (la description dit l'outil), `postedSince: month`. 0,004 $ par offre détaillée. |
+| 1 | detecter_techno | `enrichir-entreprise --techno --diff` | actor `scrapemint/website-tech-stack-detector`, sur la colonne `domaine` de vos comptes cibles. 0,01 $ par site avec au moins une détection, gratuit sinon. Cadence mensuelle, relevé daté et conservé ; `--diff` compare au dernier relevé enregistré et écrit un fichier `_diff.csv` avec une ligne `techno_ajout` ou `techno_retrait` par changement. |
+| 2 | classement | interne (Claude) | lecture du `_diff.csv` : chaque ligne `techno_ajout` ou `techno_retrait` classée selon votre carte (concurrent, adjacent, preuve de besoin) |
+| 3 | scraper_offres_emploi | `scraper-offres-emploi` | `--source linkedin` (`tagadanar/linkedin-jobs-scraper`), `--mots-cles` = noms de vos concurrents et adjacents, `--details` (la description dit l'outil), `--depuis month`. 0,0036 $ par offre détaillée. |
 | 4 | qualifier_liste | `qualifier-liste` | ICP, exclusions |
 | 5 | trouver_personnes | `trouver-personnes` | le responsable de la fonction touchée par l'outil (marketing pour un outil marketing, commercial pour un CRM) |
 | 6 | enrichir_personne, trouver_email | `enrichir-personne`, `trouver-email` | profil complet, email vérifié |
 | 7 | dedoublonner | `dedoublonner` | contre HubSpot |
 | 8 | envoyer_sequence | `envoyer-sequence` | sous 72 h ; email puis LinkedIn puis relance à j7 sur un autre angle |
 | 9 | verifier_reponses | `verifier-reponses` | à j3 et j7 |
-| 1z | detecter_techno | `enrichir-entreprise --techno` (`--source predictleads --recentes-jours 60`) | si PredictLeads est branché : détections datées (`first_seen_at`), une ligne `techno_ajout` par techno vue pour la première fois depuis N jours, sans attendre deux runs Apify. |
+| 1z | detecter_techno | `enrichir-entreprise --techno --techno-source predictleads --recentes-jours 60` | si PredictLeads est branché : détections datées (`first_seen_at`), une ligne `techno_ajout` par techno vue pour la première fois depuis N jours, sans attendre deux runs Apify. |
 
 **CSV en entrée** : `entreprise, domaine` (comptes cibles), plus le relevé du mois précédent.
 
-**CSV en sortie** : colonnes normalisées, plus `signal_type` (`techno_retrait`, `techno_ajout`, `techno_migration`, `techno_croissance`), `signal_date`, `signal_detail` ("retiré : {{outil}} ({{catégorie}}), relevé du {{date}}" ou "offre {{intitulé}} demande {{outil}}, publiée le {{date}}"), `score_signal`, `fraicheur`, `source` (`scrapemint/website-tech-stack-detector`, `tagadanar/linkedin-jobs-scraper`).
+**CSV en sortie** : colonnes normalisées, plus `signal_type` (`techno_retrait`, `techno_ajout` ; une migration lue dans une offre est un `techno_ajout` dont `signal_detail` cite l'offre ; une croissance de stack, ce sont 5 lignes `techno_ajout` ou plus sur le même `domaine`), `signal_date`, `signal_detail` ("retiré : {{outil}} ({{catégorie}}), relevé du {{date}}" ou "offre {{intitulé}} demande {{outil}}, publiée le {{date}}"), `score_signal`, `fraicheur`, `source` (`scrapemint/website-tech-stack-detector`, `tagadanar/linkedin-jobs-scraper`).
 
 ## Repères
 
@@ -52,7 +52,8 @@ Une entreprise qui change un outil a déjà décidé de changer : elle est ouver
 | Ajout d'un outil adjacent | 35 | extension de la stack, votre pièce manque à côté |
 | Offre d'emploi qui mentionne un nouvel outil | 30 | migration en cours, projet de 6 à 12 mois |
 | Croissance générale de la stack (5 outils ou plus ajoutés) | 25 | mode achat actif |
-| Ajout d'un concurrent de votre catégorie | 20 | besoin couvert ; à revoir 60 à 90 jours avant le renouvellement |
+
+Un concurrent qui apparaît dans la stack est un client d'un concurrent : voir `signaux-concurrents` (`techno`, 20 points, permanent, à réveiller 60 à 90 jours avant le renouvellement).
 
 | Repère | Valeur |
 |---|---|
@@ -96,6 +97,6 @@ Vous avez déjà buté dessus ?
 
 ## Exemples
 
-- "Surveille la stack de mes 200 comptes cibles" : detecter_techno sur la colonne `domaine` chaque mois (2 $), relevé conservé, différence calculée, lignes classées selon votre carte, alertes sur les retraits de concurrents et les ajouts d'adjacents.
+- "Surveille la stack de mes 200 comptes cibles" : `enrichir-entreprise --techno --diff` sur la colonne `domaine` chaque mois (2 $), relevé conservé, différence dans le `_diff.csv`, lignes classées selon votre carte, alertes sur les retraits de concurrents et les ajouts d'adjacents.
 - "Un compte a retiré notre concurrent de son site" : 45 points ×1,5 sous 30 jours, sous 72 h ; on cherche une offre d'emploi et un nouveau responsable dans la fonction pour multi-threader ; message sur le trou de la transition.
 - "Une offre d'emploi demande une expérience sur un CRM qu'ils n'ont pas" : migration, 30 points, projet de 6 à 12 mois ; angle "ce qui casse pendant la migration" ; contact tôt dans le projet, quand le fournisseur d'à côté se choisit.

@@ -19,7 +19,7 @@ De zéro à une campagne qui arrive en boîte de réception : dimensionner, ache
 2. Deux boîtes par domaine au maximum. Si un domaine brûle, vous perdez deux boîtes, pas dix.
 3. Un domaine = un espace de travail. On ne mélange pas plusieurs domaines dans un même compte Google Workspace ou Microsoft 365.
 4. Plusieurs registrars. Aucun point de défaillance unique.
-5. Chauffe de 3 semaines avant le premier envoi, 2 au strict minimum.
+5. Chauffe de 3 semaines avant le premier envoi à froid (domaine neuf : 2 semaines de repos après les DNS, puis 3 semaines de chauffe).
 6. Chauffe jamais coupée une fois les campagnes lancées.
 7. On démarre bas, on monte doucement. Ajouter de la capacité est facile ; réparer une réputation prend des mois.
 
@@ -220,7 +220,7 @@ Surveillez chaque jour pendant la chauffe : le score de santé (cible 90 %, mini
 
 - Toutes les boîtes chauffées 3 semaines, santé au-dessus de 70 %.
 - Aucune chauffe coupée, DNS vert sur chaque domaine.
-- Liste vérifiée à 100 % (`trouver_email`).
+- Liste filtrée sur `email_statut` (`trouver_email`) : seuls `DELIVERABLE` et `HIGH_PROBABILITY` partent, `CATCH_ALL` et `UNKNOWN` à 20 % au plus.
 - Emails écrits, relus (`relecteurs.md`), validés sur trois exemples par l'utilisateur.
 - Mention d'opt-out présente (`delivrabilite.md`, section 4).
 - `run_inbox_placement_test` passé sur le texte final.
@@ -243,14 +243,14 @@ Surveillez chaque jour pendant la chauffe : le score de santé (cible 90 %, mini
 
 ### La première campagne
 
-50 à 100 contacts. Surveillance 2 ou 3 jours. Si rebond sous 2 %, aucune plainte et des réponses, on monte. On grandit en ajoutant des boîtes en rotation, jamais en poussant la limite d'une boîte.
+50 à 100 contacts. Surveillance 2 ou 3 jours. Si rebond sous 3 %, aucune plainte et des réponses, on monte. On grandit en ajoutant des boîtes en rotation, jamais en poussant la limite d'une boîte.
 
 ### Les métriques de santé
 
 | Métrique | Sain | Alerte | Stop |
 |---|---|---|---|
-| Réponse | 2 % et plus | 1 à 2 % | sous 1 % |
-| Rebond | sous 3 % | 3 à 5 % | plus de 5 % |
+| Réponse | 3 % et plus (à froid sans signal, 2 à 5 % attendus en France ; avec signal, 10 à 20 %) | 1 à 3 % : sous 3 %, la délivrabilité se dégrade | sous 1 % |
+| Rebond | sous 3 % | 3 à 5 % : on vérifie la liste | 5 % et plus : arrêt de la campagne |
 | Plainte spam | 0 | une | plusieurs |
 | Score de délivrabilité (audit Lemlist) | plus de 95 % | 90 à 95 % | sous 90 % |
 
@@ -304,7 +304,7 @@ Les pièges : avez-vous enregistré ? le bon domaine ? l'hôte exact (`@`, vide,
 
 **Les emails partent en spam.** Dans l'ordre : les quatre enregistrements DNS présents ? la redirection du domaine en place ? les boîtes chauffées 3 semaines ? le volume dans les limites ? le texte propre (mots de spam, liens, HTML) ? aucune liste noire ? le domaine de suivi en place si suivi de clic ? une photo sur chaque boîte ?
 
-**Le rebond dépasse 5 %.** Pause immédiate. Identifier la source : liste, domaine, DNS. Nettoyer (retirer tous les rebonds). Reprendre à 50 % du volume pendant 3 jours, 75 % les jours 5 à 7, 100 % à partir du jour 8.
+**Le rebond atteint 5 %.** Arrêt immédiat de la campagne. Identifier la source : liste, domaine, DNS. Nettoyer (retirer tous les rebonds). Reprendre à 50 % du volume pendant 3 jours, 75 % les jours 5 à 7, 100 % à partir du jour 8.
 
 **Un domaine est listé.** Arrêter tout envoi depuis ce domaine. Identifier la liste (`run_deliverability_audit` ou MXToolbox). Suivre la procédure de retrait de la liste. Corriger la cause avant de reprendre. Listé sur plusieurs listes : le domaine est brûlé, on en monte un nouveau.
 

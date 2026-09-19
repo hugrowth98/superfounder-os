@@ -1,14 +1,14 @@
 ---
 name: signaux-concurrents
 description: >
-  Détecte les personnes qui gravitent autour de vos concurrents (engageurs et abonnés de leurs pages, auteurs d'avis négatifs, clients identifiés, entreprises dont les pubs tournent) et déclenche l'approche sur le problème que le concurrent laisse ouvert. Se déclenche sur : "mes concurrents", "ceux qui suivent mon concurrent", "commentent chez mon concurrent", "avis négatifs", "clients de mon concurrent", "insatisfaits de", "les pubs de mon concurrent", "alternative à", "renouvellement chez un concurrent". Ne pas utiliser pour : un outil concurrent qui apparaît ou disparaît d'une stack, voir `changement-techno` ; l'engagement avec vos propres posts, voir `engagement-contenu`.
+  Détecte les personnes qui gravitent autour de vos concurrents (engageurs de leurs posts, auteurs d'avis négatifs, clients identifiés, entreprises dont les pubs tournent ; les abonnés d'une page ne se listent pas) et déclenche l'approche sur le problème que le concurrent laisse ouvert. Se déclenche sur : "mes concurrents", "ceux qui suivent mon concurrent", "commentent chez mon concurrent", "avis négatifs", "clients de mon concurrent", "insatisfaits de", "les pubs de mon concurrent", "alternative à", "renouvellement chez un concurrent". Ne pas utiliser pour : un outil concurrent qui apparaît ou disparaît d'une stack, voir `changement-techno` ; l'engagement avec vos propres posts, voir `engagement-contenu`.
 ---
 
 Les gens qui commentent chez un concurrent, qui le notent mal ou qui l'utilisent sont déjà dans votre catégorie, cette semaine : un avis négatif documenté vaut 50 points, un engagement avec le contenu d'un concurrent en vaut 25, et les deux se travaillent sans jamais dénigrer le concurrent.
 
 ## Ressources
 
-- `{SKILL_BASE}/ressources/bareme-signaux.md` : avis négatif 50, cycle d'évaluation 45, engagement 25, abonné 15, mouvement marquant 15.
+- `{SKILL_BASE}/ressources/bareme-signaux.md` : avis négatif 50, cycle d'évaluation 45, fin de contrat 45, engagement 25, client identifié 20, pub active 15.
 - `{SKILL_BASE}/ressources/fenetres-fraicheur.md` : engagement j0 à j7, avis j0 à j60 (frais 180 jours), pub tant qu'elle tourne.
 - `{SKILL_BASE}/ressources/plays-signaux.md` : play 8 (avis négatifs).
 - `{SKILL_BASE}/ressources/taxonomie-declencheurs.md` : famille 4, concurrents (déclencheurs 8 à 16).
@@ -28,10 +28,10 @@ Les gens qui commentent chez un concurrent, qui le notent mal ou qui l'utilisent
 
 | Étape | Verbe | Skill d'exécution | Paramètres et notes |
 |---|---|---|---|
-| 1a | scraper_engagement | `scraper-engagement` | Unipile, `posts/{id}/reactions` et `/comments` sur les 10 derniers posts de la page du concurrent et de ses salariés qui publient. Inclus dans l'abonnement, dans les quotas LinkedIn. Secours : `harvestapi/linkedin-post-comments`, 0,002 $ par commentaire. |
+| 1a | scraper_engagement | `scraper-engagement` | Unipile : `--post <url>` pour les derniers posts de la page du concurrent (URL relevées sur la page), `--mes-posts 10 --posts-de <slug>` pour chacun de ses salariés qui publient. Inclus dans l'abonnement, dans les quotas LinkedIn. Secours : `harvestapi/linkedin-post-comments`, 0,002 $ par commentaire. |
 | 1b | lecture à la main, puis trouver_personnes | `trouver-personnes` | avis négatifs : lecture mensuelle des comparateurs de logiciels ou de prestataires de votre catégorie ; auteur retrouvé par Sales Nav quand nom et entreprise sont visibles. Aucun actor d'avis dans la stack. |
-| 1c | detecter_techno, scraper_offres_emploi | `enrichir-entreprise --techno`, `scraper-offres-emploi` | clients d'un concurrent : son outil détecté sur le site (`scrapemint/website-tech-stack-detector`), ou demandé dans une offre (`keywords` = nom du concurrent). Page clients du concurrent lue à la main chaque trimestre. |
-| 1d | scraper_pubs | `enrichir-entreprise --pubs` | pubs actives : `curious_coder/facebook-ads-library-scraper` pour Meta (0,00075 $ par pub) ; LinkedIn selon le skill. Sur le concurrent (son mouvement marquant, 15) et sur votre catégorie (les entreprises qui dépensent = budget actif, 15). |
+| 1c | detecter_techno, scraper_offres_emploi | `enrichir-entreprise --techno`, `scraper-offres-emploi` | clients d'un concurrent : son outil détecté sur le site par `enrichir-entreprise --techno --cherche <outil>` (`scrapemint/website-tech-stack-detector`, colonne `techno_cible = oui`), ou demandé dans une offre (`--mots-cles` = nom du concurrent). Page clients du concurrent lue à la main chaque trimestre. |
+| 1d | scraper_pubs | `enrichir-entreprise --pubs` | pubs actives : `curious_coder/facebook-ads-library-scraper` pour Meta (0,00075 $ par pub) ; LinkedIn selon le skill. Sur le concurrent (`pub_active`, 15 : un budget marketing actif chez lui) et sur votre catégorie (les entreprises qui dépensent = budget actif, 15). |
 | 2 | qualifier_liste | `qualifier-liste` | ICP, exclusion des salariés et partenaires du concurrent, de vos clients |
 | 3 | dedoublonner | `dedoublonner` | contre HubSpot et vos séquences ; un engageur revient chaque semaine |
 | 4 | enrichir_personne, trouver_email | `enrichir-personne`, `trouver-email` | profil complet, email vérifié |
@@ -40,7 +40,7 @@ Les gens qui commentent chez un concurrent, qui le notent mal ou qui l'utilisent
 
 **CSV en entrée** : `entreprise, linkedin_entreprise_url, domaine` pour les concurrents, et la liste de leurs salariés qui publient (`linkedin_url`).
 
-**CSV en sortie** : colonnes normalisées, plus `signal_type` (`concurrent_engagement`, `concurrent_avis`, `concurrent_client`, `concurrent_pub`), `signal_date`, `signal_detail` ("commentaire sous le post de {{concurrent}} du {{date}} : {{extrait}}" ; "avis {{note}}/5 du {{date}} : {{problème cité}}" ; "outil {{concurrent}} détecté sur {{domaine}}"), `score_signal`, `fraicheur`, `source` (`unipile`, `comparateur`, `scrapemint/website-tech-stack-detector`, `curious_coder/facebook-ads-library-scraper`).
+**CSV en sortie** : colonnes normalisées, plus `signal_type` (`commentaire` ou `like` pour un engageur ; `techno` pour un client identifié par son site ; `pub_active` pour une pub qui tourne ; un avis négatif, saisi à la main, est une ligne `profil_entreprise` dont `signal_detail` porte l'avis), `signal_date`, `signal_detail` ("commentaire sous le post de {{concurrent}} du {{date}} : {{extrait}}" ; "avis {{note}}/5 du {{date}} sur {{concurrent}} : {{problème cité}}" ; "utilise {{concurrent}}, détecté sur {{domaine}}"), `score_signal`, `fraicheur`, `source` (`unipile`, `scrapemint/website-tech-stack-detector`, `curious_coder/facebook-ads-library-scraper` ; vide pour un avis saisi à la main).
 
 ## Repères
 
@@ -51,8 +51,8 @@ Les gens qui commentent chez un concurrent, qui le notent mal ou qui l'utilisent
 | Fin de contrat annuel chez un concurrent | 45 | j60 à j90 avant l'échéance | à la date |
 | Engagé avec les posts d'un concurrent ou de ses salariés | 25 | j0 à j7, frais 30 j | sous 72 h |
 | Client d'un concurrent identifié | 20 | permanent | au renouvellement |
-| Abonné d'un concurrent | 15 | permanent | à empiler, jamais seul |
-| Mouvement marquant d'un concurrent (pub, lancement) | 15 | j0 à j30 | dans la semaine |
+| Abonné d'un concurrent (non listable, saisi à la main) | 15 | permanent | à empiler, jamais seul |
+| Pub active du concurrent ou d'une entreprise de votre catégorie | 15 | tant qu'elle tourne | dans la semaine, à empiler |
 
 | Repère | Valeur |
 |---|---|
@@ -79,7 +79,7 @@ Bonjour {{prenom}},
 
 {{Le_probleme_decrit_dans_l_avis}} revient chez presque tous les utilisateurs de {{categorie}} que je croise : {{consequence_concrete}}. On a construit {{votre_difference}} pour ça, chez {{client_similaire}} ça a donné {{resultat_chiffre}}.
 
-Je vous envoie une comparaison en une page, sans engagement ?
+Je vous envoie une comparaison en une page ?
 ```
 
 ## Règles
@@ -94,6 +94,6 @@ Je vous envoie une comparaison en une page, sans engagement ?
 
 ## Exemples
 
-- "Récupère les gens qui commentent chez mon concurrent" : scraper_engagement sur ses 10 derniers posts et ceux de ses deux dirigeants, exclusion des salariés et partenaires, qualification ICP, 25 points, message LinkedIn sous 72 h sur le problème de la catégorie.
+- "Récupère les gens qui commentent chez mon concurrent" : scraper_engagement sur les URL de ses derniers posts de page et `--mes-posts 10 --posts-de <slug>` pour ses deux dirigeants, exclusion des salariés et partenaires, qualification ICP, 25 points, message LinkedIn sous 72 h sur le problème de la catégorie.
 - "Trouve les insatisfaits de tel prestataire" : lecture des comparateurs de la catégorie, auteurs identifiables retrouvés par trouver_personnes, 50 points, email sous 24 h sur le problème décrit, comparaison en une page proposée.
-- "Qui utilise l'outil de mon concurrent parmi mes comptes cibles ?" : detecter_techno sur la colonne `domaine`, ligne du concurrent repérée, 20 points, ciblage permanent, réveil 60 à 90 jours avant le renouvellement quand la date de signature est connue.
+- "Qui utilise l'outil de mon concurrent parmi mes comptes cibles ?" : `enrichir-entreprise --techno --cherche <outil du concurrent>` sur la colonne `domaine` (colonne `techno_cible = oui`), `signal_type` = `techno`, 20 points, ciblage permanent, réveil 60 à 90 jours avant le renouvellement quand la date de signature est connue.

@@ -44,7 +44,7 @@ Adjacent = un cran à côté de la cible. Détection par `detecter_techno`. Si v
 | Signal prioritaire n°1 de la section 4, daté de moins de [30] jours | 15 |
 | Signal prioritaire n°2 à n°5, daté de moins de [60] jours | 10 |
 | Deux signaux ou plus qui s'empilent | 10 |
-| Engagement direct avec vous (visite de profil, commentaire, réponse passée, event) | 5 |
+| Engagement direct avec vous (commentaire, réponse passée, présent à un de vos events) | 5 |
 
 ### Tiers (modifiables)
 
@@ -100,17 +100,17 @@ Un signal dit "c'est le bon moment". Choisir cinq signaux parmi ces sept, les cl
 
 | Signal | Ce que c'est | Fenêtre utile | Verbe |
 |---|---|---|---|
-| Changement de poste | un décideur arrive dans une nouvelle fonction | jours 14 à 90 | detecter_signal |
-| Levée de fonds | budget neuf, plan de croissance | semaines 2 à 12 | detecter_signal |
-| Recrutement | une offre ouverte sur un poste lié à votre offre | tant que l'offre est ouverte | scraper_offres_emploi |
-| Événement | salon, conférence, webinaire, live où votre cible est | 2 semaines avant, 1 semaine après | scraper_engagement |
-| Techno | adopte ou abandonne un outil lié à votre offre | 90 jours | detecter_techno |
-| Engagement contenu | like, commentaire, visite de profil sur votre sujet | 7 jours | scraper_engagement |
-| Concurrents | client d'un concurrent, pub active, avis publié | 30 jours | scraper_pubs |
+| Changement de poste | un décideur arrive dans une nouvelle fonction | jours 14 à 45 (pic), jusqu'à 90 | detecter_signal |
+| Levée de fonds | budget neuf, plan de croissance | semaines 2 à 4 (pic), jusqu'à 8 ; Série C et plus : semaines 5 à 12 | detecter_signal |
+| Recrutement | une offre ouverte sur un poste lié à votre offre | jours 14 à 30 après publication, frais 60 jours | scraper_offres_emploi |
+| Événement | salon, conférence, webinaire, live où votre cible est | 7 jours avant à 7 jours après | scraper_engagement |
+| Techno | adopte ou abandonne un outil lié à votre offre | jours 0 à 30 (pic), frais 60 jours | detecter_techno |
+| Engagement contenu | like, commentaire sur votre sujet | jours 0 à 7 (pic), frais 30 jours | scraper_engagement |
+| Concurrents | engagement sur leurs posts (7 jours), avis négatif (60 jours), client identifié (permanent), pub active (tant qu'elle tourne) | selon le cas | scraper_engagement, scraper_pubs, detecter_techno |
 
 | Rang | Signal choisi | Pourquoi il compte pour cette offre | Fraîcheur max |
 |---|---|---|---|
-| 1 | [ ] <!-- ex : Recrutement d'un expert SWIFT --> | [ ] <!-- ex : ils cherchent un profil qu'on place en 3 semaines --> | [ ] <!-- ex : 45 jours --> |
+| 1 | [ ] <!-- ex : Recrutement d'un expert SWIFT --> | [ ] <!-- ex : ils cherchent un profil qu'on place en 3 semaines --> | [ ] <!-- ex : 60 jours ; le détail des fenêtres est dans detecter-signaux/ressources/fenetres-fraicheur.md --> |
 | 2 | [ ] | [ ] | [ ] |
 | 3 | [ ] | [ ] | [ ] |
 | 4 | [ ] | [ ] | [ ] |
@@ -128,7 +128,7 @@ Les plafonds absolus sont dans `05_Departements/Go-to-Market/GARDE-FOUS.md`, le 
 
 - Nouveaux prospects entrés en séquence par semaine : [ ] <!-- ex : 20 -->
 - Rendez-vous visés par semaine : [ ] <!-- ex : 5 -->
-- Séquence par défaut : LinkedIn, email, email, LinkedIn, téléphone (détail et timing dans `10_Skills/cold-call/ressources/sequence-multicanal.md`). Variante voulue : [ ]
+- Séquence de référence, multicanal : LinkedIn J0, email J+2, email J+5, LinkedIn J+7, téléphone J+9 à J+12 (détail dans `10_Skills/cold-call/ressources/sequence-multicanal.md`). Email seul : 3 emails au plus (J0, J+3, J+10). Jamais plus de 3 relances après silence, tous canaux confondus. Variante voulue : [ ]
 - Jours et heures d'envoi : [ ] <!-- ex : mardi à jeudi, 8h30 à 11h et 14h à 17h -->
 
 ## 6. Voix

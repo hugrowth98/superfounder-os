@@ -314,7 +314,7 @@ def main() -> None:
     connus = charger_intermediaires()
     for l in lignes:
         st, raison = classer(l.get("entreprise", ""), l.get("secteur", ""), connus)
-        l.update({"statut_entreprise": st, "raison_statut": raison, "signal_type": "recrutement",
+        l.update({"statut_entreprise": st, "raison_statut": raison, "signal_type": "offre_emploi",
                   "signal_detail": f"offre : {l.get('poste')} ({l.get('ville') or '?'})", "date_extraction": aujourd_hui(),
                   "fraicheur": fraicheur(l.get("signal_date"))})
     sortie = Path(a.out) if a.out else chemin_sortie(VERBE, sujet)
@@ -336,7 +336,7 @@ def main() -> None:
         agreg.append({"entreprise": grp[0].get("entreprise"), "domaine": next((g.get("domaine") for g in grp if g.get("domaine")), ""),
                       "linkedin_entreprise_url": next((g.get("linkedin_entreprise_url") for g in grp if g.get("linkedin_entreprise_url")), ""),
                       "ville": grp[0].get("ville"), "secteur": grp[0].get("secteur"), "effectif": grp[0].get("effectif"),
-                      "source": actor, "date_extraction": aujourd_hui(), "signal_type": "recrutement",
+                      "source": actor, "date_extraction": aujourd_hui(), "signal_type": "vague_recrutement",
                       "signal_date": max((g.get("signal_date") or "" for g in grp), default=""),
                       "signal_detail": f"{nb} offre(s) : " + " | ".join(postes)[:200], "fraicheur": fraicheur(max((g.get("signal_date") or "" for g in grp), default="")),
                       "nb_offres": nb, "nb_offres_precedent": prev.get("nb", ""), "delta": (nb - prev["nb"]) if prev else "",

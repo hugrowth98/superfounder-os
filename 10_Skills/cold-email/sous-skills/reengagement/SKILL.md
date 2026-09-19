@@ -1,7 +1,7 @@
 ---
 name: reengagement
 description: >
-  Écrit les emails qui réactivent des prospects anciens hors séquence active : rendez-vous sans suite, affaires perdues, prospects disparus, séquences terminées depuis 3 mois, renouvellements. Se déclenche sur : "réengager", "réactiver", "closed-lost", "affaire perdue", "il a disparu", "plus de nouvelles depuis", "no-show", "relancer d'anciens leads", "reprendre contact". Ne pas utiliser pour les relances d'une séquence en cours (voir relance) ni pour un premier contact (voir premier-contact).
+  Écrit les emails qui réactivent des prospects anciens hors séquence active : rendez-vous sans suite, affaires perdues, prospects disparus, séquences terminées depuis 3 mois, renouvellements. Se déclenche sur : "réengager", "réactiver", "closed-lost", "affaire perdue", "il a disparu", "plus de nouvelles depuis", "relancer d'anciens leads", "reprendre contact". Ne pas utiliser pour les relances d'une séquence en cours (voir relance), pour un premier contact (voir premier-contact), ni pour un rendez-vous manqué (sous-skill no-show du master cold-call).
 ---
 
 Un prospect qui a répondu une fois, ou qui a pris rendez-vous, vaut dix contacts à froid : la question orientée non ("ce serait une mauvaise idée de reprendre le fil ?") obtient 10 à 15 % de réponses sur ces listes. Le réengagement marche quand il reconnaît le silence, apporte du nouveau, et rend le non facile.
@@ -15,7 +15,7 @@ Un prospect qui a répondu une fois, ou qui a pris rendez-vous, vaut dix contact
 
 ## Méthode
 
-1. **Reconstituer l'historique** : dernier contact (date, canal), ce qui a été dit, l'objection donnée, pourquoi le fil s'est arrêté. Source : CRM (`dedoublonner` avec HubSpot), Lemlist, notes de l'utilisateur. Sans historique, c'est un premier contact, pas un réengagement.
+1. **Reconstituer l'historique** : dernier contact (date, canal), ce qui a été dit, l'objection donnée, pourquoi le fil s'est arrêté. Source : HubSpot (à lire dans le CRM, ou `crm lire --statut perdus` pour les affaires perdues avec leur `date_cloture`), le CSV de la liste d'appel (`resultat_appel`, `qualification_cold_call`, `objection_principale`, `next_step`), Lemlist, notes de l'utilisateur. Sans historique, c'est un premier contact, pas un réengagement.
 2. **Classer la situation** : disparu en pleine conversation (2 à 3 semaines), démo sans suite (2 à 4 mois), affaire perdue (3 à 6 mois), séquence terminée (3 mois), renouvellement (30 à 60 jours avant).
 3. **Vérifier que la personne est toujours en poste** (`enrichir_personne`). Si elle a changé d'entreprise, le message change : template #19 (reconnexion) plutôt que réengagement.
 4. **Trouver ce qui a changé** depuis : une nouveauté de l'offre, un nouveau cas client, un signal chez le prospect (`detecter_signal`). Sans nouveauté, pas d'email.
@@ -25,13 +25,13 @@ Un prospect qui a répondu une fois, ou qui a pris rendez-vous, vaut dix contact
 
 ## Exécution
 
-1. `dedoublonner` (skill `dedoublonner`) avec le CRM : dernier contact, statut de l'affaire, objection notée. Colonnes : `dernier_contact_date`, `dernier_contact_canal`, `statut_affaire`, `objection`, `notes`.
-2. `verifier_reponses` (skill `verifier-reponses`) : personne n'a repris le fil entre-temps. Colonnes : `reponse`, `ne_plus_contacter`.
-3. `enrichir_personne` (skill `enrichir-personne`) : toujours en poste ? Colonnes : `titre`, `entreprise`, `changement_poste`.
+1. Historique : aucun verbe ne produit de colonnes `dernier_contact_*`, `statut_affaire`, `objection` ou `notes`. Le dernier contact, le statut de l'affaire et l'objection se lisent dans HubSpot (le skill `crm` n'exporte que les affaires gagnées ou perdues, `crm lire --statut perdus`, avec `date_cloture`, sans raison de perte) ou dans le CSV de la liste d'appel (`resultat_appel`, `qualification_cold_call`, `objection_principale`, `next_step`), et Claude les recopie dans le CSV de réengagement. `dedoublonner --hubspot` (skill `dedoublonner`) sert seulement à marquer `dans_crm` et les identifiants HubSpot.
+2. `verifier_reponses` (skill `verifier-reponses`) : personne n'a repris le fil entre-temps. Colonnes : `reponse_canal`, `reponse_date`, `reponse_texte`, `ne_plus_contacter`.
+3. `enrichir_personne` (skill `enrichir-personne`) : toujours en poste ? Colonnes : `titre`, `entreprise`, `anciennete_poste`, `experiences` (Claude compare avec l'entreprise connue ; aucune colonne `changement_poste`). Le signal `changement_poste` daté vient de `detecter_signal` (`signal_type`, `signal_date`).
 4. `detecter_signal` (skill `detecter-signaux` (script `detecter_signal.py`)) : ce qui a changé chez lui. Colonnes : `signal_type`, `signal_date`, `signal_detail`.
 5. `trouver_email` (skill `trouver-email`) si `email_statut` a plus de 30 jours.
-6. Rédaction (interne) : colonnes `situation` (disparu, demo, perdu, sequence, renouvellement), `nouveaute`, `objet`, `email_1`, `email_2`.
-7. `envoyer_sequence` (skill `envoyer-sequence`) : campagne Lemlist dédiée, 2 emails au plus, après validation.
+6. Rédaction (interne) : colonnes `situation` (disparu, demo, perdu, sequence, renouvellement), `nouveaute`, `var_objet`, `var_email_1`, `var_email_2` (préfixe `var_` : poussées comme variables Lemlist).
+7. `envoyer_sequence` (skill `envoyer-sequence`) : campagne Lemlist dédiée, 2 emails au plus ; `envoyer_lemlist.py` pousse les leads et leurs variables, les deux étapes s'écrivent dans Lemlist ou par le MCP. Après validation.
 
 Entrée : CSV des anciens prospects, avec au minimum `prenom`, `entreprise`, `email`, `dernier_contact_date`. Sortie : `messages_reengagement_<sujet>_<YYYY-MM-DD>.csv` dans `05_Departements/Go-to-Market/Messages/`.
 
@@ -86,6 +86,6 @@ C'est toujours sur votre liste, ou je ferme le dossier ?
 
 ## Exemples
 
-- "Je veux relancer les prospects qui ont fait une démo il y a 3 mois" : `dedoublonner` pour l'historique, `enrichir_personne` pour le poste, template #31 avec la nouveauté depuis la démo, deux emails à 5 jours, trois exemples montrés.
+- "Je veux relancer les prospects qui ont fait une démo il y a 3 mois" : l'historique lu dans HubSpot ou le CSV de la liste d'appel, `enrichir_personne` pour le poste, template #31 avec la nouveauté depuis la démo, deux emails à 5 jours, trois exemples montrés.
 - "On a perdu cette affaire en mars, il avait dit que c'était trop cher" : template #32, l'objection prix citée, ce qui a changé (nouvelle formule, cas client comparable, calcul), CTA "second regard".
-- "Il m'a posé un lapin jeudi" : `reponses.md` section no-show, un message le jour même avec deux créneaux, puis un dernier message avec la ressource promise deux jours plus tard.
+- "Il m'a posé un lapin jeudi" : sous-skill `no-show` du master `cold-call`, qui tient la procédure (appel dix minutes après l'heure, puis message de deux lignes avec deux créneaux).

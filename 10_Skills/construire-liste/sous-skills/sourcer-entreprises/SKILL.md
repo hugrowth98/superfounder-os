@@ -2,8 +2,8 @@
 name: sourcer-entreprises
 description: >
   Trouve les entreprises qui correspondent à l'ICP en combinant plusieurs sources :
-  chaudes (CRM, engagement, événements), bases larges (Sales Navigator, actor Apollo,
-  Crustdata), spécialisées (Google Maps pour le local, annuaires, lookalikes). Se
+  chaudes (CRM, engagement, événements), bases larges (Sales Navigator,
+  `code_crafter/leads-finder`, Crustdata), spécialisées (Google Maps pour le local, annuaires, lookalikes). Se
   déclenche sur : "trouve des entreprises", "des boîtes qui", "des agences", "des
   cabinets", "des commerces à", "où trouver des", "liste d'entreprises", "sourcer". Ne pas
   utiliser pour trouver des personnes (voir `sourcer-personnes`), pour partir des
@@ -22,8 +22,8 @@ Une seule source couvre environ 60 % d'un marché, deux sources en couvrent 85 %
 ## Méthode
 
 1. Lisez la couche 1 de l'ICP dans `05_Departements/Go-to-Market/contexte.md` : secteurs, effectif, zones. Les contraintes de la demande ("à Lyon", "de plus de 20 personnes") s'ajoutent par-dessus. Sans ICP rempli, arrêtez et renvoyez vers `definir-icp`.
-2. Cherchez d'abord la source chaude. Le CRM (fermés-perdus de plus de 6 mois, churnés, contacts sans affaire), les réactions aux posts de l'utilisateur, ses inscrits. Une ligne chaude vaut dix lignes froides ; elle passe en tête de liste avec `source = crm` ou `source = engagement`.
-3. Choisissez deux sources dans la matrice selon la cible : tech et services numériques, Sales Navigator puis actor Apollo ; PME traditionnelles, actor Apollo ou Crustdata puis annuaire ; local, Google Maps puis pages entreprise ; niche, annuaire puis lookalikes. Une seule source si l'utilisateur veut moins de 200 entreprises.
+2. Cherchez d'abord la source chaude. Le CRM (les affaires perdues de plus de 6 mois : `crm lire --statut perdus`, filtré sur `date_cloture` ; il n'existe pas d'export "churnés" ni "sans affaire"), les réactions aux posts de l'utilisateur, ses inscrits. Une ligne chaude vaut dix lignes froides ; elle passe en tête de liste, repérable à sa `source` (`hubspot` pour l'export CRM, `unipile` ou l'actor de `scraper_engagement` pour les réactions).
+3. Choisissez deux sources dans la matrice selon la cible : tech et services numériques, Sales Navigator puis `code_crafter/leads-finder` ; PME traditionnelles, `code_crafter/leads-finder` ou Crustdata puis annuaire ; local, Google Maps puis pages entreprise ; niche, annuaire puis lookalikes. Une seule source si l'utilisateur veut moins de 200 entreprises. `code_crafter/leads-finder` interroge une base de contacts : il rend une ligne par entreprise, dédoublonnée par domaine, avec le dirigeant trouvé au passage (`dirigeant_trouve`, `dirigeant_linkedin_url`, `dirigeant_email`, non vérifié).
 4. Traduisez l'ICP en filtres de chaque outil : secteur, effectif, zone, mots-clés. Écrivez les filtres noir sur blanc avant de lancer. Sur Sales Navigator, si le total dépasse 2 500, découpez par région ou par tranche d'effectif.
 5. Annoncez le plan : sources, filtres, volume attendu, coût par source, nom du fichier. Attendez le oui. Lancez sur 25 lignes, montrez-les, puis le reste.
 6. Fusionnez les runs et dédoublonnez par `domaine`, puis par `linkedin_entreprise_url`, puis par `entreprise` normalisée. Notez dans `source` les sources concaténées.
@@ -34,11 +34,11 @@ Une seule source couvre environ 60 % d'un marché, deux sources en couvrent 85 %
 
 | Étape | Verbe | Skill d'exécution | Entrée | Sortie |
 |---|---|---|---|---|
-| 2 | `dedoublonner` (export CRM des fermés-perdus et churnés) | `dedoublonner` | rien | `entreprise`, `domaine`, `secteur`, `effectif`, `source = crm` |
+| 2 | `lire_crm` (export des affaires perdues) | `crm` (`lire --statut perdus`) | rien | `entreprise`, `domaine`, `secteur`, `effectif`, `affaire`, `montant`, `date_cloture`, `statut`, `source = hubspot` |
 | 3 à 5 | `trouver_entreprises` | `trouver-entreprises` | secteur, effectif, zone, mots-clés ; ou une catégorie et une ville pour Google Maps ; ou l'URL d'un annuaire | `entreprise`, `domaine`, `linkedin_entreprise_url`, `secteur`, `effectif`, `ville`, `pays`, `source`, `date_extraction`, et pour Google Maps `telephone_entreprise`, `note_google`, `nb_avis` |
-| 3, si lookalikes | `trouver_lookalikes` | `trouver-lookalikes` | `domaine` des clients de référence, 10 par appel | mêmes colonnes, `source = lookalikes` |
+| 3, si lookalikes | `trouver_lookalikes` | `trouver-lookalikes` | `domaine` des clients de référence, 10 par appel | mêmes colonnes, `source = ocean` |
 | 6 | `dedoublonner` (dans la liste) | `dedoublonner` | les CSV de chaque run | un CSV fusionné, `exclu`, `raison_exclusion = doublon` |
-| 7 | `enrichir_entreprise` | `enrichir-entreprise` | `domaine` ou `linkedin_entreprise_url`, lignes où une colonne de fit est vide | `secteur`, `effectif`, `ville`, `pays`, `domaine`, `linkedin_entreprise_url` complétés |
+| 7 | `enrichir_entreprise` | `enrichir-entreprise` | `domaine` ou `linkedin_entreprise_url`, lignes où une colonne de fit est vide | `secteur`, `effectif`, `ville`, `pays`, `domaine`, `linkedin_entreprise_url` complétés, plus `description`, `tagline`, `chiffre_affaires_estime`, `stade_financement`, `nb_offres_emploi` (et `posts_recents` avec `--posts`) |
 
 Sortie : `trouver-entreprises_<sujet>_<date>.csv` dans `05_Departements/Go-to-Market/Listes-prospection/`.
 
@@ -80,5 +80,5 @@ Next step : qualifier-comptes
 ## Exemples
 
 - "Trouve-moi des agences immobilières à Lyon" : Google Maps sur "agence immobilière Lyon", filtre sur le nombre d'avis, puis pages entreprise LinkedIn pour compléter ; réponse attendue : un CSV d'entreprises avec téléphone et site, doublons retirés, prêt pour `qualifier-comptes`.
-- "Des SaaS RH de 20 à 200 personnes en France" : Sales Navigator via Unipile (secteur logiciels, mots-clés RH, effectif 11-50 et 51-200 en deux runs) puis actor Apollo avec les mêmes filtres ; réponse attendue : fusion par domaine, nombre de lignes par source, taux de doublons.
-- "Qui je peux recontacter dans mon CRM ?" : export des fermés-perdus de plus de 6 mois et des churnés via `dedoublonner` ; réponse attendue : une liste chaude avec la date et la raison de la perte, à traiter avant toute source froide.
+- "Des SaaS RH de 20 à 200 personnes en France" : Sales Navigator via Unipile (secteur logiciels, mots-clés RH, effectif 11-50 et 51-200 en deux runs) puis `code_crafter/leads-finder` avec les mêmes filtres ; réponse attendue : fusion par domaine, nombre de lignes par source, taux de doublons.
+- "Qui je peux recontacter dans mon CRM ?" : `crm lire --statut perdus`, filtré sur les pertes de plus de 6 mois (`date_cloture`) ; réponse attendue : une liste chaude avec la date de la perte et l'affaire, à traiter avant toute source froide.

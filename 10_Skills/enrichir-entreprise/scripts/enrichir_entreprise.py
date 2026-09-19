@@ -83,6 +83,9 @@ def cibles(lignes: list[dict], forcer: bool, maximum: int | None) -> list[int]:
     return idx[:maximum] if maximum else idx
 
 
+POSTS = False
+
+
 def via_unipile(lignes, idx, dry_run, pause):
     if dry_run:
         bandeau_dry_run("Unipile GET /api/v1/linkedin/company/{id}", [f"{len(idx)} entreprise(s), une requete par entreprise (recherche par nom si pas d'URL)",
@@ -94,6 +97,8 @@ def via_unipile(lignes, idx, dry_run, pause):
         ident = slug_linkedin(l.get("linkedin_entreprise_url")) or l.get("entreprise")
         try:
             fusion(l, u.entreprise(ident), "unipile")
+            if POSTS:
+                l["posts_recents"] = " || ".join(u.posts(slug_linkedin(l.get("linkedin_entreprise_url")) or l.get("unipile_id") or ident, entreprise=True))
             ok += 1
         except Exception as e:
             l["erreur_enrichissement_entreprise"] = str(e)[:120]
@@ -171,8 +176,13 @@ def main() -> None:
     ap.add_argument("--cherche", help="avec --techno : technos a reperer, separees par des virgules")
     ap.add_argument("--diff", action="store_true", help="avec --techno : comparer au dernier run")
     ap.add_argument("--plateforme", default="les-deux", help="avec --pubs : meta, linkedin ou les-deux")
+    ap.add_argument("--techno-source", choices=["apify", "predictleads"], default="apify", help="avec --techno : apify (photo + diff) ou predictleads (detections datees)")
+    ap.add_argument("--recentes-jours", type=int, help="avec --techno-source predictleads : une ligne techno_ajout par techno vue depuis N jours")
+    ap.add_argument("--posts", action="store_true", help="ajouter posts_recents (5 derniers posts de la page, Unipile)")
     a = ap.parse_args()
 
+    global POSTS
+    POSTS = a.posts
     if a.sans_base and not (a.techno or a.pubs):
         arret("--sans-base n'a de sens qu'avec --techno et/ou --pubs")
     if a.sans_base:
@@ -211,6 +221,10 @@ def _options(a, csv_source: Path) -> None:
             cmd += ["--cherche", a.cherche]
         if a.diff:
             cmd.append("--diff")
+        if a.techno_source != "apify":
+            cmd += ["--source", a.techno_source]
+        if a.recentes_jours:
+            cmd += ["--recentes-jours", str(a.recentes_jours)]
         if a.dry_run:
             cmd.append("--dry-run")
         afficher("  [option techno] " + " ".join(cmd[2:]))

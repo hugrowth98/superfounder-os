@@ -15,19 +15,19 @@ Et une cinquième pour aller plus loin que l'évidence : **qu'est-ce que le sign
 
 ## La règle du signal brut
 
-Ne citez jamais le signal. Citez le problème que le signal crée. Le prospect reçoit dix "félicitations pour votre levée" par semaine ; il ne reçoit jamais "passer de 3 à 8 commerciaux casse le process de qualification que tenait le fondateur".
+Ne citez jamais le signal. Citez le problème que le signal crée. Le prospect reçoit dix formules de félicitation sur sa levée par semaine ; il ne reçoit jamais "passer de 3 à 8 commerciaux casse le process de qualification que tenait le fondateur".
 
-| Signal | Mauvais (signal brut) | Bon (problème créé) |
+| Signal | Mauvais (signal brut, décrit ici, jamais écrit) | Bon (problème créé) |
 |---|---|---|
-| Levée | "J'ai vu que vous veniez de lever 3 M€, félicitations !" | "Passer de 3 à 8 commerciaux en un an, c'est le moment où le process de prospection tenu par le fondateur ne tient plus." |
-| Offre d'emploi | "J'ai remarqué que vous recrutiez un SDR." | "Un SDR met 3 mois à sortir son premier rendez-vous. Entre l'offre et ce premier rendez-vous, le pipe attend." |
-| Nouveau poste | "Félicitations pour votre nomination comme directeur commercial." | "Reprendre une équipe commerciale en septembre, c'est hériter d'un pipe qu'on n'a pas construit et d'un CRM qu'on n'a pas choisi." |
-| Like | "J'ai vu que vous aviez aimé mon post sur le cold call." | "Sur le cold call, la question qui revient chez les dirigeants d'agence, c'est qui appelle quand le fondateur n'a plus le temps." |
-| Commentaire | "Merci pour votre commentaire sous mon post !" | "Votre remarque sur les relances rejoint ce que je vois chez les cabinets de conseil : la troisième relance n'est jamais envoyée." |
-| Techno | "J'ai vu que vous n'utilisiez plus {{outil}}." | "Changer d'outil de {{catégorie}} laisse en général un trou de 6 semaines sur la relance, le temps de migrer les données." |
-| Avis négatif | "J'ai lu votre avis sur {{concurrent}}." | "{{Le problème décrit dans l'avis}} revient chez presque tous les utilisateurs de {{catégorie}} que je croise. On a construit {{votre différence}} pour ça." |
-| Rachat | "J'ai vu que vous aviez racheté {{entreprise}}." | "Fusionner deux équipes commerciales, c'est deux CRM, deux façons de qualifier, et six mois où personne ne sait à qui appartient quel compte." |
-| Nouveau bureau | "Félicitations pour l'ouverture de votre bureau à Nantes." | "Ouvrir une antenne, c'est en général un commercial seul, loin du siège, sans liste locale : le pipe met un trimestre à démarrer." |
+| Levée | une formule de félicitation sur la levée, avec le montant | "Passer de 3 à 8 commerciaux en un an, c'est le moment où le process de prospection tenu par le fondateur ne tient plus." |
+| Offre d'emploi | une phrase qui dit que vous avez remarqué l'offre de SDR | "Un SDR met 3 mois à sortir son premier rendez-vous. Entre l'offre et ce premier rendez-vous, le pipe attend." |
+| Nouveau poste | une formule de félicitation sur la nomination | "Reprendre une équipe commerciale en septembre, c'est hériter d'un pipe qu'on n'a pas construit et d'un CRM qu'on n'a pas choisi." |
+| Like | une phrase qui dit que vous avez vu le like sur votre post | "Sur le cold call, la question qui revient chez les dirigeants d'agence, c'est qui appelle quand le fondateur n'a plus le temps." |
+| Commentaire | un remerciement pour le commentaire | "Votre remarque sur les relances rejoint ce que je vois chez les cabinets de conseil : la troisième relance n'est jamais envoyée." |
+| Techno | une phrase qui dit que vous avez vu qu'ils ont quitté l'outil | "Changer d'outil de {{catégorie}} laisse en général un trou de 6 semaines sur la relance, le temps de migrer les données." |
+| Avis négatif | une phrase qui dit que vous avez lu l'avis | "{{Le problème décrit dans l'avis}} revient chez presque tous les utilisateurs de {{catégorie}} que je croise. On a construit {{votre différence}} pour ça." |
+| Rachat | une phrase qui dit que vous avez vu le rachat | "Fusionner deux équipes commerciales, c'est deux CRM, deux façons de qualifier, et six mois où personne ne sait à qui appartient quel compte." |
+| Nouveau bureau | une formule de félicitation sur l'ouverture du bureau | "Ouvrir une antenne, c'est en général un commercial seul, loin du siège, sans liste locale : le pipe met un trimestre à démarrer." |
 
 Deux exceptions où le signal peut apparaître : un commentaire (c'est une conversation publique ouverte avec vous, vous la continuez) et un cadeau à un nouvel arrivant (vous offrez une ressource pour ses premières semaines, sans rien vendre).
 
@@ -50,7 +50,7 @@ Trois à cinq lignes. Vouvoiement. Un fait avant un adjectif. Une question ferm�
 1. Un tiret cadratin, un demi-cadratin ou un double tiret ? Virer.
 2. "Ce n'est pas X, c'est Y" ? Dire Y.
 3. La dernière ligne est-elle une formule ("l'avenir appartient à ceux qui...") ? Finir sur la question.
-4. Le message commence-t-il par "J'ai vu", "J'ai remarqué", "Félicitations pour" ? Recommencer par le problème.
+4. Le message commence-t-il par "J'ai vu", "J'ai remarqué", ou par une formule de félicitation ? Recommencer par le problème. Les mots "félicitations" et "sans engagement" ne s'écrivent pas dans un message.
 5. "Ce que personne ne vous dit", "Honnêtement ?", "Je ne dis pas que" ? Couper.
 6. Trois exemples parallèles, trois adjectifs à la suite ? Garder le plus fort.
 7. "Crucial", "clé", "révolutionner", "accompagner dans votre croissance" ? Remplacer par un fait.

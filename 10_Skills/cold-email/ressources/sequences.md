@@ -1,6 +1,6 @@
 # Séquences : structures, timing, séquences prêtes
 
-Une séquence est une suite de messages sur un ou plusieurs canaux, avec un angle unique et un support qui change à chaque étape. Ce fichier donne les structures (2, 3, 4 emails), la rotation des propositions de valeur, deux séquences multicanal prêtes à adapter, et les règles de timing.
+Une séquence est une suite de messages sur un ou plusieurs canaux, avec un angle unique et un support qui change à chaque étape. Ce fichier donne les structures (2 et 3 emails ; la variante 4 emails est hors règle), la rotation des propositions de valeur, deux séquences prêtes à adapter, et les règles de timing. La règle : une séquence email seule fait 3 emails au plus (J0, J+3, J+10), et jamais plus de 3 relances après un silence, tous canaux confondus (`05_Departements/Go-to-Market/GARDE-FOUS.md`). La séquence multicanal de référence (LinkedIn J0, email J+2, email J+5, LinkedIn J+7, téléphone J+9 à J+12) est dans `10_Skills/cold-call/ressources/sequence-multicanal.md` et dans `05_Departements/Go-to-Market/contexte.md` section 5.
 
 ## 1. La structure de référence : 3 emails
 
@@ -8,9 +8,9 @@ Une séquence est une suite de messages sur un ou plusieurs canaux, avec un angl
 |---|---|---|---|---|
 | 1 | J0 | nouveau | obtenir la réponse | 80 % des réponses positives arrivent ici ; testez 3 à 4 variantes |
 | 2 | J+3 à J+5 | même fil (RE:) | ajouter du contexte | ce que vous avez coupé de l'email 1 : preuve, ressource, autre angle ; plus court |
-| 3 | J+14 à J+17 | nouveau fil, nouvel objet | baisser la friction | ils n'ont pas répondu deux fois : offrez une ressource, demandez la bonne personne |
+| 3 | J+10 | nouveau fil, nouvel objet | baisser la friction | ils n'ont pas répondu deux fois : offrez une ressource, demandez la bonne personne |
 
-Après l'email 3 sans réponse : pause de 3 mois, puis une nouvelle séquence avec un autre angle. Jamais plus de 3 emails sans pause longue : au-delà, vous agacez et vous finissez en spam.
+Après l'email 3 sans réponse : pause de 3 mois, puis une nouvelle séquence avec un autre angle. Jamais plus de 3 emails sans pause longue, ni plus de 3 relances après un silence tous canaux confondus : au-delà, vous agacez et vous finissez en spam.
 
 Un jour entre deux emails est trop court. 3 à 5 jours est le bon écart.
 
@@ -23,9 +23,9 @@ Tout ce que vous avez dû couper. Le fil est conservé, le lecteur peut remonter
 ### Email 3 : baisser la friction
 Ils ne sont pas convaincus. Un lead magnet, un audit court, une ressource. Un CTA moins exigeant. La question de routage : "si ce n'est pas vous, qui suit ce sujet chez {{entreprise}} ?"
 
-## 2. La variante 4 emails
+## 2. La variante 4 emails (hors règle)
 
-Quand la cible est un compte à plusieurs interlocuteurs ou que le cycle est long.
+Cette variante dépasse la règle des 3 emails. Elle se réserve à une liste qui a déjà répondu une fois (réponse puis silence), quand le compte a plusieurs interlocuteurs ou un cycle long ; jamais sur une liste à froid.
 
 | Email | Rôle | Longueur |
 |---|---|---|
@@ -34,7 +34,7 @@ Quand la cible est un compte à plusieurs interlocuteurs ou que le cycle est lon
 | 3 | la responsabilité de quelqu'un d'autre : "qui gère X chez vous ?", ouvre le fil vers la bonne personne | 2 phrases |
 | 4 | la rupture : "ce n'est pas la priorité en ce moment ?", sortie propre, porte ouverte | 2 à 3 phrases |
 
-Timing : email 2 à J+3, email 3 à J+14 (nouvel objet), email 4 à J+21 si rien. Le squelette de chaque email : ouverture (déclencheur) + hypothèse + preuve chiffrée + question ouverte.
+Timing : email 2 à J+3, email 3 à J+10 (nouvel objet), email 4 à J+17 si rien. Le squelette de chaque email : ouverture (déclencheur) + hypothèse + preuve chiffrée + question ouverte.
 
 ## 3. Les structures courtes de la couche récente
 
@@ -69,9 +69,9 @@ Marche : "Est-ce que je m'adresse à la bonne personne ?", "Quelqu'un d'autre s'
 
 Ne marche pas : culpabiliser, supplier, l'humour forcé ("vous avez dû être avalé par un crocodile"), "je clôture votre dossier" sur un ton vexé.
 
-## 6. Séquence prête : "le plafond de la recommandation", 7 touches
+## 6. Séquence prête : "le plafond de la recommandation", 7 touches (hors règle)
 
-Pour vendre un accompagnement commercial, du conseil ou un système de prospection à un dirigeant qui vit sur le bouche-à-oreille. Angle unique : la recommandation a un plafond, comment générer du pipeline au-delà ? Email et LinkedIn alternés. Envoi via `envoyer-sequence` (Lemlist pour l'email ; Unipile ou Lemlist pour LinkedIn selon `05_Departements/Go-to-Market/OUTILS.md`).
+Sept touches, c'est 4 emails et 3 gestes LinkedIn : plus que les 3 relances autorisées après un silence. Cette séquence sort donc de la règle et se réserve à une liste qui a déjà répondu une fois (réponse puis silence) ; sur une liste à froid, la référence est la séquence multicanal de `10_Skills/cold-call/ressources/sequence-multicanal.md` (LinkedIn J0, email J+2, email J+5, LinkedIn J+7, téléphone J+9 à J+12). Pour vendre un accompagnement commercial, du conseil ou un système de prospection à un dirigeant qui vit sur le bouche-à-oreille. Angle unique : la recommandation a un plafond, comment générer du pipeline au-delà ? Email et LinkedIn alternés. Envoi via `envoyer-sequence` (Lemlist pour l'email ; Unipile ou Lemlist pour LinkedIn selon `05_Departements/Go-to-Market/OUTILS.md`).
 
 | Jour | Canal | Touche | Ce qu'elle fait |
 |---|---|---|---|
@@ -109,7 +109,7 @@ Objet : RE: vos 3 derniers clients
 Vous vous situez où par rapport à ça ?
 ```
 
-**J8, LinkedIn** : un commentaire sur son post le plus récent (une phrase de fond, pas "super post"), puis un message : "J'ai vu votre post sur {{sujet}}. Vous avez creusé la question de la deuxième source de rendez-vous ? Je vous ai écrit deux mots par email à ce sujet."
+**J8, LinkedIn** : un commentaire sur son post le plus récent (une phrase de fond, pas "super post"), puis un message : "Sur {{sujet}}, la question qui revient chez les dirigeants avec qui je parle, c'est la deuxième source de rendez-vous, celle qui tient quand la recommandation cale. Vous l'avez creusée ? Je vous ai écrit deux mots par email à ce sujet."
 
 **J11, la preuve**
 
@@ -201,9 +201,9 @@ Enquêtez seulement si la baisse dépasse ces normes ou ne revient pas à la dat
 1. L'email 1 apporte 80 % des réponses : mettez-y 80 % de l'effort.
 2. Testez 3 à 4 variantes d'email 1 en même temps.
 3. Email 2 dans le même fil, en réponse à vous-même.
-4. Email 3 avec un nouvel objet, un nouveau départ.
+4. Email 3 (J+10) avec un nouvel objet, un nouveau départ.
 5. Le CTA de routage dans l'email 3 : "{{prenom_collegue}} serait mieux placé pour en parler ?"
 6. Sans réponse après 3 emails : 3 mois de pause.
-7. Jamais plus de 3 emails sans pause longue.
+7. Jamais plus de 3 emails sans pause longue, ni plus de 3 relances après un silence, tous canaux confondus.
 8. Chaque email apporte une valeur seule : jamais une relance qui ne fait que demander la permission de relancer.
 9. Un prospect qui répond, sur n'importe quel canal, sort de la séquence le jour même (`verifier_reponses`).

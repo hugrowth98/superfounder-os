@@ -20,7 +20,7 @@ Ce sont des personnes qui achètent : un achat B2B implique en moyenne 6 à 10 p
 
 ## Méthode
 
-1. Lisez la valeur cible d'effectif dans la section 2 de `05_Departements/Go-to-Market/contexte.md`. Elle décide du nombre de personnes à viser par compte : 1 sous 10 salariés, 2 de 11 à 50, 2 à 3 de 51 à 250, 3 à 4 au-delà. La section 3 tient en deux fiches, ATL et BTL, plus la table du comité d'achat : dans une TPE, la fiche BTL peut rester vide.
+1. Lisez la valeur cible d'effectif dans la section 2 de `05_Departements/Go-to-Market/contexte.md`. Elle décide du nombre de personnes à viser par compte : 1 sous 20 salariés (le dirigeant), 1 à 2 de 20 à 50, 2 à 4 au-delà de 50. La section 3 tient en deux fiches, ATL et BTL, plus la table du comité d'achat : dans une TPE, la fiche BTL peut rester vide.
 2. Partez des affaires gagnées. Qui a répondu au premier message, qui a signé, qui était en copie, qui a failli bloquer. Si HubSpot est branché, les contacts associés aux affaires gagnées répondent aux trois premières questions. Sinon, cinq questions à l'utilisateur, une à la fois.
 3. Nommez les rôles : champion (porte le sujet), décideur économique (signe), utilisateur (vit le problème), évaluateur technique, bloqueur. Dans une PME, le dirigeant cumule champion et décideur : un seul persona, deux angles.
 4. Classez chaque persona ATL ou BTL. ATL décide et signe, lit court, veut un résultat chiffré et une comparaison avec ses pairs. BTL vit le problème, lit plus long, veut un gain concret sur sa semaine. Le persona BTL sert souvent de porte d'entrée vers l'ATL.
@@ -45,9 +45,9 @@ Le reste est du raisonnement. Le test de l'étape 6 est le seul appel, annoncé 
 | Repère | Valeur |
 |---|---|
 | Personnes impliquées dans un achat B2B | 6 à 10 en moyenne, 1 à 2 dans une PME de moins de 50 |
-| Personas par taille d'entreprise | 1 sous 10 salariés, 2 de 11 à 50, 2 à 3 de 51 à 250, 3 à 4 au-delà |
+| Personas par taille d'entreprise | 1 sous 20 salariés, 1 à 2 de 20 à 50, 2 à 4 au-delà de 50 |
 | Effort par rôle | champion 40 à 50 %, décideur 20 à 30 %, utilisateur 15 à 20 %, évaluateur 5 à 10 % |
-| Contacts par compte | 2 à 4 sur un tier A, 1 à 2 sur un tier B |
+| Contacts par compte | 2 à 4 sur un tier A, 1 à 2 sur un tier B, 1 sur un tier C, 5 au plus par entreprise |
 | Test de titres | 10 comptes, au moins la moitié doivent renvoyer une personne |
 | Fiches dans `05_Departements/Go-to-Market/contexte.md` | 2 (ATL, BTL) plus la table du comité ; une recherche par fonction listée |
 

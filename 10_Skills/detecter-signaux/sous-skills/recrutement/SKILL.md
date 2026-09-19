@@ -17,7 +17,7 @@ Une offre d'emploi est un budget rendu public : elle dit ce que l'entreprise jug
 
 1. **Nommer les rôles qui comptent pour vous.** Ceux que votre offre équipe, remplace ou fait monter : commerciaux, SDR, responsables marketing, ops. Ils vivent dans `05_Departements/Go-to-Market/contexte.md`. Une offre de comptable n'est pas un signal pour un coach en prospection.
 2. **Choisir le type de signal.** Quatre : (a) offre pertinente, un poste ouvert dans votre périmètre ; (b) vague, 5 postes ou plus en 30 jours ; (c) rôle manquant, personne sur une fonction que votre offre couvre ; (d) départ, quelqu'un quitte le service visé.
-3. **Détecter** (Exécution). Offres : LinkedIn pour les cadres, Indeed pour les PME et les postes non cadres. Vague : le signal `hiring`. Rôle manquant : compter les têtes. Départ : les changements de poste rattachés à l'entreprise.
+3. **Détecter** (Exécution). Offres : LinkedIn pour les cadres, Indeed pour les PME et les postes non cadres. Vague : le fichier `_par-entreprise.csv` de scraper_offres_emploi (5 offres ou plus en 30 jours). Rôle manquant : compter les têtes. Départ : les changements de poste rattachés à l'entreprise.
 4. **Qualifier** l'entreprise (ICP) et le rôle (strictement dans votre périmètre : "business developer" oui, "assistant commercial" non, sauf si votre offre le dit).
 5. **Dater.** `signal_date` = date de publication. Pic j14 à j30 : le poste n'est pas pourvu, la douleur est maximale. Frais 60 jours. Une offre de plus de 60 jours est soit pourvue, soit abandonnée : contexte.
 6. **Trouver la bonne personne** : le responsable qui recrute, pas le futur recruté. Le dirigeant dans une entreprise de moins de 30 personnes.
@@ -28,10 +28,10 @@ Une offre d'emploi est un budget rendu public : elle dit ce que l'entreprise jug
 
 | Étape | Verbe | Skill d'exécution | Paramètres et notes |
 |---|---|---|---|
-| 1a | scraper_offres_emploi | `scraper-offres-emploi` | `tagadanar/linkedin-jobs-scraper` : `keywords` (vos rôles), `location` (France ou villes), `postedSince: week` en cadence hebdo, `scrapeDetails: true` pour lire la description (l'outil demandé, la mission "structurer"), `companyIds` pour vos comptes cibles. 0,002 $ par offre, 0,004 $ avec le détail. `borderline/indeed-scraper` pour les PME et les postes non cadres, 0,005 $ par offre. |
-| 1b | detecter_signal | `detecter-signaux` (script `detecter_signal.py`) | vague : `signalbase/signalbase-api`, `signalType: hiring`, `countries: FR`, `departments: sales,marketing`, `seniorities`, `team_size: 11-50,51-200`, `date_preset: last_30d`. 0,04 $ par résultat. |
-| 1c | trouver_personnes | `trouver-personnes` | rôle manquant : chercher le titre dans l'entreprise ; zéro résultat sur une entreprise dans l'ICP = signal. À faire chaque trimestre sur vos comptes cibles. |
-| 1d | detecter_signal | `detecter-signaux` (script `detecter_signal.py`) | départ : `signalType: job-changes`, `companyLinkedinUrl` de vos comptes cibles ; une personne du service visé apparaît avec une nouvelle entreprise. |
+| 1a | scraper_offres_emploi | `scraper-offres-emploi` | `--source linkedin` (`tagadanar/linkedin-jobs-scraper`) : `--mots-cles` (vos rôles), `--lieu` (France ou villes), `--depuis week` en cadence hebdo, `--details` pour lire la description (l'outil demandé, la mission "structurer"), `--entreprises-ids` pour vos comptes cibles. 0,0018 $ par offre, 0,0036 $ avec le détail. `--source indeed` (`borderline/indeed-scraper`) pour les PME et les postes non cadres, 0,005 $ par offre. |
+| 1b | scraper_offres_emploi | `scraper-offres-emploi` | vague : `--source signalbase` (`signalbase/signalbase-api`) `--pays FR --departements sales,marketing --taille-equipe 11-50,51-200 --periode last_30d`, `--seniorites` selon vos personas. 0,04 $ par résultat. La vague se lit dans le fichier `_par-entreprise.csv` (`signal_type` = `vague_recrutement`, colonnes `nb_offres` et `delta`). |
+| 1c | trouver_personnes | `trouver-personnes` | rôle manquant : chercher le titre dans l'entreprise ; zéro résultat sur une entreprise dans l'ICP = signal, noté dans `signal_detail` d'une ligne `profil_entreprise`. À faire chaque trimestre sur vos comptes cibles. |
+| 1d | detecter_signal | `detecter-signaux` (script `detecter_signal.py`) | départ : `--type job-changes --liste-suivie <csv des comptes cibles> --par-cible` ; une personne du service visé apparaît avec une nouvelle entreprise. La ligne garde `signal_type` = `changement_poste`, le départ se note dans `signal_detail`. |
 | 1e | scraper_offres_emploi | `scraper-offres-emploi` (`--source theirstack` ou `--source predictleads`) | si branchés : TheirStack filtre les offres par techno citée dans l'annonce (`--technos hubspot`), 1 crédit par offre ; PredictLeads donne les offres actives par intitulé sur son quota mensuel. |
 | 2 | qualifier_liste | `qualifier-liste` | ICP de l'entreprise, rôle dans le périmètre, exclusion des cabinets de recrutement et de l'intérim qui publient pour d'autres |
 | 3 | trouver_personnes | `trouver-personnes` | le responsable du service qui recrute, ou le dirigeant |
@@ -43,7 +43,7 @@ Une offre d'emploi est un budget rendu public : elle dit ce que l'entreprise jug
 
 **CSV en entrée** : aucun en mode marché ; `entreprise, linkedin_entreprise_url` pour vos comptes cibles (les `companyIds` LinkedIn se lisent dans l'URL des offres de la page).
 
-**CSV en sortie** : colonnes normalisées, plus `signal_type` (`offre_emploi`, `vague_recrutement`, `role_manquant`, `depart`), `signal_date`, `signal_detail` ("{{intitulé}}, publié le {{date}}, {{ville}}, {{url}}" ; pour une vague, "{{n}} postes en 30 jours, dont {{rôles}}"), `score_signal`, `fraicheur`, `source` (`tagadanar/linkedin-jobs-scraper`, `borderline/indeed-scraper`, `signalbase/signalbase-api`).
+**CSV en sortie** : colonnes normalisées, plus `signal_type` (`offre_emploi`, `vague_recrutement` ; un départ est une ligne `changement_poste` dont `signal_detail` dit "départ de {{titre}} vers {{nouvelle entreprise}}" ; un rôle manquant est une ligne `profil_entreprise` dont `signal_detail` dit "aucun {{titre}} trouvé le {{date}}"), `signal_date`, `signal_detail` ("{{intitulé}}, publié le {{date}}, {{ville}}, {{url}}" ; pour une vague, "{{n}} postes en 30 jours, dont {{rôles}}"), `score_signal`, `fraicheur`, `source` (`tagadanar/linkedin-jobs-scraper`, `borderline/indeed-scraper`, `signalbase/signalbase-api`).
 
 ## Repères
 
@@ -95,6 +95,6 @@ C'est vous qui portez le sujet aujourd'hui ?
 
 ## Exemples
 
-- "Trouve les PME françaises qui recrutent un SDR ce mois-ci" : scraper_offres_emploi LinkedIn, `keywords: SDR, business developer`, `location: France`, `postedSince: month`, `scrapeDetails: true`, exclusion des cabinets, contact du responsable commercial à j14 sur le délai de ramp.
+- "Trouve les PME françaises qui recrutent un SDR ce mois-ci" : scraper_offres_emploi `--source linkedin --mots-cles "SDR,business developer" --lieu France --depuis month --details`, exclusion des cabinets, contact du responsable commercial à j14 sur le délai de ramp.
 - "Cette agence n'a pas de directeur commercial" : rôle manquant vérifié par trouver_personnes et le site, 15 points, angle "la prospection tombe sur le fondateur", message au dirigeant, pas de fenêtre.
 - "Une entreprise cible a ouvert 6 postes en un mois" : vague, 40 points, fiabilité tier 2, on cherche la levée ou la nomination derrière (`levee-fonds`, `changement-poste`) et on écrit sur l'intégration de six recrues sans process.

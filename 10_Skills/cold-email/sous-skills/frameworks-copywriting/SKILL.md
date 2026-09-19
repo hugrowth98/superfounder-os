@@ -12,7 +12,7 @@ Un framework est un mécanisme qui a fait répondre des milliers de fois : le ca
 - `{SKILL_BASE}/ressources/principes-copywriting.md` : la philosophie, les règles par composant, ce qu'on ne fait jamais.
 - `{SKILL_BASE}/ressources/regles-copy.md` : les limites, le ton par type d'offre, le cas e-commerce, les contrôles.
 - `{SKILL_BASE}/ressources/variations-email-1.md` : les 7 variantes et les emails 2 et 3.
-- `{SKILL_BASE}/ressources/sequences.md` : structures 2, 3 et 4 emails, séquences prêtes.
+- `{SKILL_BASE}/ressources/sequences.md` : structures 2 et 3 emails (3 au plus), séquences prêtes ; la variante 4 emails y est hors règle.
 - `{SKILL_BASE}/ressources/exemplaires.md` : dix emails annotés.
 - `{SKILL_BASE}/ressources/registre-audience.md` : le registre selon la cible.
 
@@ -21,7 +21,7 @@ Un framework est un mécanisme qui a fait répondre des milliers de fois : le ca
 1. **Qualifier la demande** : un framework nommé, une réécriture, une structure de séquence, des principes, un type d'offre particulier ?
 2. **Pour un framework** : lire le tableau de choix de `frameworks-13.md`, proposer le framework qui colle à la preuve disponible (un chiffre du prospect : Faites le calcul ; une ressource tierce : L'insight neutre ; rien : Les responsabilités du rôle), donner le template et un exemple adapté à l'offre de `05_Departements/Go-to-Market/contexte.md`.
 3. **Pour une réécriture** : nommer les tics du texte d'origine (relecteurs, checklist §H), garder l'angle et les faits, réécrire dans un framework, montrer le avant et l'après avec trois lignes sur ce qui a changé.
-4. **Pour une structure** : `sequences.md`, choisir 2, 3 ou 4 emails selon la cible, donner le rôle et le timing de chaque email.
+4. **Pour une structure** : `sequences.md`, choisir 2 ou 3 emails selon la cible (3 au plus : J0, J+3, J+10), donner le rôle et le timing de chaque email.
 5. **Pour un type d'offre** : `regles-copy.md` section 6, le ton, ce qui marche, ce qui échoue ; pour l'e-commerce, 15 à 30 mots et une offre de travail gratuit.
 6. **Rendre l'email** en texte brut, puis proposer de passer à `premier-contact` pour le remplir sur la liste.
 
@@ -52,7 +52,7 @@ Sortie : un bloc texte (objet, corps, variantes) et, si l'utilisateur le demande
 | Règle | Valeur |
 |---|---|
 | Longueur | moins de 100 mots, cible 50 à 90 ; e-commerce 15 à 30 |
-| Structure de séquence | J0, J+3 même fil, J+14 nouvel objet ; puis 3 mois de pause |
+| Structure de séquence | 3 emails au plus : J0, J+3 même fil, J+10 nouvel objet ; puis 3 mois de pause |
 | Réponses sur l'email 1 | 80 % |
 | Variantes à tester | 3 ou 4 |
 
@@ -81,7 +81,7 @@ Chaque framework réorganise ces briques ou en supprime : Faites le calcul insè
 ## Règles
 
 1. Un framework par email. Combiner deux frameworks donne un email de 140 mots.
-2. Les 8 autorisés sans validation ; les 5 autres (analogie, humour, email écrit à la main, contenu porte d'entrée, persona pas si différent, trouvaille-valeur-question) avec l'accord de l'utilisateur, parce qu'ils engagent une voix.
+2. Les 8 autorisés sans validation, ceux de `regles-copy.md` section 5 : Avant / Après, Rupture de schéma, La question avant le pitch, La valeur d'abord, Faites le calcul, Le défi des entreprises semblables, L'insight neutre, Problèmes typiques du rôle. Les autres frameworks de la liste des 13 (email écrit à la main, contenu comme porte d'entrée, persona pas si différent, trouvaille-valeur-question, déclencheur court, responsabilités du rôle, pourquoi vous payez ça, le problème d'abord) avec l'accord de l'utilisateur, parce qu'ils engagent une voix. L'analogie (#2) et l'humour (#28) sont des templates de `templates-34.md`, pas des frameworks.
 3. Le mécanisme se garde, les mots changent : un template n'est jamais envoyé tel quel.
 4. Les exemples des ressources sont fictifs : chaque chiffre vient de `05_Departements/Go-to-Market/contexte.md` ou n'apparaît pas.
 5. Fait avant adjectif, résultat avant fonctionnalité, lecteur avant expéditeur.
