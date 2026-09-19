@@ -3,7 +3,7 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![47 skills](https://img.shields.io/badge/skills-47-blue.svg)](#ce-que-contient-le-dépôt)
+[![45 skills](https://img.shields.io/badge/skills-45-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
@@ -20,7 +20,7 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en t
 | Module | Ce que vous installez | La phrase à taper | Où |
 |---|---|---|---|
 | **Le second cerveau** | Qui vous êtes, votre offre, vos départements, vos projets, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
-| **La prospection** | Trouver, détecter un signal, trier, enrichir, écrire, envoyer, suivre. En 7 phrases, avec 25 skills. | `Installe ma prospection` | racine |
+| **La prospection (module GTM)** | Quatre masters de méthode (construire une liste, détecter des signaux, cold email, cold call) avec leurs sous-skills et leurs ressources (13 frameworks, 34 templates, 137 déclencheurs), et quatorze skills d'exécution qui appellent vos outils. Vous parlez en phrases simples, sans nommer d'outil. | `Installe ma prospection` | racine |
 | **Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | racine |
 
 Le second cerveau se fait en premier. Les deux autres le lisent et n'interviewent que sur ce qui manque, dans l'ordre que vous voulez. Le détail de chaque module est dans [docs/](docs/).
@@ -35,7 +35,7 @@ claude
 
 Puis, dans le chat : `Installe mon second cerveau`. Le dépôt est votre workspace. Il n'y a rien d'autre à installer.
 
-Prérequis : [Claude Code](https://www.anthropic.com/claude-code) et un abonnement Claude payant. Pour la prospection, selon vos canaux : Unipile (LinkedIn), Crustdata (recherche), FullEnrich (emails), Lemlist (campagnes), Apify (scraping). Python 3.10 ou plus pour les scripts de prospection.
+Prérequis : [Claude Code](https://www.anthropic.com/claude-code) et un abonnement Claude payant. Pour la prospection, selon vos canaux : Apify (scraping et signaux, par défaut), Unipile (LinkedIn), Crustdata (recherche par API), FullEnrich (emails et téléphones), Ocean.io (lookalikes), Lemlist (envoi), HubSpot (CRM). Un seul suffit pour démarrer. Python 3.10 ou plus pour les scripts de prospection.
 
 Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace` y ajoute la structure et les skills sans toucher à vos fichiers existants.
 
@@ -55,13 +55,13 @@ superfounder-os/            le dossier que Claude Code ouvre
 ├── 03_Branding/            charte, logos, polices
 ├── 04_Projets/             une initiative avec une fin : un dossier, une note, des Étapes, archivé à la fin
 ├── 05_Departements/        les responsabilités continues, chacune avec sa fiche
-│   ├── Strategie/  Marketing/ (LinkedIn, Newsletter, Video, Slides)  Go-to-Market/ (Listes-prospection, Messages, Mailing)
+│   ├── Strategie/  Marketing/ (LinkedIn, Newsletter, Video, Slides)  Go-to-Market/ (contexte.md, OUTILS.md, GARDE-FOUS.md, Ciblage, Listes-prospection, Signaux, Messages, Mailing)
 │   ├── Vente/ (Propositions, Pipeline)  Produit/  Finance-Compta/
 ├── 06_Clients/             un dossier par client signé, avec sa note
 ├── 07_Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
 ├── 08_Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
 ├── 09_Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
-├── 10_Skills/              la bibliothèque : 47 skills, une procédure par dossier
+├── 10_Skills/              la bibliothèque : 45 skills, une procédure par dossier (les masters GTM ont leurs sous-skills et ressources imbriqués)
 ├── 11_Archives/            terminé ou remplacé, gardé accessible
 ├── .claude/skills          lien vers 10_Skills/ (Claude Code)      .agents/skills  lien vers 10_Skills/ (Codex)
 ├── AGENTS.md  opencode.json  .env.example  install.sh  docs/  scripts/validate_skills.py
@@ -76,7 +76,7 @@ Le dépôt applique les pratiques documentées de Claude Code pour la gestion du
 1. **Une information vit à un seul endroit.** L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
 2. **Trois vitesses de changement, trois couches.** `About-Me/` change en années et est importé dans le contexte à chaque session. `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'une note de dossier change en semaines et est réécrit par `/done`.
 3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et les ressources du dossier à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
-4. **Une bibliothèque de skills, trois moteurs.** Les 46 skills sont dans `Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `Skills/`, les trois le voient.
+4. **Une bibliothèque de skills, trois moteurs.** Les 45 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `Skills/`, les trois le voient.
 5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Rôle, Conventions, Organisation, Roadmap, ETAT, Reprise, Historique, Liens. Vous écrivez les trois premières, `/done` écrit les autres.
 6. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le journal du jour, la note du dossier et son `_log.md`. `/lint` une fois par mois vérifie que rien n'a dérivé. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 

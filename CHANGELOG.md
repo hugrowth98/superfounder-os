@@ -3,6 +3,24 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.0.0] - 2026-09-19
+
+Le module GTM : la prospection reconstruite en méthode et exécution séparées.
+
+### Ajouté
+- Quatre masters de méthode dans `10_Skills/` : `construire-liste` (8 sous-skills), `detecter-signaux` (8 sous-skills, barème de signaux, 137 déclencheurs, 11 plays), `cold-email` (9 sous-skills, 13 frameworks, 34 templates, relecteurs, infra email), `cold-call` (5 sous-skills sur la méthode d'appel en 5 temps). Chaque master route vers ses sous-skills, chaque sous-skill décrit le travail en verbes.
+- Quatorze skills d'exécution, un par verbe, avec scripts Python (`--help`, `--dry-run`, coût annoncé) et une bibliothèque commune `10_Skills/_commun/` : `trouver-entreprises`, `trouver-lookalikes`, `trouver-personnes`, `enrichir-personne`, `enrichir-entreprise` (`--techno`, `--pubs`), `trouver-email`, `trouver-telephone`, `scraper-offres-emploi`, `scraper-engagement`, `qualifier-liste`, `dedoublonner`, `crm`, `envoyer-sequence`, `verifier-reponses`.
+- `installer-gtm` (onboarding en 8 phases : offre, ICP en 3 couches scoré sur 100, personas ATL et BTL, 5 signaux prioritaires, canaux, outils, validation, premier run) remplace `installer-prospection`. `connecter-outils` étendu à 7 outils.
+- Dans `05_Departements/Go-to-Market/` : `OUTILS.md` (quel outil fait quel verbe, priorité Apify ou API, canal LinkedIn), `GARDE-FOUS.md`, `Ciblage/` (décisionnaires par taille, requêtes booléennes, mots-clés d'exclusion), `Signaux/`. `contexte.md` réécrit : il traduit `02_Contexte/` en critères de prospection, sans le recopier.
+- `docs/prospection.md` (mode d'emploi du module) et `docs/conventions-gtm.md` (comment les skills GTM sont écrits), `scripts/valider_gtm.py`.
+
+### Changé
+- Stack fermée à 7 outils : Apify par défaut pour tout scraping et tout signal, Unipile pour le compte LinkedIn, Crustdata en secours API, FullEnrich seul pour l'enrichissement contact, Ocean.io pour les lookalikes, Lemlist pour l'envoi, HubSpot pour le CRM.
+- `.env.example` couvre les 7 outils, les cookies Sales Navigator et les limites d'envoi.
+
+### Archivé
+- Les 22 skills de prospection v3 (Crustdata en dur, sans orchestrateur) dans `11_Archives/skills-prospection-v3/`, avec l'ancien `contexte.md` et l'ancien guide.
+
 ## [4.0.0] - 2026-09-18
 
 Le second cerveau version 4 : douze dossiers numérotés, projets, départements, clients, fiches courtes.

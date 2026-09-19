@@ -2,7 +2,7 @@
 type: instructions
 status: active
 date: 2026-09-18
-maj: 2026-09-18
+maj: 2026-09-19
 ---
 
 # AGENTS.md
@@ -38,7 +38,7 @@ Avant de répondre au tout premier message d'une session, regarde discrètement 
 | Module | Test | Installé si |
 |---|---|---|
 | Le second cerveau | `01_About-Me/about-me.md` | ne contient plus de `[à remplir]` |
-| La prospection | `05_Departements/Go-to-Market/contexte.md` et `.env` à la racine | sections remplies, au moins une clé présente |
+| La prospection (module GTM) | `05_Departements/Go-to-Market/contexte.md` et `OUTILS.md` | plus de crochets dans contexte.md, une ligne `priorite:` remplie et au moins un outil coché dans OUTILS.md |
 | Le contenu | `05_Departements/Marketing/LinkedIn/strategie-contenu.md` | sections remplies |
 
 Puis :
@@ -130,7 +130,7 @@ Règle de résolution : quand tu modifies un fichier, la note à mettre à jour 
 | Tâche | Charger en plus d'About-Me et de la note du dossier |
 |---|---|
 | Rédiger quoi que ce soit de publié (post, newsletter, page, message) | `02_Contexte/Tone-and-Voice.md` |
-| Prospection, messages, qualification | `02_Contexte/Offer-Positioning.md` + `02_Contexte/Clients-Problems-and-Messages.md` + `05_Departements/Go-to-Market/contexte.md` |
+| Prospection, signaux, messages, qualification, appels | `02_Contexte/Offer-Positioning.md` + `02_Contexte/Clients-Problems-and-Messages.md` + `05_Departements/Go-to-Market/contexte.md` (et `OUTILS.md`, `GARDE-FOUS.md` du même dossier avant toute action ou tout envoi) |
 | Contenu LinkedIn | `02_Contexte/Tone-and-Voice.md` + `05_Departements/Marketing/LinkedIn/strategie-contenu.md` |
 | Stratégie, offre, pricing, objectifs | `02_Contexte/Goals-and-Direction.md` + `02_Contexte/Offer-Positioning.md` + `02_Contexte/Life-and-Work-Reality.md` |
 | Standards de qualité, erreurs passées | `02_Contexte/Expertise-Standards-and-Landmines.md` |
@@ -187,3 +187,16 @@ Le ruissellement de `/done` : le journal (direct), la note du dossier (direct), 
 ## 11. Une bibliothèque de skills, trois moteurs
 
 Les skills vivent dans `10_Skills/`, un dossier par skill. `.claude/skills` (Claude Code) et `.agents/skills` (Codex) sont des liens symboliques vers `10_Skills/`. `opencode.json` pointe dessus pour OpenCode et lui fait charger `01_About-Me/`. `AGENTS.md` reprend cette carte pour Codex et OpenCode, qui ne suivent pas les imports `@`. Un skill se lit et se modifie dans `10_Skills/`, jamais à travers un lien. Le `.env` des outils de prospection est à la racine.
+
+## 12. Le module GTM (prospection)
+
+Quatre masters de méthode, une installation, quatorze skills d'exécution, tous dans `10_Skills/`. Un master décrit le travail en verbes ; un skill d'exécution lit `05_Departements/Go-to-Market/OUTILS.md` pour savoir quel outil appeler.
+
+| Master | Ce qu'il fait | Se déclenche sur |
+|---|---|---|
+| `construire-liste` | ICP, personas, sourcing d'entreprises et de personnes, sélection de comptes, qualification, nettoyage, dédoublonnage | "fais-moi une liste de", "trouve des", "qualifie", "ICP", "lookalikes" |
+| `detecter-signaux` | changement de poste, levée, recrutement, événement, techno, concurrents, engagement, empilement et score (porte le script Signalbase) | "qui a levé", "qui recrute", "qui vient d'arriver", "signaux", "quand contacter" |
+| `cold-email` | premier contact, relances, réengagement, objets, personnalisation, ATL et BTL, frameworks, infra email | "écris un email", "séquence", "relance", "objet", "délivrabilité" |
+| `cold-call` | script d'appel, objections, no-show, brief avant appel, débrief après | "script", "appel", "objection", "prépare l'appel", "débrief" |
+
+Installation : `installer-gtm` ("Installe ma prospection", 8 phases) puis `connecter-outils` ("Connecte mes outils", 7 outils : Apify, Unipile, Crustdata, FullEnrich, Ocean.io, Lemlist, HubSpot). Exécution : `trouver-entreprises`, `trouver-lookalikes`, `trouver-personnes`, `enrichir-personne`, `enrichir-entreprise` (`--techno`, `--pubs`), `trouver-email`, `trouver-telephone`, `scraper-offres-emploi`, `scraper-engagement`, `qualifier-liste`, `dedoublonner`, `crm`, `envoyer-sequence`, `verifier-reponses`. Chaque script a `--dry-run` : le lancer d'abord, annoncer le coût, attendre le oui ; avant tout envoi, montrer 3 messages et respecter `GARDE-FOUS.md`. Les réglages vivent dans `05_Departements/Go-to-Market/` (`contexte.md`, `OUTILS.md`, `GARDE-FOUS.md`, `Ciblage/`), les sorties dans ses sous-dossiers (`Listes-prospection/`, `Signaux/`, `Messages/`), le mode d'emploi dans `docs/prospection.md`, les conventions de fabrication dans `docs/conventions-gtm.md`.

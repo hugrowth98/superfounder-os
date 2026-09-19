@@ -1,72 +1,85 @@
 ---
 name: qualifier-liste
 description: >
-  Skill pour trier et scorer un CSV de prospects ou d'entreprises selon l'ICP defini dans
-  contexte.md. Ne fait aucun appel API : c'est du raisonnement pur (lecture du CSV +
-  lecture de contexte.md + jugement). Utilise ce skill des que l'utilisateur veut qualifier,
-  trier, scorer ou filtrer une liste selon son client ideal. Se declenche sur : "qualifie
-  cette liste", "trie ces prospects", "garde ceux qui matchent mon ICP", "score ces leads",
-  "qui est pertinent dans cette liste".
+  Exécute le verbe qualifier_liste : applique les portes d'exclusion et le barème ICP de
+  contexte.md à un CSV (entreprises ou personnes), écrit `score_icp`, `tier`, `exclu`,
+  `raison_exclusion`, et rend la liste triée par score plus le fichier des exclus. Aucun outil
+  externe : un pré-traitement déterministe (classification des titres, séniorité, effectif,
+  domaine), puis le jugement de Claude traduit en règles et en corrections. Se déclenche sur :
+  "qualifie cette liste", "score ces prospects", "qui est prioritaire", "enlève les B2C",
+  "enlève les concurrents", "tier A", "trie par ICP", "combien sont dans ma cible". Ne pas
+  utiliser pour : les doublons (voir `dedoublonner`), les emails invalides (voir
+  `trouver-email`), ni pour définir l'ICP lui-même (master `construire-liste`, `definir-icp`).
 ---
 
-# Qualifier une liste selon l'ICP
+## Outil
 
-## Ce que fait ce skill
+Interne, quelle que soit `05_Departements/Go-to-Market/OUTILS.md`. Deux scripts sans appel API :
+`scripts/pre_qualifier.py` (pré-traitement) et `scripts/finaliser_qualification.py` (portes,
+barème, tiers, corrections). Le barème et les exclusions viennent de la section 2 de
+`05_Departements/Go-to-Market/contexte.md` : s'il reste des crochets dedans, arrêtez et proposez `installer-gtm`.
 
-1. Lit `05_Departements/Go-to-Market/contexte.md` a la racine du projet (section 2 "Votre client ideal (ICP)" et section 8
-   "Garde-fous") pour connaitre les criteres de ciblage.
-2. Lit le CSV fourni par l'utilisateur, ligne par ligne, sans en sauter aucune.
-3. Pour chaque ligne, juge si le prospect/l'entreprise matche l'ICP : secteur, taille, poste,
-   zone geographique, signaux positifs mentionnes dans contexte.md.
-4. Exclut automatiquement tout ce qui correspond aux garde-fous (comptes/entreprises a ne
-   jamais contacter, zones exclues).
-5. Ecrit deux fichiers CSV en sortie : un fichier "garde" (avec une colonne `score` de 1 a 10
-   et une colonne `raison`) et un fichier "exclus" (avec la raison de l'exclusion).
+## Entrée
 
-## Ne pas faire
+Un CSV normalisé (sortie de n'importe quel verbe). Le score utilise ce qui est là : `secteur`,
+`effectif`, `pays` ou `ville`, `technos`, `signal_type` et `fraicheur`, `titre` ou `headline`.
+Plus les colonnes sont remplies, plus le score est fiable : `enrichir-entreprise` avant, si
+`secteur` et `effectif` manquent.
 
-- Ne jamais inventer des criteres qui ne sont pas dans `05_Departements/Go-to-Market/contexte.md`. Si `05_Departements/Go-to-Market/contexte.md` n'est
-  pas rempli ou trop vague sur un point, demander a l'utilisateur avant de juger.
-- Ne pas appeler d'API externe : ce skill est purement du jugement sur des donnees deja
-  presentes dans le CSV. Si des donnees manquent pour juger (ex: taille d'entreprise absente
-  du CSV), le signaler plutot que de deviner.
+## Sortie
 
-## Colonnes de sortie
+- `Listes-prospection/qualifier-liste_<sujet>_<date>.csv` : les lignes gardées, triées par
+  `score_icp` décroissant, avec `tier` (A, B, C), `exclu = non`, `detail_score` (les points par
+  critère, lisibles), et les colonnes du pré-traitement : `categorie_titre` (dirigeant,
+  marketing, sales, direction, manager, independant, executant, stagiaire, inconnu),
+  `seniorite`, `independant`, `effectif_num`, `taille_tranche`, `domaine_generique`, `cle`.
+- `..._exclus.csv` : les lignes exclues avec `raison_exclusion` (porte ou score sous le seuil C).
 
-Le CSV d'entree est conserve tel quel (toutes ses colonnes originales), avec deux colonnes
-ajoutees en tete :
-- `score` : entier de 1 (hors cible) a 10 (correspond parfaitement a l'ICP)
-- `raison` : une phrase courte expliquant le score ou l'exclusion
+## Procédure
 
-## Workflow
+1. Pré-traitement : `python3 scripts/pre_qualifier.py --in <csv>` écrit `<csv>_pre.csv` et
+   affiche la répartition par catégorie de titre.
+2. Traduisez `05_Departements/Go-to-Market/contexte.md` en `regles.json` (rangé à côté de la liste, nom
+   `qualifier-liste_<sujet>_regles.json`) : un bloc `exclusions` par ligne de la section
+   "Exclusions" (B2C, concurrents nommés, secteurs, tailles, autres), un bloc `points` par
+   critère des trois couches avec les valeurs cibles et adjacentes et les points de la table, les
+   `fraicheur_max` de la section 4 pour la couche 3, le `bonus_empilement`, les seuils de tiers.
+   Le format exact est dans l'en-tête de `finaliser_qualification.py`. Montrez le JSON à
+   l'utilisateur en 5 lignes ("j'exclus X, je donne 15 points à Y") avant de l'appliquer.
+3. Ce que les règles ne voient pas, vous le jugez ligne à ligne et l'écrivez dans `scores.csv`
+   (colonnes `cle`, `score_icp`, `tier`, `exclu`, `raison_exclusion`, `note`) : une entreprise
+   B2C reconnaissable à sa description, un concurrent sous un autre nom, un "CEO" qui est un
+   indépendant, une personne de la liste "ne jamais contacter" de la section 7. Lisez les lignes
+   en `categorie_titre` `inconnu` et `direction`, les `domaine_generique = oui`, et un échantillon
+   de 20 lignes gardées.
+4. Finalisez : `python3 scripts/finaliser_qualification.py --in <csv>_pre.csv --regles regles.json --scores scores.csv`.
+5. Rendez le rapport en entonnoir : lignes lues, exclues par raison (top 5), gardées par tier,
+   puis le lien cliquable vers les deux fichiers, et un seul next step : `trouver-personnes` sur
+   les tiers A et B (liste d'entreprises) ou `enrichir-personne` puis `trouver-email` (liste de
+   personnes).
 
-### Etape 1 - Charger le contexte
+Sur plus de 300 lignes, ne relisez pas tout : les règles font le gros, vos corrections portent
+sur les cas ambigus que le pré-traitement signale.
 
-Relire `05_Departements/Go-to-Market/contexte.md`. Si les sections 2 et 8 sont encore au format template (crochets non
-remplis), le signaler a l'utilisateur et demander de preciser l'ICP avant de continuer.
+## Garde-fous
 
-### Etape 2 - Lire le CSV
+- Aucun critère inventé : tout vient de `05_Departements/Go-to-Market/contexte.md`. Un critère absent du fichier, c'est une
+  question à l'utilisateur, pas une supposition.
+- Les portes d'exclusion passent avant le score : un concurrent à 95 points reste exclu.
+- Une donnée manquante ne vaut jamais un point (ni une exclusion, sauf `vide_exclut`
+  explicite) : un effectif vide donne 0 sur ce critère, dites combien de lignes sont dans ce cas.
+- Le pré-traitement classe sur le poste actuel (`titre`) avant le `headline` marketing : un
+  "CEO" en headline avec un poste de consultant est un indépendant.
+- Ne pas mélanger deux listes de nature différente (entreprises et personnes) dans un même run :
+  le barème n'est pas le même.
 
-Demander le chemin du fichier si non fourni. Lire l'integralite des lignes.
+## Erreurs fréquentes
 
-### Etape 3 - Juger chaque ligne
-
-Pour chaque prospect/entreprise, verifier dans l'ordre :
-1. Garde-fou d'exclusion (section 8) : si ca matche, exclusion immediate, raison = le
-   garde-fou concerne.
-2. Correspondance ICP (section 2) : secteur, taille, poste/fonction, zone geographique.
-3. Signaux positifs mentionnes dans contexte.md (ex: recrute un poste precis, vient de lever
-   des fonds) : bonus sur le score si presents dans les donnees du CSV.
-
-### Etape 4 - Ecrire les deux CSV de sortie
-
-Nommage : `<nom-original>_qualifie.csv` (gardes, tries par score decroissant) et
-`<nom-original>_exclus.csv` (exclus, avec raison). Les deux dans le meme dossier que le
-fichier d'entree, sauf si l'utilisateur precise un autre emplacement.
-
-### Etape 5 - Resumer
-
-Donner un resume court : nombre de lignes lues, nombre gardees par tranche de score
-(8-10 / 5-7 / 1-4), nombre exclues avec le top 2-3 raisons d'exclusion les plus frequentes.
-Proposer l'etape suivante : "Je peux enrichir les emails de la liste gardee avec
-trouver-email, ou rediger les messages avec personnaliser-message."
+| Symptôme | Cause | Fix |
+|---|---|---|
+| Tout le monde en tier D | seuils ou points de `regles.json` trop hauts, colonnes vides | vérifier `detail_score` sur 3 lignes, remplir `secteur` et `effectif` (`enrichir-entreprise`) |
+| `categorie_titre = inconnu` massif | `titre` et `headline` vides | `enrichir-personne` d'abord |
+| Correction de `scores.csv` sans effet | `cle` différente (URL non normalisée, majuscules) | copier la colonne `cle` du fichier `_pre.csv` |
+| Signal jamais compté | `fraicheur` vide ou supérieure à `fraicheur_max` | vérifier `signal_date` dans la source |
+| Un B2C passe | aucune colonne ne le dit | le juger sur `description` ou le site, l'exclure dans `scores.csv` |
+| Score plafonné à 100 avec des points en trop | barème mal réparti | réajuster les pondérations dans `05_Departements/Go-to-Market/contexte.md`, pas dans le JSON seul |

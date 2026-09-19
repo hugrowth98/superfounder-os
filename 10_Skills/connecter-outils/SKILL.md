@@ -1,191 +1,96 @@
 ---
 name: connecter-outils
 description: >
-  Skill pour connecter, un par un, tous les outils du module de prospection (Unipile, Crustdata, FullEnrich,
-  Lemlist, Apify) directement depuis le chat, sans terminal ni edition de fichier a la main
-  pour l'utilisateur. Utilise ce skill au tout debut, avant tout autre skill, ou des que
-  l'utilisateur veut brancher/reconnecter un outil. Se declenche sur : "connecte mes
-  outils", "Installe ma prospection", "configure mes clés API", "branche Unipile/Crustdata/
-  FullEnrich/Lemlist/Apify".
+  Branche un par un les 7 outils de la stack (Apify, Unipile, Crustdata, FullEnrich, Ocean.io,
+  Lemlist, HubSpot) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
+  le .env, coche "Etat des connexions" dans OUTILS.md et fixe priorite, canal_linkedin,
+  canal_email et crm. Gère aussi les cookies LinkedIn pour les actors Sales Navigator d'Apify.
+  Se déclenche sur : "connecte mes outils", "branche Unipile", "configure mes clés API",
+  "installe ma prospection" (phase outils), "ma clé Apify a changé", "reconnecte LinkedIn",
+  "ajoute mes cookies Sales Navigator". Ne pas utiliser pour : remplir contexte.md (voir
+  `installer-gtm`) ni pour lancer une recherche (voir les skills de verbe).
 ---
 
-# Connecter les outils du module de prospection (pour profils non-dev)
+## Outil
 
-## Principe
+Aucun outil n'est requis avant ce skill : c'est lui qui écrit `05_Departements/Go-to-Market/OUTILS.md`. Son script
+`scripts/verifier_connexions.py` s'appuie sur la bibliothèque commune de `10_Skills/_commun/`
+(`gtm_common.py` : racine, .env, CSV, clients Unipile, FullEnrich, Crustdata, HubSpot ;
+`apify_run.py` : lancer un actor, attendre, lire le dataset, prix vérifiés).
 
-L'utilisateur ne touche jamais un terminal ni un fichier `.env` a la main. Pour chaque
-outil : lui donner le lien exact, il copie-colle la valeur demandee ici dans le chat, et
-c'est **toi** (Claude Code) qui ecris le `.env` (via l'outil Edit/Write) ou qui lances la
-commande de connexion (via l'outil Bash). Toujours verifier avec un vrai appel API avant de
-passer a l'outil suivant, et corriger immediatement si ca ne marche pas.
+## Entrée
 
-Faire les 5 outils un par un, dans cet ordre. Ne pas passer au suivant tant que le precedent
-n'est pas verifie comme fonctionnel (sauf si l'utilisateur veut sauter un outil, auquel cas
-le laisser vide et continuer).
+L'utilisateur, en conversation. Pour chaque outil, vous lui donnez le lien exact de la page où
+copier la clé, il la colle dans le chat, vous l'écrivez dans `.env` avec
+`python3 scripts/verifier_connexions.py --set CLE=VALEUR` (jamais affichée, jamais dans un skill).
+S'il n'a pas l'outil : dites-le, laissez la ligne vide, passez au suivant.
 
----
+## Sortie
 
-## Outil 1 : Unipile (LinkedIn + Sales Navigator)
+- `.env` à la racine (créé depuis `.env.example` au premier `--set`)
+- `05_Departements/Go-to-Market/OUTILS.md` : table "Etat des connexions" cochée, avec la date et le compte ou quota, et le bloc
+  `priorite:` (apify si `APIFY_TOKEN` répond, sinon api), `canal_linkedin:` (unipile ou lemlist,
+  choisi par l'utilisateur), `canal_email: lemlist`, `crm:` (hubspot si le token répond, sinon aucun)
+- un résumé de 7 lignes à l'utilisateur : connecté, absent, à refaire
 
-### Etape 1 - Compte et cles
+## Procédure
 
-Dire a l'utilisateur :
-> "Va sur [dashboard.unipile.com/signup](https://dashboard.unipile.com/signup) et cree ton
-> compte (ou connecte-toi si tu en as deja un).
-> Une fois connecte, deux choses a recuperer :
-> 1. Le **DSN**, affiche directement sur ta page de profil (format
->    `https://apiXX.unipile.com:XXXXX`)
-> 2. L'**Access Token** (c'est la cle API), a generer sur
->    [dashboard.unipile.com/access-tokens](https://dashboard.unipile.com/access-tokens)
-> Colle-moi les deux ici."
+Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appel gratuit :
+`python3 scripts/verifier_connexions.py --outil <nom>`.
 
-### Etape 2 - Ecrire dans .env
+1. **Apify** (`APIFY_TOKEN`) : token personnel sur https://console.apify.com/settings/integrations.
+   Test : `GET /v2/users/me`. Si présent, `priorite: apify`.
+2. **Unipile** (`UNIPILE_API_KEY`, `UNIPILE_DSN`) : compte sur https://dashboard.unipile.com, le DSN
+   est affiché sur la page d'accueil du dashboard (format `https://apiXX.unipile.com:XXXXX`), le
+   token sur https://dashboard.unipile.com/access-tokens. Puis connecter le compte LinkedIn :
+   dashboard, Accounts, Connect an account, LinkedIn, méthode Credential, code reçu par email.
+   Le test lit `/api/v1/accounts`, vérifie un compte `LINKEDIN` en statut `OK` et écrit lui-même
+   `UNIPILE_ACCOUNT_ID` et `UNIPILE_OWN_PROVIDER_ID` dans `.env`.
+3. **Crustdata** (`CRUSTDATA_API_KEY`) : https://app.crustdata.com/api-keys. Test : `/user/credits`,
+   annoncez le solde.
+4. **FullEnrich** (`FULLENRICH_API_KEY`) : https://app.fullenrich.com/app/settings/api. Test :
+   `/account/credits`, annoncez le solde (1 crédit par email, 10 par mobile).
+5. **Ocean.io** (`OCEAN_API_KEY`) : app.ocean.io, Settings, page "API tokens" (réservée aux admins),
+   bouton New token. Test : `/v2/credits/balance` (gratuit). Puis branchez le MCP :
+   `claude mcp add --transport http ocean_data_api "https://api.ocean.io/mcp/?api-token=<cle>"`.
+6. **Lemlist** : deux voies. MCP OAuth (recommandée, aucune clé à copier) :
+   `claude mcp add --transport http lemlist https://app.lemlist.com/mcp`, la fenêtre de consentement
+   s'ouvre au premier appel. Ou clé API (`LEMLIST_API_KEY`) sur https://app.lemlist.com/settings/integrations,
+   testée sur `/api/team`.
+7. **HubSpot** (`HUBSPOT_ACCESS_TOKEN`) : Paramètres, Intégrations, Applications privées, créer une
+   app avec les scopes `crm.objects.contacts` et `crm.objects.companies` en lecture et écriture.
+   Test : lecture d'un contact. Si présent, `crm: hubspot`.
+8. **Cookies Sales Navigator pour Apify** (facultatif, seulement si l'utilisateur veut l'actor
+   `curious_coder/linkedin-sales-navigator-search-scraper`) : sur linkedin.com connecté, ouvrir
+   l'extension Cookie-Editor, copier la valeur du cookie `li_at` et celle de `li_a` (Sales Navigator),
+   puis le user agent du navigateur (taper "my user agent" dans Google). Écrire `LINKEDIN_LI_AT`,
+   `LINKEDIN_LI_A`, `LINKEDIN_USER_AGENT` dans `.env`. Variante : exporter tous les cookies en JSON
+   dans un fichier hors du module GTM et écrire son chemin dans `LINKEDIN_COOKIES_FILE`. Ces cookies
+   expirent en quelques semaines : à l'erreur "Cookies are expired", refaire l'étape.
+9. Demandez le canal LinkedIn voulu (Unipile avec le compte de l'utilisateur, ou Lemlist multicanal),
+   puis écrivez tout : `python3 scripts/verifier_connexions.py --ecrire-outils --canal-linkedin unipile`.
+10. Résumez l'état des 7 outils et proposez un seul next step : `installer-gtm` si `05_Departements/Go-to-Market/contexte.md` a
+    encore des crochets, sinon "on construit votre première liste".
 
-Des reception, ecrire dans `.env` (creer le fichier a partir de `.env.example` s'il
-n'existe pas encore) :
-```
-UNIPILE_API_KEY=<valeur collee>
-UNIPILE_DSN=<valeur collee, avec le https:// devant>
-```
+## Garde-fous
 
-### Etape 3 - Connecter le compte LinkedIn (etape a ne pas sauter)
+- Ne jamais afficher, répéter ni logger une clé. `--set` écrit sans écho ; les scripts lisent `.env`.
+- Un test échoue : corriger tout de suite avec l'utilisateur (clé recopiée sans espace, DSN avec
+  `https://`), ne pas passer à l'outil suivant tant que ce n'est pas réglé, sauf s'il veut sauter.
+- Aucun run Apify pendant la connexion : le test du token est gratuit, les cookies Sales Navigator
+  ne sont pas testés (un test serait un run payant), ils sont seulement vérifiés présents.
+- `05_Departements/Go-to-Market/OUTILS.md` et `.env` ne sont modifiés que par ce skill et `installer-gtm`.
+- Compte LinkedIn récent ou déjà restreint : proposez d'écrire `LIMITE_INVITATIONS_JOUR=15` dans
+  `.env`, `envoyer-sequence` la lit (plafond dur 30).
 
-Une cle API seule ne suffit pas : il faut aussi autoriser Unipile a agir sur le compte
-LinkedIn de l'utilisateur. Dire :
-> "Dernier point cote Unipile : retourne sur ton dashboard, section **Accounts**, clique sur
-> **Connect an account**, choisis **LinkedIn**, puis la methode **Credential**. Rentre ton
-> email et ton mot de passe LinkedIn. LinkedIn va t'envoyer un code de verification par mail
-> : va le chercher et recopie-le pour valider. Dis-moi quand c'est fait."
+## Erreurs fréquentes
 
-### Etape 4 - Verifier et recuperer les identifiants techniques
-
-Une fois l'utilisateur confirme, appeler :
-```bash
-curl -sS -H "X-API-KEY: $(grep UNIPILE_API_KEY .env | cut -d= -f2-)" \
-  "$(grep UNIPILE_DSN .env | cut -d= -f2-)/api/v1/accounts"
-```
-Verifier que la reponse contient un compte `"type":"LINKEDIN"` avec `"status":"OK"`. En
-extraire :
-- `id` (racine de l'objet compte) -> a ecrire dans `.env` comme `UNIPILE_ACCOUNT_ID`
-- `connection_params.im.id` -> c'est le `provider_id` propre a l'utilisateur, necessaire
-  pour `verifier-reponses`/`repondre-commentaires`. Le noter et le proposer a l'utilisateur
-  de l'ajouter aussi en variable `UNIPILE_OWN_PROVIDER_ID` dans `.env` pour ne pas avoir a
-  le rechercher a chaque fois.
-
-Si le statut n'est pas `OK` (ex: `CREDENTIALS`), dire a l'utilisateur de recommencer la
-connexion du compte LinkedIn (etape 3).
-
----
-
-## Outil 2 : Crustdata (donnees entreprises et personnes)
-
-### Etape 1 - Compte et cle
-
-Dire :
-> "Va sur [app.crustdata.com](https://app.crustdata.com), cree un compte, puis recupere ta
-> cle API sur [app.crustdata.com/api-keys](https://app.crustdata.com/api-keys). Colle-la
-> ici."
-
-### Etape 2 - Ecrire dans .env
-
-```
-CRUSTDATA_API_KEY=<valeur collee>
-```
-
-### Etape 3 - Verifier
-
-```bash
-curl -sS -H "Authorization: Token $(grep CRUSTDATA_API_KEY .env | cut -d= -f2-)" \
-  https://api.crustdata.com/user/credits
-```
-Une reponse `{"credits": <nombre>}` confirme que la cle fonctionne. Annoncer le solde a
-l'utilisateur.
-
----
-
-## Outil 3 : FullEnrich (emails et telephones)
-
-Pas de cle a copier : connexion via serveur MCP officiel.
-
-### Etape 1 - Lancer la connexion (toi, pas l'utilisateur)
-
-```bash
-claude mcp add --transport http fullenrich https://mcp.fullenrich.com/mcp
-```
-
-### Etape 2 - Authentification
-
-Le serveur passe en statut "Needs authentication" tant que l'OAuth n'est pas complete.
-Dire a l'utilisateur : "Je viens de lancer la connexion a FullEnrich. Essaie de me demander
-un truc lie a FullEnrich (ex: 'verifie mes credits FullEnrich') : ca devrait ouvrir une
-fenetre dans ton navigateur pour te connecter a ton compte FullEnrich et autoriser l'acces."
-
-**Non teste de bout en bout au moment de la redaction de ce skill** : si l'authentification
-ne se declenche pas comme prevu, verifier `claude mcp get fullenrich` pour le statut, et a
-defaut orienter l'utilisateur vers <https://help.fullenrich.com/en/articles/14190120-mcp-server>.
-
-### Etape 3 - Verifier
-
-Une fois le statut "Connected" (`claude mcp list`), chercher les outils disponibles (ils
-apparaissent avec un nom lie a fullenrich) et faire un appel simple (verification de
-credits ou recherche) pour confirmer que ca repond.
-
----
-
-## Outil 4 : Lemlist (campagnes email/multicanal)
-
-Pas de cle a copier non plus : connexion via serveur MCP officiel.
-
-### Etape 1 - Lancer la connexion (toi, pas l'utilisateur)
-
-```bash
-claude mcp add --transport http lemlist https://app.lemlist.com/mcp
-```
-
-Si le message `MCP server lemlist already exists` apparait, c'est deja connecte : passer
-directement a la verification.
-
-### Etape 2 - Authentification
-
-Meme principe que FullEnrich : au premier usage reel d'un outil Lemlist, une fenetre de
-connexion OAuth s'ouvre dans le navigateur de l'utilisateur pour choisir son equipe et
-autoriser l'acces.
-
-### Etape 3 - Verifier
-
-Chercher les outils Lemlist disponibles (prefixe `lemlist`) et appeler un outil de lecture
-simple (ex: lister les campagnes existantes) pour confirmer la connexion.
-
----
-
-## Outil 5 : Apify (scraping et automatisation web)
-
-Pas de cle a copier : connexion via serveur MCP officiel, meme principe que FullEnrich et
-Lemlist.
-
-### Etape 1 - Lancer la connexion (toi, pas l'utilisateur)
-
-```bash
-claude mcp add --transport http apify https://mcp.apify.com
-```
-
-Si le message `MCP server apify already exists` apparait, c'est deja connecte : passer
-directement a la verification.
-
-### Etape 2 - Authentification
-
-Meme principe que FullEnrich et Lemlist : au premier usage reel d'un outil Apify, une fenetre
-de connexion OAuth s'ouvre dans le navigateur de l'utilisateur pour autoriser l'acces a son
-compte Apify.
-
-### Etape 3 - Verifier
-
-Chercher les outils Apify disponibles (prefixe `apify`) et appeler un outil de lecture simple
-pour confirmer la connexion.
-
----
-
-## A la fin
-
-Resumer a l'utilisateur l'etat des 5 outils (connecte / a refaire), et proposer de
-commencer le parcours GUIDE.md a l'etape 3 (remplir `05_Departements/Go-to-Market/contexte.md` via `installer-prospection`).
+| Symptôme | Cause | Fix |
+|---|---|---|
+| Unipile : compte en statut `CREDENTIALS` | LinkedIn a demandé une revalidation | refaire la connexion du compte dans le dashboard, relancer le test |
+| Unipile : 401 | DSN sans `https://` ou token d'un autre workspace | corriger `UNIPILE_DSN`, régénérer le token |
+| Apify : HTTP 401 | token incomplet | recopier depuis la page Integrations |
+| FullEnrich ou Crustdata : 402 | solde à zéro | recharger, l'outil reste coché mais le solde est noté dans OUTILS.md |
+| Lemlist MCP "Needs authentication" | OAuth pas terminé | lancer un outil Lemlist de lecture (`get_team_info`), valider dans le navigateur |
+| HubSpot : 403 | scopes manquants sur l'app privée | ajouter les scopes contacts et companies, régénérer le token |
+| `OUTILS.md introuvable` | script lancé hors du module GTM | lancer depuis `10_Skills/connecter-outils/scripts/` du module GTM |

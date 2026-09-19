@@ -25,3 +25,7 @@ __pycache__/
 # 07_Meeting/
 # 09_Journal/
 # **/_log.md
+
+# Etat local des scripts du module GTM (jamais partage)
+10_Skills/*/scripts/compteurs.json
+10_Skills/*/scripts/historique_*.json
