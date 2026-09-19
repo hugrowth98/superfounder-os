@@ -41,29 +41,29 @@ Vous avez déjà un workspace Claude Code ? `./install.sh --into ~/MonWorkspace`
 
 ## Claude Code, Codex ou OpenCode
 
-Le dépôt fonctionne avec les trois, sans rien configurer. Claude Code lit `CLAUDE.md` et `.claude/skills`. Codex lit `AGENTS.md` et `.agents/skills`. OpenCode lit `AGENTS.md` et `opencode.json`. Les deux dossiers de skills sont des liens symboliques vers `10 Skills/` : sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies (l'installeur le propose). Les trois phrases d'installation sont les mêmes partout.
+Le dépôt fonctionne avec les trois, sans rien configurer. Claude Code lit `CLAUDE.md` et `.claude/skills`. Codex lit `AGENTS.md` et `.agents/skills`. OpenCode lit `AGENTS.md` et `opencode.json`. Les deux dossiers de skills sont des liens symboliques vers `10_Skills/` : sur Windows, activez le mode développeur avant de cloner, ou remplacez les liens par des copies (l'installeur le propose). Les trois phrases d'installation sont les mêmes partout.
 
 ## Ce que contient le dépôt
 
 ```
 superfounder-os/            le dossier que Claude Code ouvre
 ├── CLAUDE.md               la carte : règles, diagnostic du premier message, arbre, départements, forme d'une fiche, routage, rituels
-├── 00 Inbox/               capture en vrac, vidée par /inbox-processor ; _import/ pour /import
-├── 01 About-Me/            TOUJOURS chargé. Qui vous êtes. Change en années.
+├── 00_Inbox/               capture en vrac, vidée par /inbox-processor ; _import/ pour /import
+├── 01_About-Me/            TOUJOURS chargé. Qui vous êtes. Change en années.
 │   ├── about-me.md  my-company.md  anti-ai-voice.md
-├── 02 Contexte/            À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
-├── 03 Branding/            charte, logos, polices
-├── 04 Projets/             une initiative avec une fin : un dossier, une note, des Étapes, archivé à la fin
-├── 05 Departements/        les responsabilités continues, chacune avec sa fiche
-│   ├── Strategie/  Contenu/ (LinkedIn, Newsletter, Video, Slides)  Go-to-Market/ (Listes-prospection, Messages, Mailing)
+├── 02_Contexte/            À LA DEMANDE. La vérité unique sur l'offre, les clients, la voix. 7 fichiers.
+├── 03_Branding/            charte, logos, polices
+├── 04_Projets/             une initiative avec une fin : un dossier, une note, des Étapes, archivé à la fin
+├── 05_Departements/        les responsabilités continues, chacune avec sa fiche
+│   ├── Strategie/  Marketing/ (LinkedIn, Newsletter, Video, Slides)  Go-to-Market/ (Listes-prospection, Messages, Mailing)
 │   ├── Vente/ (Propositions, Pipeline)  Produit/  Finance-Compta/
-├── 06 Clients/             un dossier par client signé, avec sa note
-├── 07 Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
-├── 08 Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
-├── 09 Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
-├── 10 Skills/              la bibliothèque : 47 skills, une procédure par dossier
-├── 11 Archives/            terminé ou remplacé, gardé accessible
-├── .claude/skills          lien vers 10 Skills/ (Claude Code)      .agents/skills  lien vers 10 Skills/ (Codex)
+├── 06_Clients/             un dossier par client signé, avec sa note
+├── 07_Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
+├── 08_Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
+├── 09_Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
+├── 10_Skills/              la bibliothèque : 47 skills, une procédure par dossier
+├── 11_Archives/            terminé ou remplacé, gardé accessible
+├── .claude/skills          lien vers 10_Skills/ (Claude Code)      .agents/skills  lien vers 10_Skills/ (Codex)
 ├── AGENTS.md  opencode.json  .env.example  install.sh  docs/  scripts/validate_skills.py
 ```
 

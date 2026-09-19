@@ -29,8 +29,8 @@ Claude fait un état des lieux, puis vous emmène étape par étape. Vous ne tou
 2. **CLAUDE.md, la carte.** Fourni. Claude vous demande seulement vos règles non négociables.
 3. **About-Me, qui vous êtes.** Trois fichiers. `about-me.md` par une interview de 20 questions (faites-la à la voix, en marchant). `my-company.md`, un snapshot daté de votre activité. `anti-ai-voice.md`, fourni, où vous ajoutez vos expressions à vous.
 4. **Contexte, la vérité unique.** Sept fichiers, chacun en trois prompts : cadrage, interview, synthèse. Les deux plus importants pour la suite : `Offer-Positioning.md` et `Clients-Problems-and-Messages.md`. Apportez vos transcripts d'appels de vente, c'est la meilleure matière.
-5. **Vos départements et vos projets.** Six fiches livrées (Strategie, Contenu, Go-to-Market, Vente, Produit, Finance-Compta) : vous validez la Mission, vous donnez le chiffre qui compte. Puis vos initiatives en cours, trois maximum, chacune avec sa note et ses Étapes.
-6. **Vos clients actifs.** Un dossier par client dans `06 Clients/`, avec sa note : qui, quelle mission, comment il aime travailler. Trois clients maximum pour commencer.
+5. **Vos départements et vos projets.** Six fiches livrées (Strategie, Marketing, Go-to-Market, Vente, Produit, Finance-Compta) : vous validez la Mission, vous donnez le chiffre qui compte. Puis vos initiatives en cours, trois maximum, chacune avec sa note et ses Étapes.
+6. **Vos clients actifs.** Un dossier par client dans `06_Clients/`, avec sa note : qui, quelle mission, comment il aime travailler. Trois clients maximum pour commencer.
 7. **Les rituels.** `/done` en fin de session (c'est ce qui garde le cerveau vivant), `/weekly-review` le vendredi, `/lint` une fois par mois, `/inbox-processor` quand ça déborde, `/import` pour un gros lot, `/create-skill` quand une tâche se répète.
 8. **Les MCP.** Vos 3 à 5 outils prioritaires, branchés avec `/connect-mcp`.
 

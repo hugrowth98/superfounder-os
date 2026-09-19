@@ -6,7 +6,7 @@
 
 ## Avant de commencer
 
-- Le second cerveau est installé. Le contenu lit `02 Contexte/Tone-and-Voice.md`, `Offer-Positioning.md` et `Clients-Problems-and-Messages.md`.
+- Le second cerveau est installé. Le contenu lit `02_Contexte/Tone-and-Voice.md`, `Offer-Positioning.md` et `Clients-Problems-and-Messages.md`.
 - Sous la main : 5 à 10 de vos meilleurs posts LinkedIn, avec leurs résultats si vous les connaissez. C'est la meilleure matière pour caler la voix.
 
 ## La phrase à taper
@@ -20,8 +20,8 @@ Installe mon contenu
 ## Ce qui se passe
 
 1. Claude lit votre second cerveau. Il ne vous redemande ni votre offre, ni votre cible, ni votre voix.
-2. Vous collez vos posts. Il les range dans `05 Departements/Contenu/LinkedIn/posts-de-reference.md` avec, pour chacun, ce qui marche.
-3. Il construit avec vous `05 Departements/Contenu/LinkedIn/strategie-contenu.md` : niche, monopole personnel, piliers, répartition, convictions, créateurs admirés, sources de veille. Une question à la fois, avec une valeur par défaut à chaque fois que c'est raisonnable.
+2. Vous collez vos posts. Il les range dans `05_Departements/Marketing/LinkedIn/posts-de-reference.md` avec, pour chacun, ce qui marche.
+3. Il construit avec vous `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : niche, monopole personnel, piliers, répartition, convictions, créateurs admirés, sources de veille. Une question à la fois, avec une valeur par défaut à chaque fois que c'est raisonnable.
 4. Il vous propose d'écrire un premier post.
 
 Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque exécution. Quand votre positionnement bouge, vous modifiez un fichier, pas dix skills.
@@ -38,7 +38,7 @@ Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque e
 
 ## Où vont les choses
 
-`05 Departements/Contenu/` a six briques, chacune avec sa note : `LinkedIn/` (les posts, dans `livrables/`), `Newsletter/`, `Mailing/` (les emails à votre audience), `Event/`, `Video/`, `Slides/`. Les 46 skills vivent dans `10 Skills/` et sont visibles partout.
+`05_Departements/Marketing/` a six briques, chacune avec sa note : `LinkedIn/` (les posts, dans `livrables/`), `Newsletter/`, `Mailing/` (les emails à votre audience), `Event/`, `Video/`, `Slides/`. Les 46 skills vivent dans `10_Skills/` et sont visibles partout.
 
 ## Comment vérifier que c'est bon
 

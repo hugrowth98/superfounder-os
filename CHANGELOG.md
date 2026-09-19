@@ -8,21 +8,21 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), ver
 Le second cerveau version 4 : douze dossiers numérotés, projets, départements, clients, fiches courtes.
 
 ### Changé
-- Arbre à plat et numéroté : `00 Inbox` à `11 Archives`. `Marketing/` et `Vente/` deviennent six départements dans `05 Departements/` (Strategie, Contenu, Go-to-Market, Vente, Produit, Finance-Compta). `Produit-Client/` devient `06 Clients/`. `Veille/` rejoint `08 Ressources/`. Les skills vivent dans `10 Skills/`.
-- Un projet (initiative avec une fin) vit dans `04 Projets/` et part en archive quand ses Étapes sont cochées. Un département n'a pas de fin. Un client est une mission signée.
+- Arbre à plat et numéroté : `00_Inbox` à `11_Archives`. `Marketing/` et `Vente/` deviennent six départements dans `05_Departements/` (Strategie, Marketing, Go-to-Market, Vente, Produit, Finance-Compta). `Produit-Client/` devient `06_Clients/`. `Veille/` rejoint `08_Ressources/`. Les skills vivent dans `10_Skills/`.
+- Un projet (initiative avec une fin) vit dans `04_Projets/` et part en archive quand ses Étapes sont cochées. Un département n'a pas de fin. Un client est une mission signée.
 - Fin des sous-dossiers par étape (`livrables/`, `ressources/`, `input/`, `output/`) : fichiers à plat, sous-dossier par nature seulement au-delà d'une dizaine d'items. `sources/` reste pour le brut volumineux.
 - Fiches courtes, six sections maximum : Mission, Périmètre, Objectif (frontmatter `objectif:`), Cadre avec décisions datées, Étapes, Où on en est, Key Notes. Plus de bloc ETAT, de Reprise ni d'Historique : l'historique vit dans `_log.md` et le journal.
-- Sept templates dans `08 Ressources/templates/` : projet, departement, client, journal-jour, journal-semaine, reflexion, livrable.
+- Sept templates dans `08_Ressources/templates/` : projet, departement, client, journal-jour, journal-semaine, reflexion, livrable.
 - `/done` réécrit Où on en est, date les décisions dans Cadre, coche les Étapes, propose l'archivage d'un projet fini. `/lint` gagne un dixième contrôle : l'audit de contexte d'un dossier (contradictions, répétitions, obsolète, manques, mal rangé). `/inbox-processor`, `/import` et `/weekly-review` suivent la nouvelle carte.
 - `installer-second-cerveau` : une étape pour valider la fiche de chaque département et créer les premiers projets, avant les clients.
-- `07 Meeting/` simplifié : Clients, Prospects, Interne, Autres.
-- Imports `@` du `CLAUDE.md` avec l'espace échappé (`@01\ About-Me/...`), seule forme qui charge.
+- `07_Meeting/` simplifié : Clients, Prospects, Interne, Autres.
+- Imports `@` du `CLAUDE.md` avec l'espace échappé (`@01_About-Me/...`), seule forme qui charge.
 
 ### Ajouté
 - `/create-skill` : transformer une tâche faite trois fois à la main en skill, avec cadrage, étapes, test et écriture du SKILL.md.
 
 ### Retiré
-- `Marketing/Event/` : un event est un projet dans `04 Projets/`.
+- `Marketing/Event/` : un event est un projet dans `04_Projets/`.
 
 ## [3.2.0] - 2026-09-18
 
