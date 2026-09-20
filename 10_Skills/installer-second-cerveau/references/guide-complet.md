@@ -61,7 +61,7 @@ votre-workspace/
 └── .claude/skills/        les skills transverses
 ```
 
-Chaque dossier de travail (`06_Clients/`, `05_Departements/Marketing/`, `05_Departements/Vente/`, `05_Departements/Strategie/` et leurs sous-dossiers) contient une **note du même nom que le dossier** (`05_Departements/Vente/Vente.md`) qui dit ce qui va dedans et où on en est, plus un `_log.md` écrit par `/done`. Les livrables vont dans `livrables/`, ce qu'on reçoit dans `sources/`, les assets propres au dossier dans `ressources/`.
+Chaque dossier de travail (`06_Clients/`, `05_Departements/Marketing/`, `05_Departements/Vente/`, `05_Departements/Strategie/` et leurs sous-dossiers) contient une **note du même nom que le dossier** (`05_Departements/Vente/Vente.md`) qui dit ce qui va dedans et où on en est, plus un `_log.md` écrit par `/done`. Les fichiers sont à plat dans le dossier ; un sous-dossier n'apparaît que quand une nature de fichier dépasse dix items, et se nomme par ce qu'il contient (`Propositions/`, `Pipeline/`), jamais par une étape. Seule exception : `sources/` pour le brut volumineux qu'on ne modifie pas.
 
 **Principes structurants :**
 
@@ -148,7 +148,7 @@ CLAUDE.md doit contenir 5 sections :
 
 3. **Architecture du workspace**
    - Description de chaque dossier racine
-   - Convention sources/livrables/ressources des dossiers de travail, et la note de chaque dossier
+   - Convention des dossiers de travail (fichiers à plat, `sources/` pour le brut) et la note de chaque dossier
    - Convention de nommage des fichiers
 
 4. **Règles de routage des livrables**
@@ -2425,16 +2425,15 @@ Déposez dans `08_Ressources/Veille/sources/` un article que vous citez souvent,
 
 ### 6.3 Les dossiers de travail
 
-Quatre dossiers de travail sont livrés : `06_Clients/` (un dossier par client et par produit), `05_Departements/Marketing/` (LinkedIn, Newsletter, Mailing, Event, Video, Slides), `05_Departements/Vente/` (Listes-prospection, Messages, Propositions, Pipeline), `05_Departements/Strategie/`. Chacun a sa note du même nom, qui dit ce qui va dedans et ce qui n'y va pas.
+Les dossiers de travail livrés : `04_Projets/` (une initiative avec une fin), `05_Departements/` avec six départements (`Strategie/`, `Marketing/` : LinkedIn, Newsletter, Video, Slides ; `Go-to-Market/` : Listes-prospection, Messages, Mailing, Signaux, Ciblage ; `Vente/` : Propositions, Pipeline ; `Produit/` ; `Finance-Compta/`), `06_Clients/` (un dossier par client signé). Chacun a sa note du même nom, qui dit ce qui va dedans et ce qui n'y va pas, plus un `_log.md`.
 
-Trois sous-dossiers reviennent partout :
-- `sources/` = matière brute reçue (transcripts, briefs, exports)
-- `livrables/` = ce qui est produit
-- `ressources/` = assets propres à ce dossier (à distinguer de `08_Ressources/` à la racine, transversal)
+Deux règles reviennent partout :
+- les fichiers sont à plat, nommés `Nom-Sujet_AAAA-MM-JJ.ext` ; un sous-dossier n'apparaît qu'au-delà de dix fichiers d'une même nature, et se nomme par ce qu'il contient
+- `sources/` = la matière brute reçue (transcripts, briefs, exports), le seul sous-dossier nommé par une étape (à distinguer de `08_Ressources/` à la racine, transversal)
 
 #### [HUMAIN] Adaptez à votre activité
 
-Si votre métier appelle un dossier de plus (`Formation/`, `Recrutement/`, `Production/`), créez-le sur le même patron : une note du même nom depuis `08_Ressources/templates/departement.md`, un `_log.md`, et `sources/ livrables/ ressources/`. Une initiative datée (un event, un lancement) vit en sous-dossier du dossier qu'elle sert, avec sa propre note, et part dans `11_Archives/` une fois finie.
+Si votre métier appelle un dossier de plus (`Formation/`, `Recrutement/`, `Production/`), créez-le sur le même patron : une note du même nom depuis `08_Ressources/templates/departement.md`, un `_log.md`, et des fichiers à plat. Une initiative datée (un event, un lancement) est un projet dans `04_Projets/`, avec sa propre note depuis `projet.md`, et part dans `11_Archives/` une fois finie.
 
 **Convention de nommage des livrables :**
 

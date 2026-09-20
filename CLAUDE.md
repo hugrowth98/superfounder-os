@@ -95,7 +95,7 @@ La note est courte, six sections maximum :
 | Où on en est | oui | oui | oui | `/done` réécrit, cinq lignes max, avec le lien vers la dernière session |
 | Key Notes | oui | oui | oui | `/done` complète les wikilinks |
 
-`/done` ne réécrit jamais Mission, Périmètre, Objectif ni le texte de Cadre : il y corrige une ligne devenue fausse, et c'est tout. Un sous-dossier qui a sa propre note (comme `Contenu/LinkedIn/`) n'a que Mission, Cadre, Où on en est et Key Notes.
+`/done` ne réécrit jamais Mission, Périmètre, Objectif ni le texte de Cadre : il y corrige une ligne devenue fausse, et c'est tout. Un sous-dossier qui a sa propre note (comme `Marketing/LinkedIn/`) n'a que Mission, Cadre, Où on en est et Key Notes.
 
 Règle de résolution : quand tu modifies un fichier, la note à mettre à jour est celle du dossier parent le plus proche qui en a une. Un fichier dans un projet remonte au projet, pas au département qui le porte.
 

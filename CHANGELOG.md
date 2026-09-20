@@ -15,6 +15,11 @@ Le premier master de contenu visuel : un post, une idée ou un framework devient
 - `03_Branding/charte-visuelle.md` : le gabarit que le master lit (palette par rôle, typographies, composants, ton, interdits, logo, exemples, style neutre de repli), avec la note `Branding.md` qui y renvoie ; `installer-contenu` le propose en fin d'installation ; la note `Marketing/LinkedIn/LinkedIn.md` nomme les fichiers d'infographie.
 - `.env.example` : `OPENAI_API_KEY` et `FAL_KEY` (section génération d'images). `CLAUDE.md`, `AGENTS.md` : section 13. `README.md` : 47 skills.
 
+### Modifié
+- `docs/contenu.md` : la station "Transformer en visuel", les quatre briques réelles de `Marketing/` (les emails à l'audience sont dans `Go-to-Market/Mailing/`, un event est un projet), la charte, 47 skills. `docs/prospection.md` : le registre `Ciblage/requetes-booleennes.md` dans "Où vont les fichiers".
+- Chemins périmés de la v3 corrigés : la note `Marketing/LinkedIn/LinkedIn.md` décrit des fichiers à plat (plus de `livrables/` ni `ressources/`), l'exemple `Contenu/LinkedIn/` de `CLAUDE.md`, `AGENTS.md` et `done` devient `Marketing/LinkedIn/`, le guide d'interview du second cerveau décrit les six départements et la règle des fichiers à plat.
+- CI : `scripts/valider_gtm.py` tourne après `validate_skills.py` sur chaque push.
+
 ## [5.5.0] - 2026-09-20
 
 Prospeo entre dans la stack en option : recherche d'entreprises et de personnes par filtres exacts, emails et mobiles vérifiés révélés en lot, et la méthode qui va avec.

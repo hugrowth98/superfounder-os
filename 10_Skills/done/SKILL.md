@@ -38,7 +38,7 @@ Si la session a été très courte (une question, aucune décision, aucun fichie
 Pour chaque fichier créé ou modifié, remonte au dossier parent le plus proche qui contient une note du même nom que lui. C'est cette note qu'on met à jour. Trois familles :
 
 - un projet : `04_Projets/<Projet>/<Projet>.md`
-- un département : `05_Departements/<Departement>/<Departement>.md` (un sous-dossier qui a sa propre note, comme `Contenu/LinkedIn/LinkedIn.md`, l'emporte)
+- un département : `05_Departements/<Departement>/<Departement>.md` (un sous-dossier qui a sa propre note, comme `Marketing/LinkedIn/LinkedIn.md`, l'emporte)
 - un client : `06_Clients/<Client>/<Client>.md`
 
 Un fichier dans un projet remonte à la note du projet, jamais à celle du département qui le porte. Ajoute les dossiers cités dans la conversation même sans fichier modifié, si une décision les concerne. Une session peut toucher plusieurs dossiers : traite chacun.

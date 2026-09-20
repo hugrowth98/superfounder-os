@@ -49,6 +49,7 @@ Un master est un skill qui connaît une méthode entière et route votre demande
 - Vos listes, enrichissements, offres d'emploi, engagements, technos et pubs : `05_Departements/Go-to-Market/Listes-prospection/`, un CSV par étape, nommé par ce qu'il contient et daté.
 - Vos messages, séquences et scripts d'appel : `05_Departements/Go-to-Market/Messages/`.
 - Vos runs de signaux (levées, changements de poste, recrutements, événements) et `comptes-suivis.csv`, la liste des comptes que vous surveillez : `05_Departements/Go-to-Market/Signaux/`.
+- Vos requêtes de ciblage (URL Sales Navigator construites depuis vos critères, commandes Ocean.io ou Prospeo, chacune avec son volume) : `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md`, mis à jour à chaque run pour ne pas reconstruire deux fois la même recherche.
 - Ce que Claude sait de vous : `05_Departements/Go-to-Market/contexte.md`. Ce que font vos outils : `05_Departements/Go-to-Market/OUTILS.md`. Vos clés : `.env`, jamais lu à voix haute.
 - Rien n'est supprimé par Claude : un fichier remplacé est renommé avec sa date.
 

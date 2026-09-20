@@ -1,6 +1,6 @@
 # Le contenu
 
-**Ce que vous aurez à la fin** : une chaîne qui transforme une idée brute (un transcript, un article, une conviction) en post LinkedIn publiable, dans votre voix. Vous validez, vous ne rédigez plus.
+**Ce que vous aurez à la fin** : une chaîne qui transforme une idée brute (un transcript, un article, une conviction) en post LinkedIn publiable, dans votre voix, et ce post en infographie à vos couleurs quand il le mérite. Vous validez, vous ne rédigez plus.
 
 **Durée** : 30 min d'installation, puis 10 min par post.
 
@@ -8,6 +8,7 @@
 
 - Le second cerveau est installé. Le contenu lit `02_Contexte/Tone-and-Voice.md`, `Offer-Positioning.md` et `Clients-Problems-and-Messages.md`.
 - Sous la main : 5 à 10 de vos meilleurs posts LinkedIn, avec leurs résultats si vous les connaissez. C'est la meilleure matière pour caler la voix.
+- Pour les visuels, facultatif : vos couleurs et votre police, à noter dans `03_Branding/charte-visuelle.md` (une ligne suffit). Sans charte, le master `infographie` part sur un style éditorial neutre et vous le dit.
 
 ## La phrase à taper
 
@@ -26,7 +27,7 @@ Installe mon contenu
 
 Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque exécution. Quand votre positionnement bouge, vous modifiez un fichier, pas dix skills.
 
-## La chaîne en 5 stations
+## La chaîne en 6 stations
 
 | Station | Vous écrivez | Ce qui se passe |
 |---|---|---|
@@ -34,11 +35,12 @@ Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque e
 | 2. Le socle | (automatique) | la grammaire éditoriale, chargée par tous les skills de rédaction |
 | 3. Écrire dans le bon format | "écris un tuto sur", "raconte", "mon avis sur", "post lead magnet" | un skill par intention : enseigner, raconter, trancher, convertir |
 | 4. Maximiser la portée | "propose des hooks", "améliore ce post" | les deux lignes avant le "voir plus", puis le contrôle qualité |
-| 5. Ré-installer | "Installe mon contenu" | quand votre positionnement change |
+| 5. Transformer en visuel | "transforme ce post en infographie", "version manuscrite", "sketchnote" | le master `infographie` écrit un brief (structure, texte exact), puis génère l'image en 4:5 aux couleurs de votre charte : éditorial premium, page de carnet en noir et blanc, ou tableau blanc au marqueur ; dans Codex ou un client avec un outil d'image, le prompt se colle dedans, sinon OpenAI ou fal.ai avec une clé dans `.env`, coût annoncé avant |
+| 6. Ré-installer | "Installe mon contenu" | quand votre positionnement change |
 
 ## Où vont les choses
 
-`05_Departements/Marketing/` a six briques, chacune avec sa note : `LinkedIn/` (les posts, dans `livrables/`), `Newsletter/`, `Mailing/` (les emails à votre audience), `Event/`, `Video/`, `Slides/`. Les 46 skills vivent dans `10_Skills/` et sont visibles partout.
+`05_Departements/Marketing/` a quatre briques, chacune avec sa note : `LinkedIn/` (les posts, les briefs et les infographies, à plat, avec les trois fichiers de stratégie), `Newsletter/`, `Video/`, `Slides/`. Les emails à votre audience vont dans `05_Departements/Go-to-Market/Mailing/`, un event est un projet dans `04_Projets/`, votre charte dans `03_Branding/charte-visuelle.md`. Les 47 skills vivent dans `10_Skills/` et sont visibles partout.
 
 ## Comment vérifier que c'est bon
 
