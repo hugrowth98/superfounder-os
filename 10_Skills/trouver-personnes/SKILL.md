@@ -24,6 +24,7 @@ cas (compte LinkedIn de l'utilisateur, recherche classique ou Sales Navigator).
 | URL Sales Navigator ou mots-clés avec le compte de l'utilisateur | `unipile` | Unipile `POST /api/v1/linkedin/search` | abonnement, pas de crédit |
 | Priorité api | `crustdata` | Crustdata `POST /screener/persondb/search/` | 3 crédits par tranche de 100 |
 | Décisionnaires d'entreprises précises (domaines) ou d'une cible Ocean, par titres, séniorités, départements ; plafond par entreprise ; arrivés depuis 90 jours | `ocean` | Ocean.io `POST /api/public_api/v3/search/people` (`includeDomains`, `peoplePerCompany`, `changedPositionAfter`) | crédits Ocean par personne renvoyée (`creditsUsed`) |
+| Personnes par titres (contient, similaires avec expansion, ou booléen), séniorités, départements, lieux canoniques, chez des entreprises précises (500 domaines) ou une cible ; email et mobile vérifiés révélés en lot | `prospeo` | Prospeo `POST /search-person` puis `POST /bulk-enrich-person` (`--reveler`) | 1 crédit par page de 25 ; révélation 1 crédit par email vérifié, 10 par mobile, 0 sans résultat ; `--cacher-deja-reveles` évite de payer deux fois |
 
 Aucun outil branché : dites lequel manque, renvoyez vers `connecter-outils`, ne simulez rien.
 
@@ -71,6 +72,12 @@ Options communes à toutes les sources :
 - `--par-entreprise 2` : deux décisionnaires par entreprise, choisis par l'ordre des titres demandés puis par séniorité (le CEO avant le co-fondateur).
 - `--format large` : en plus du CSV normalisé (une ligne par personne), un fichier `_decisionnaires.csv` avec une ligne par entreprise et les colonnes `d1_prenom`, `d1_nom`, `d1_titre`, `d1_linkedin_url`, `d2_*`. C'est le format qu'on lit avant d'appeler.
 - `--enregistrer --nom "<sujet>"` : la requête et son volume vont dans `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md` ; une URL déjà enregistrée par `construire-requete-salesnav` reçoit son volume automatiquement, sans option.
+
+Avec Prospeo (`--source prospeo`) : la recherche ne révèle ni email ni mobile mais dit leur statut ; `--total-seulement` (1 crédit)
+donne le total et la part d'emails vérifiés sur la page 1, avant de payer. `--titres-similaires --intensite NORMAL` élargit un
+titre aux titres voisins ("Head of Sales" attrape VP et Director), `--booleen "(CEO OR CTO) AND !intern"` remplace la liste,
+`--email-verifie --cacher-deja-reveles` ne garde que ce qu'on peut joindre et qu'on n'a pas déjà payé, `--reveler` obtient les
+emails en lot (50 par appel, 1 crédit chacun), `--reveler-mobile` les mobiles (10 crédits). Le détail : `10_Skills/construire-liste/ressources/prospeo-recherche.md`.
 
 La chaîne courte "des entreprises précises vers leurs décisionnaires", en trois commandes :
 `trouver-entreprises --source ocean ...` (ou toute autre source), puis `enrichir-entreprise --source ocean` si la

@@ -21,10 +21,10 @@ from pathlib import Path
 _ici = Path(__file__).resolve()
 _racine = next(p for p in _ici.parents if (p / "CLAUDE.md").exists() and (p / "10_Skills").is_dir())
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import dossier_gtm, Crustdata, FullEnrich, HubSpot, PredictLeads, TheirStack, Unipile, afficher, env, http, load_env, racine  # noqa: E402
+from gtm_common import dossier_gtm, Crustdata, FullEnrich, HubSpot, PredictLeads, Prospeo, TheirStack, Unipile, afficher, env, http, load_env, racine  # noqa: E402
 
 OUTILS_LIBELLES = {"apify": "Apify", "unipile": "Unipile", "crustdata": "Crustdata", "fullenrich": "FullEnrich",
-                   "ocean": "Ocean.io", "lemlist": "Lemlist", "hubspot": "HubSpot",
+                   "ocean": "Ocean.io", "lemlist": "Lemlist", "hubspot": "HubSpot", "prospeo": "Prospeo",
                    "predictleads": "PredictLeads", "theirstack": "TheirStack"}
 
 
@@ -113,6 +113,11 @@ def tester_theirstack() -> tuple[bool, str]:
     return True, "cle valide (recherche floutee, aucun credit consomme)"
 
 
+def tester_prospeo() -> tuple[bool, str]:
+    c = Prospeo().compte()
+    return True, f"{c.get('remaining_credits', '?')} credits restants, plan {c.get('current_plan', '?')} (appel gratuit)"
+
+
 def tester_salesnav() -> tuple[bool, str]:
     li_at = env("LINKEDIN_LI_AT", obligatoire=False)
     ua = env("LINKEDIN_USER_AGENT", obligatoire=False)
@@ -126,11 +131,11 @@ def tester_salesnav() -> tuple[bool, str]:
 
 TESTS = {"apify": tester_apify, "unipile": tester_unipile, "crustdata": tester_crustdata,
          "fullenrich": tester_fullenrich, "ocean": tester_ocean, "lemlist": tester_lemlist,
-         "hubspot": tester_hubspot, "salesnav": tester_salesnav,
+         "hubspot": tester_hubspot, "salesnav": tester_salesnav, "prospeo": tester_prospeo,
          "predictleads": tester_predictleads, "theirstack": tester_theirstack}
 CLES = {"apify": "APIFY_TOKEN", "unipile": "UNIPILE_API_KEY", "crustdata": "CRUSTDATA_API_KEY",
         "fullenrich": "FULLENRICH_API_KEY", "ocean": "OCEAN_API_KEY", "lemlist": "LEMLIST_API_KEY",
-        "hubspot": "HUBSPOT_ACCESS_TOKEN", "salesnav": "LINKEDIN_LI_AT",
+        "hubspot": "HUBSPOT_ACCESS_TOKEN", "salesnav": "LINKEDIN_LI_AT", "prospeo": "PROSPEO_API_KEY",
         "predictleads": "PREDICTLEADS_API_KEY", "theirstack": "THEIRSTACK_API_KEY"}
 
 

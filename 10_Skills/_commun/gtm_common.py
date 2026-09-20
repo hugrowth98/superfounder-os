@@ -1037,6 +1037,201 @@ class Lemlist:
 
 # ---------------------------------------------------------------- Ocean.io (API REST, sans MCP)
 
+# ---------------------------------------------------------------- Prospeo (recherche d'entreprises et de personnes, emails et mobiles verifies)
+
+class Prospeo:
+    """Client REST Prospeo (doc : prospeo.io/api-docs, lue le 2026-09-20). Cle : PROSPEO_API_KEY, en-tete X-KEY.
+    Tout est en POST sauf /account-information. Recherche : 1 credit par page de 25 avec au moins un resultat, gratuite
+    si la meme page a deja ete payee dans les 30 jours (`free: true`), 25 000 resultats max (1 000 pages).
+    /search-suggestions est gratuit (15 requetes par seconde) : lieux, titres, technos, industries, codes NAICS et SIC.
+    Enrichissement : 1 credit par email trouve, 10 par mobile (email compris), 0 sans resultat, 0 si deja enrichi depuis
+    moins de 90 jours ; jusqu'a 50 personnes ou entreprises par appel."""
+    BASE = "https://api.prospeo.io"
+    TAILLES = ["1-10", "11-20", "21-50", "51-100", "101-200", "201-500", "501-1000", "1001-2000", "2001-5000", "5001-10000", "10000+"]
+    TAILLES_DEPUIS_MODULE = {"1-10": ["1-10"], "11-50": ["11-20", "21-50"], "51-200": ["51-100", "101-200"], "201-500": ["201-500"],
+                             "501-1000": ["501-1000"], "1001-5000": ["1001-2000", "2001-5000"], "5001-10000": ["5001-10000"], "10001+": ["10000+"]}
+    SENIORITES = {"fondateur": "Founder/Owner", "founder": "Founder/Owner", "owner": "Founder/Owner", "cxo": "C-Suite", "c_level": "C-Suite",
+                  "c-suite": "C-Suite", "partner": "Partner", "associe": "Partner", "vp": "Vice President", "head": "Head",
+                  "director": "Director", "directeur": "Director", "manager": "Manager", "senior": "Senior", "entry": "Entry", "junior": "Entry"}
+    SENIORITE_VERS_MODULE = {"Founder/Owner": "fondateur", "C-Suite": "c_level", "Partner": "c_level", "Vice President": "vp", "Head": "head",
+                             "Director": "directeur", "Manager": "manager", "Senior": "senior", "Entry": "junior", "Intern": "junior"}
+    CA = ["<100K", "100K", "500K", "1M", "5M", "10M", "25M", "50M", "100M", "250M", "500M", "1B", "5B", "10B+"]
+    JOURS = [30, 60, 90, 180, 270, 365]
+    STATUT_EMAIL = {"VERIFIED": "DELIVERABLE", "UNVERIFIED": "UNKNOWN"}
+
+    def __init__(self, exiger_cle: bool = True, pause_s: float = 1.1):
+        self.cle = env("PROSPEO_API_KEY", obligatoire=exiger_cle, aide="Cle sur app.prospeo.io, Settings, API.")
+        self.pause_s = pause_s  # les recherches sont limitees a 1 par seconde sur le plan Starter
+
+    def _req(self, methode: str, chemin: str, body=None):
+        h = {"X-KEY": self.cle, "Content-Type": "application/json", "Accept": "application/json"}
+        st, corps = http(methode, f"{self.BASE}{chemin}", headers=h, json_body=body)
+        corps = corps if isinstance(corps, dict) else {}
+        if st == 429:
+            raise RuntimeError("Prospeo 429 : limite de requetes atteinte (recherche : 1 par seconde sur Starter), reessayez dans une minute")
+        if st >= 400 or corps.get("error"):
+            code = corps.get("error_code") or st
+            if code == "NO_RESULTS":
+                return {"error": False, "results": [], "pagination": {"total_count": 0, "total_page": 0, "current_page": 1}, "free": True}
+            if code == "INVALID_API_KEY":
+                raise RuntimeError("Prospeo : cle invalide (PROSPEO_API_KEY)")
+            if code == "INSUFFICIENT_CREDITS":
+                raise RuntimeError("Prospeo : plus de credits")
+            raise RuntimeError(f"Prospeo {chemin} -> {code} : {corps.get('filter_error') or corps.get('message') or str(corps)[:300]}")
+        return corps
+
+    # ---- compte
+    def compte(self) -> dict:
+        return self._req("GET", "/account-information").get("response") or {}
+
+    def solde(self) -> str:
+        c = self.compte()
+        return f"{c.get('remaining_credits', '?')} credits restants (plan {c.get('current_plan', '?')}, {c.get('used_credits', 0)} utilises)"
+
+    # ---- referentiels (gratuits)
+    def suggestions(self, genre: str, mots: str) -> list:
+        """genre : location, job_title, technology, industry, naics, sic, ou un champ entreprise (company_icp_titles,
+        company_key_customers, company_integrations, company_products_services_products, company_funding_investors...).
+        Rend les libelles canoniques a recopier tels quels."""
+        cle = f"{genre}_search"
+        rep = self._req("POST", "/search-suggestions", {cle: mots})
+        for k, v in rep.items():
+            if k.endswith("_suggestions") and v:
+                return [x.get("name") if isinstance(x, dict) else x for x in v]
+        return []
+
+    def resoudre(self, genre: str, valeurs: list[str], libelle: str) -> list[str]:
+        """Chaque valeur devient un libelle canonique : exact si la suggestion l'egale (sans casse), sinon la premiere
+        suggestion, annoncee. Sans suggestion, arret : le filtre renverrait zero resultat en silence."""
+        sortie = []
+        for v in valeurs:
+            sugg = self.suggestions(genre, v)
+            exact = next((s for s in sugg if s.lower() == v.lower()), None)
+            if exact:
+                sortie.append(exact)
+            elif sugg:
+                afficher(f"  [prospeo] {libelle} '{v}' -> {sugg[0]}" + (f" ; autres : {', '.join(sugg[1:5])}" if len(sugg) > 1 else ""))
+                sortie.append(sugg[0])
+            else:
+                raise RuntimeError(f"{libelle} '{v}' inconnu de Prospeo : essayez un autre mot (les valeurs se cherchent avec --lister-{libelle}s)")
+        return sortie
+
+    # ---- recherche
+    def _page(self, chemin: str, filtres: dict, page: int) -> dict:
+        return self._req("POST", chemin, {"filters": filtres, "page": page})
+
+    def total(self, chemin: str, filtres: dict) -> tuple[int, dict]:
+        """(total_count, reponse de la page 1). La page 1 coute 1 credit, et donne 25 premiers resultats."""
+        rep = self._page(chemin, filtres, 1)
+        return int((rep.get("pagination") or {}).get("total_count") or 0), rep
+
+    def rechercher(self, chemin: str, filtres: dict, max_resultats: int = 100) -> tuple[list[dict], int, int]:
+        """(resultats, total, pages facturees). Pages de 25, une pause entre deux pages."""
+        items, pages_payees, total, page = [], 0, 0, 1
+        while len(items) < max_resultats and page <= 1000:
+            rep = self._page(chemin, filtres, page)
+            lot = rep.get("results") or []
+            pag = rep.get("pagination") or {}
+            total = int(pag.get("total_count") or total)
+            if lot and not rep.get("free"):
+                pages_payees += 1
+            items += lot
+            if not lot or page >= int(pag.get("total_page") or 1):
+                break
+            page += 1
+            time.sleep(self.pause_s)
+        return items[:max_resultats], total, pages_payees
+
+    def personnes(self, filtres: dict, max_resultats: int = 100) -> tuple[list[dict], int, int]:
+        return self.rechercher("/search-person", filtres, max_resultats)
+
+    def entreprises(self, filtres: dict, max_resultats: int = 100) -> tuple[list[dict], int, int]:
+        return self.rechercher("/search-company", filtres, max_resultats)
+
+    # ---- enrichissement (revelation des emails et mobiles)
+    def enrichir_personnes(self, data: list[dict], email_verifie_seulement: bool = True, mobile: bool = False,
+                           mobile_verifie_seulement: bool = False) -> tuple[dict, list[str], int]:
+        """data : [{identifier, person_id | linkedin_url | first_name + last_name + company_website...}], 50 par appel.
+        Rend ({identifier: {person, company}}, non_trouves, credits factures)."""
+        trouves, non, cout = {}, [], 0
+        for i in range(0, len(data), 50):
+            body = {"only_verified_email": email_verifie_seulement, "enrich_mobile": mobile, "only_verified_mobile": mobile_verifie_seulement,
+                    "data": data[i:i + 50]}
+            rep = self._req("POST", "/bulk-enrich-person", body)
+            for m in rep.get("matched") or []:
+                trouves[str(m.get("identifier"))] = m
+            non += [str(x) for x in (rep.get("not_matched") or [])] + [str(x) for x in (rep.get("invalid_datapoints") or [])]
+            cout += int(rep.get("total_cost") or 0)
+            if i + 50 < len(data):
+                time.sleep(0.3)
+        return trouves, non, cout
+
+    def enrichir_entreprises(self, data: list[dict]) -> tuple[dict, list[str], int]:
+        """data : [{identifier, company_website | company_linkedin_url | company_name | company_id}], 50 par appel, 1 credit par entreprise."""
+        trouves, non, cout = {}, [], 0
+        for i in range(0, len(data), 50):
+            rep = self._req("POST", "/bulk-enrich-company", {"data": data[i:i + 50]})
+            for m in rep.get("matched") or []:
+                trouves[str(m.get("identifier"))] = m.get("company") or m
+            non += [str(x) for x in (rep.get("not_matched") or [])] + [str(x) for x in (rep.get("invalid_datapoints") or [])]
+            cout += int(rep.get("total_cost") or 0)
+            if i + 50 < len(data):
+                time.sleep(0.3)
+        return trouves, non, cout
+
+    # ---- normalisation
+    @staticmethod
+    def normaliser_entreprise(c: dict) -> dict:
+        c = c.get("company", c) if isinstance(c, dict) and "company" in c and isinstance(c.get("company"), dict) else c
+        loc = c.get("location") or {}
+        fund = c.get("funding") or {}
+        tech = c.get("technology") or {}
+        technos = tech.get("technologies") if isinstance(tech, dict) else tech
+        if isinstance(technos, list):
+            technos = " | ".join(x.get("name") if isinstance(x, dict) else str(x) for x in technos)[:1000]
+        else:
+            technos = ""
+        return {"entreprise": c.get("name") or "", "domaine": domaine(c.get("domain") or c.get("website") or ""),
+                "linkedin_entreprise_url": norm_linkedin_url(c.get("linkedin_url") or ""), "site_web": c.get("website") or "",
+                "ville": loc.get("city") or "", "pays": (loc.get("country_code") or loc.get("country") or "").upper(),
+                "secteur": c.get("industry") or "", "effectif": c.get("employee_range") or "", "effectif_linkedin": c.get("employee_count") or "",
+                "chiffre_affaires": c.get("revenue_range_printed") or "", "annee_creation": c.get("founded") or "",
+                "type": c.get("type") or "", "description": (c.get("description_ai") or c.get("description_seo") or c.get("description") or "")[:500],
+                "mots_cles": " | ".join(c.get("keywords") or [])[:500], "technos": technos,
+                "financement": f"{fund.get('latest_funding_stage') or ''} {str(fund.get('latest_funding_date') or '')[:10]}".strip(),
+                "financement_total": fund.get("total_funding_printed") or "",
+                "telephone_entreprise": (c.get("phone_hq") or {}).get("phone_hq") or "" if isinstance(c.get("phone_hq"), dict) else "",
+                "prospeo_company_id": c.get("company_id") or "", "source": "prospeo", "date_extraction": aujourd_hui()}
+
+    @classmethod
+    def normaliser_personne(cls, r: dict) -> dict:
+        p = r.get("person") or r
+        c = r.get("company") or {}
+        job = next((j for j in (p.get("job_history") or []) if isinstance(j, dict) and j.get("current")), {})
+        sen = job.get("seniority") or (p.get("seniority") or "")
+        loc = p.get("location") or {}
+        em = p.get("email") or {}
+        mo = p.get("mobile") or {}
+        ligne = {"prenom": p.get("first_name") or "", "nom": p.get("last_name") or "", "titre": p.get("current_job_title") or job.get("title") or "",
+                 "seniorite": cls.SENIORITE_VERS_MODULE.get(sen, seniorite_depuis_titre(p.get("current_job_title") or "")),
+                 "entreprise": c.get("name") or job.get("company_name") or "", "domaine": domaine(c.get("domain") or c.get("website") or ""),
+                 "linkedin_url": norm_linkedin_url(p.get("linkedin_url") or ""), "linkedin_entreprise_url": norm_linkedin_url(c.get("linkedin_url") or ""),
+                 "ville": loc.get("city") or "", "pays": (loc.get("country_code") or "").upper(), "headline": p.get("headline") or "",
+                 "secteur": c.get("industry") or "", "effectif": c.get("employee_range") or "",
+                 "email_statut_prospeo": em.get("status") or "", "mobile_statut_prospeo": mo.get("status") or "",
+                 "anciennete_poste": f"{job.get('duration_in_months')} mois" if job.get("duration_in_months") else "",
+                 "prospeo_person_id": p.get("person_id") or "", "prospeo_company_id": c.get("company_id") or "",
+                 "source": "prospeo", "date_extraction": aujourd_hui()}
+        if em.get("revealed") and em.get("email") and "*" not in em["email"]:
+            ligne["email"] = em["email"]
+            ligne["email_statut"] = cls.STATUT_EMAIL.get(em.get("status") or "", "UNKNOWN")
+        if mo.get("revealed") and mo.get("mobile") and "*" not in mo["mobile"]:
+            ligne["telephone"] = mo.get("mobile_international") or mo["mobile"]
+        if p.get("last_job_change_detected_at"):
+            ligne["changement_poste_detecte_le"] = str(p["last_job_change_detected_at"])[:10]
+        return ligne
+
+
 class Ocean:
     """Client REST Ocean.io (doc : app.ocean.io/docs, spec OpenAPI 2.0.0 lue le 2026-09-20). Cle : OCEAN_API_KEY,
     en-tete X-Api-Token. Chemins : https://api.ocean.io/api/public_api/v2 et /v3. Chaque reponse de recherche porte

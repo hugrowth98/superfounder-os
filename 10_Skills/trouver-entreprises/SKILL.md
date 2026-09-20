@@ -26,6 +26,7 @@ Navigator et un compte connecté. Aucun outil branché : dites lequel manque et 
 | URL Sales Navigator avec le compte de l'utilisateur | `unipile` | Unipile `POST /api/v1/linkedin/search` (category companies) | abonnement, pas de crédit |
 | Priorité api | `crustdata` | Crustdata `POST /v1/companies/search` | 1 crédit par recherche |
 | Recherche précise : secteurs fins, mots-clés sur la description, technos du site, taille, pays, villes, CA, année, levée, croissance, lookalikes | `ocean` | Ocean.io `POST /api/public_api/v3/search/companies` | crédits Ocean par entreprise renvoyée (`creditsUsed` affiché après le run) ; référentiels et autocomplétion gratuits |
+| Recherche précise par filtres exacts, et par modèle d'affaires : à qui ils vendent (`--vend-a`), clients clés, intégrations, lookalike par domaine ou par texte libre, actualités, postes ouverts, levée | `prospeo` | Prospeo `POST /search-company` (industries, lieux, technos résolus par `/search-suggestions`, gratuit) | 1 crédit par page de 25 avec résultats, gratuite si déjà payée sous 30 jours ; `--total-seulement` = 1 crédit ; `--filtres-json` colle le payload du tableau de bord |
 
 ## Entrée
 
@@ -56,6 +57,8 @@ source : `site_web`, `telephone_entreprise`, `adresse`, `note_google`, `nb_avis`
    (l'URL de comptes se construit en texte : `construire-requete-salesnav --comptes --region France --effectif 11-50 --mots-cles SaaS`)
    `--source crustdata --secteur "Software Development" --taille 11-50 --lieu France --max 50`
    `--source ocean --secteur "Human Resources Software" --pays fr --taille 11-50,51-200 --mots-cles "SaaS,logiciel" --max 200 --enregistrer`
+   `--source prospeo --secteur "Software Development" --lieu "France" --taille 11-50,51-200 --vend-a "Head of Sales" --total-seulement`
+   `--source prospeo --icp-texte "cabinets de recrutement spécialisés tech, 10 à 50 personnes, France" --lookalike-niveau T2 --max 100 --enregistrer`
 5. Ouvrez le CSV, vérifiez 3 lignes au hasard (nom, domaine, secteur cohérents), donnez le nombre
    de lignes et le lien cliquable.
 6. Un seul next step : `qualifier-liste` (portes d'exclusion et score ICP) avant toute recherche
@@ -97,6 +100,19 @@ LinkedIn (`linkedin_entreprise_url`), donc la chaîne continue sans enrichisseme
 
 Le MCP Ocean, s'il est branché, sert à explorer à la main (`find_industries`, `search_companies` en langage
 naturel) ; le script reste la voie qui écrit le CSV et le registre.
+
+## Prospeo : la même boucle, avec le modèle d'affaires en plus
+
+Prospeo suit la même boucle qu'Ocean (résoudre, compter, resserrer, lancer), avec trois différences : les valeurs se
+résolvent par des suggestions gratuites (`--lister-secteurs`, `--lister-lieux`, `--lister-technos`, `--lister-titres`, et
+les scripts le font seuls au vrai run), la page 1 coûte 1 crédit et donne le total (`--total-seulement`), et la cible se
+décrit aussi par ce que fait l'entreprise : à qui elle vend (`--vend-a "VP Sales,Head of Sales" --vend-a-tailles smb,midmarket`),
+quels clients elle cite (`--clients-cles`), quelles intégrations (`--integrations`), ou un texte libre de 5 000 caractères
+(`--icp-texte`, lookalike sans graine, `--lookalike-niveau T1` pour resserrer). Les industries sont celles de LinkedIn :
+"SaaS" ne rend rien, "software" rend "Software Development" ; pour "B2B SaaS", `--vend-a` bat toute industrie. Un lieu
+Prospeo garde sa virgule (`--lieu "Paris, France"`), plusieurs lieux se séparent par un point-virgule. Le payload construit dans
+le tableau de bord Prospeo (bouton "Search API") se colle tel quel avec `--filtres-json`. Le détail des filtres et des
+formes à ne pas deviner : `10_Skills/construire-liste/ressources/prospeo-recherche.md`.
 
 ## Garde-fous
 

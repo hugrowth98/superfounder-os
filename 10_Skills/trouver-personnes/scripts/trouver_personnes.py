@@ -6,6 +6,9 @@ Sources (--source) :
   salesnav    Apify curious_coder/linkedin-sales-navigator-search-scraper : URL de recherche Sales Navigator "leads"
               + cookies LinkedIn du .env (LINKEDIN_LI_AT, LINKEDIN_LI_A, LINKEDIN_USER_AGENT)
   unipile     Unipile : URL Sales Navigator (ou mots-cles) avec le compte LinkedIn de l'utilisateur (secours)
+  prospeo     Prospeo POST /search-person : titres (contient, similaires, ou --booleen), seniorites, departements, lieux canoniques,
+              entreprises par domaine (--in ou --domaines, 500 max), --par-entreprise ; 1 credit par page de 25 ; --reveler obtient les
+              emails verifies en lot (1 credit chacun), --reveler-mobile les mobiles (10 credits) ; --changement-poste = 90 jours
   ocean       Ocean.io POST /v3/search/people : decisionnaires d'entreprises precises (--in avec domaine, ou --domaines) ou d'une cible
               (--secteur exact, --taille, --lieu = codes pays), par --titres, --seniorites, --departements ; --par-entreprise (2 par defaut
               avec des domaines) ; --changement-poste = arrives depuis 90 jours
@@ -17,6 +20,8 @@ Exemples :
   python3 trouver_personnes.py --source profils --titres "CEO,Fondateur,Directeur Général" --lieu France --taille 11-50,51-200 --max 100
   python3 trouver_personnes.py --source employes --in Listes-prospection/trouver-entreprises_x.csv --titres "DRH,Responsable recrutement" --par-entreprise 2
   python3 trouver_personnes.py --source salesnav --url "https://www.linkedin.com/sales/search/people?..." --max 500
+  python3 trouver_personnes.py --source prospeo --in entreprises.csv --dirigeants --par-entreprise 2 --email-verifie --reveler --format large
+  python3 trouver_personnes.py --source prospeo --titres "Head of Sales" --titres-similaires --lieu "France" --taille 11-50,51-200 --total-seulement
   python3 trouver_personnes.py --source ocean --in entreprises.csv --dirigeants --par-entreprise 2 --format large
   python3 trouver_personnes.py --source employes --in entreprises.csv --dirigeants --strict-titre --par-entreprise 2 --format large
   python3 trouver_personnes.py --source crustdata --titres "Head of Sales,VP Sales" --seniorites "vp,head" --lieu France --max 100
@@ -35,7 +40,7 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import (Crustdata, Ocean, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
+from gtm_common import (Crustdata, Ocean, Prospeo, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
                         ecrire_csv, enregistrer_requete, env, fraicheur, lire_csv, lire_outils, norm_linkedin_url, norm_texte,
                         seniorite_depuis_titre)
 from apify_run import lancer, prix  # noqa: E402
@@ -345,7 +350,128 @@ def ocean(a):
     return lignes, "ocean"
 
 
-SOURCES = {"profils": profils, "employes": employes, "salesnav": salesnav, "unipile": unipile, "crustdata": crustdata, "ocean": ocean}
+# ------------------------------------------------------------------ Prospeo (personnes, 1 credit par page de 25, revelation en lot)
+
+def filtres_prospeo_personnes(a, pr=None) -> dict:
+    if a.filtres_json:
+        brut = a.filtres_json
+        if Path(brut).exists():
+            brut = Path(brut).read_text(encoding="utf-8")
+        f = json.loads(brut)
+        return f.get("filters", f)
+    f: dict = {}
+    if a.booleen:
+        f["person_job_title"] = {"boolean_search": a.booleen}
+    elif a.titres:
+        jt = {"include": _liste(a.titres), "match_mode": "SIMILAR" if a.titres_similaires else "CONTAINS"}
+        if a.titres_similaires:
+            jt["smart_intensity"] = (a.intensite or "NORMAL").upper()
+        if a.titres_exclus:
+            jt["exclude"] = _liste(a.titres_exclus)
+        f["person_job_title"] = jt
+    if a.seniorites:
+        sen = []
+        for s in _liste(a.seniorites):
+            if s.lower() not in Prospeo.SENIORITES:
+                arret(f"seniorite inconnue '{s}' pour Prospeo : {', '.join(sorted(set(Prospeo.SENIORITES)))}")
+            sen.append(Prospeo.SENIORITES[s.lower()])
+        f["person_seniority"] = {"include": sorted(set(sen))}
+    if a.departements:
+        f["person_department"] = {"include": _liste(a.departements)}
+    if a.lieu:
+        vals = [x.strip() for x in a.lieu.split(";") if x.strip()]
+        f["person_location_search"] = {"include": pr.resoudre("location", vals, "lieu") if pr else vals}
+    if a.changement_poste:
+        f["person_job_change"] = {"timeframe_days": 90, "only_new_company": True}
+    cd = {}
+    if a.email_verifie:
+        cd["email"] = ["VERIFIED"]
+    if a.mobile_verifie:
+        cd["mobile"] = ["VERIFIED"]
+    if cd or a.cacher_deja_reveles:
+        cd.setdefault("operator", "AND" if (a.email_verifie and a.mobile_verifie) else "OR")
+        cd["hide_people_with_details_already_revealed"] = bool(a.cacher_deja_reveles)
+        f["person_contact_details"] = cd
+    doms = []
+    if a.entree:
+        for l in lire_csv(a.entree):
+            d = domaine(l.get("domaine") or l.get("site_web") or "")
+            if d and d not in doms:
+                doms.append(d)
+    doms += [domaine(d) for d in _liste(a.domaines) if domaine(d) and domaine(d) not in doms]
+    if doms:
+        if len(doms) > 500:
+            arret(f"prospeo : 500 domaines max par recherche ({len(doms)} donnes) : decoupez le fichier")
+        f["company"] = {"websites": {"include": doms}}
+    if a.secteur:
+        vals = _liste(a.secteur)
+        f["company_industry"] = {"include": pr.resoudre("industry", vals, "secteur") if pr else vals}
+    if a.taille:
+        tailles = []
+        for tr in _liste(a.taille):
+            tailles += Prospeo.TAILLES_DEPUIS_MODULE.get(tr, [tr])
+        f["company_headcount_range"] = tailles
+    if a.mots_cles:
+        f["company_keywords"] = {"include": _liste(a.mots_cles)}
+    par = a.par_entreprise or (2 if doms else None)
+    if par:
+        f["max_person_per_company"] = int(par)
+    return f
+
+
+def prospeo(a):
+    """Prospeo POST /search-person : titres (contient, similaire avec expansion, ou booleen), seniorites, departements, lieux
+    canoniques, entreprises par domaine (500 max), filtres d'entreprise ; max_person_per_company plafonne ; la recherche
+    ne revele ni email ni mobile (statut VERIFIED visible) : --reveler les obtient en lot (1 credit par email, 10 par mobile)."""
+    if a.lister_titres or a.lister_lieux:
+        pr = Prospeo()
+        for genre, mots, lib in (("job_title", a.lister_titres, "titre"), ("location", a.lister_lieux, "lieu")):
+            if mots:
+                for s in pr.suggestions(genre, mots):
+                    print(f"{lib}\t{s}")
+        return [], "prospeo"
+    if a.dry_run:
+        f = filtres_prospeo_personnes(a, None)
+        if not f or all(k in ("max_person_per_company", "person_contact_details") for k in f):
+            arret("prospeo : donnez des entreprises (--in ou --domaines) et/ou des criteres (--titres, --booleen, --seniorites, --departements, --lieu, --secteur, --taille)")
+        bandeau_dry_run("Prospeo POST /search-person", [f"filters : {json.dumps(f, ensure_ascii=False)[:900]}",
+                                                       f"pages : jusqu'a {max(1, -(-a.max // 25))} (25 par page, 1 credit par page avec resultats)",
+                                                       "revelation : " + (f"--reveler{' --reveler-mobile' if a.reveler_mobile else ''} : 1 credit par email trouve, 10 par mobile, 0 sinon" if (a.reveler or a.reveler_mobile) else "aucune (emails et mobiles masques, statuts visibles)")])
+        return [], "prospeo"
+    pr = Prospeo()
+    afficher(f"  [prospeo] {pr.solde()}")
+    f = filtres_prospeo_personnes(a, pr)
+    if a.total_seulement:
+        total, rep = pr.total("/search-person", f)
+        statuts = [((r.get("person") or {}).get("email") or {}).get("status") for r in rep.get("results") or []]
+        verif = sum(1 for s in statuts if s == "VERIFIED")
+        afficher(f"  [prospeo] total : {total} personne(s) ; sur la page 1, {verif}/{len(statuts)} avec un email verifie")
+        print(total)
+        return [], "prospeo"
+    items, total, pages = pr.personnes(f, max_resultats=a.max)
+    afficher(f"  [prospeo] {len(items)} personne(s) prises sur {total} disponibles ; {pages} page(s) facturee(s)")
+    lignes = [{**_base("prospeo"), **Prospeo.normaliser_personne(r)} for r in items]
+    if a.changement_poste:
+        for l in lignes:
+            l["signal_type"] = l.get("signal_type") or "changement_poste"
+    if a.reveler or a.reveler_mobile:
+        cibles = [l for l in lignes if l.get("prospeo_person_id") and not l.get("email")]
+        data = [{"identifier": l["prospeo_person_id"], "person_id": l["prospeo_person_id"]} for l in cibles]
+        if data:
+            trouves, non, cout = pr.enrichir_personnes(data, email_verifie_seulement=not a.emails_non_verifies, mobile=bool(a.reveler_mobile))
+            for l in cibles:
+                m = trouves.get(l["prospeo_person_id"])
+                if not m:
+                    continue
+                n = Prospeo.normaliser_personne(m)
+                for k in ("email", "email_statut", "telephone"):
+                    if n.get(k) and not l.get(k):
+                        l[k] = n[k]
+            afficher(f"  [prospeo] revelation : {len(trouves)} trouve(s), {len(non)} sans resultat, {cout} credit(s) factures")
+    return lignes, "prospeo"
+
+
+SOURCES = {"profils": profils, "employes": employes, "salesnav": salesnav, "unipile": unipile, "crustdata": crustdata, "ocean": ocean, "prospeo": prospeo}
 
 
 def plafonner(lignes: list[dict], par: int, titres: list[str]) -> list[dict]:
@@ -417,6 +543,20 @@ def main() -> None:
     ap.add_argument("--domaines", help="ocean : domaines d'entreprises separes par des virgules (ou --in avec une colonne domaine)")
     ap.add_argument("--secteur", help="ocean : industries Ocean exactes (voir trouver_entreprises.py --source ocean --lister-secteurs)")
     ap.add_argument("--departements", help="ocean : departements (Management, Sales, Marketing and Advertising, HR, Engineering, Founder/Owner...)")
+    pr_ = ap.add_argument_group("prospeo")
+    pr_.add_argument("--booleen", help="prospeo : booleen de titres, ex : \"(CEO OR CTO) AND !intern\" (remplace --titres)")
+    pr_.add_argument("--titres-similaires", action="store_true", help="prospeo : elargit chaque titre aux titres voisins (match_mode SIMILAR)")
+    pr_.add_argument("--intensite", help="prospeo : LOOSE, NORMAL (defaut) ou STRICT avec --titres-similaires")
+    pr_.add_argument("--email-verifie", action="store_true", help="prospeo : seulement les personnes avec un email verifie")
+    pr_.add_argument("--mobile-verifie", action="store_true", help="prospeo : seulement les personnes avec un mobile verifie")
+    pr_.add_argument("--cacher-deja-reveles", action="store_true", help="prospeo : exclut les contacts deja reveles par votre compte (jamais payer deux fois)")
+    pr_.add_argument("--reveler", action="store_true", help="prospeo : revele les emails en lot apres la recherche (1 credit par email trouve)")
+    pr_.add_argument("--reveler-mobile", action="store_true", help="prospeo : revele aussi les mobiles (10 credits par mobile, email compris)")
+    pr_.add_argument("--emails-non-verifies", action="store_true", help="prospeo : accepter aussi les emails non verifies a la revelation")
+    pr_.add_argument("--total-seulement", action="store_true", help="prospeo : page 1 seulement (1 credit) : total et part d'emails verifies")
+    pr_.add_argument("--lister-titres", metavar="MOTS", help="prospeo : suggestions de titres (gratuit)")
+    pr_.add_argument("--lister-lieux", metavar="MOTS", help="prospeo : suggestions de lieux canoniques (gratuit)")
+    pr_.add_argument("--filtres-json", help="prospeo : le JSON copie depuis le tableau de bord (Search API), chaine ou fichier")
     ap.add_argument("--nom", help="nom de la requete pour le registre Ciblage/requetes-booleennes.md")
     ap.add_argument("--enregistrer", action="store_true", help="ajoute ou met a jour la requete (URL ou commande, volume) dans le registre")
     ap.add_argument("--max", type=int, default=100)
@@ -433,7 +573,7 @@ def main() -> None:
         a.titres = ",".join(DIRIGEANTS)
     a.sujet = a.sujet or ("dirigeants" if a.dirigeants else (a.titres or a.mots_cles or a.source)).split(",")[0]
     lignes, outil = SOURCES[a.source](a)
-    if a.dry_run:
+    if a.dry_run or (a.source == "prospeo" and (a.total_seulement or a.lister_titres or a.lister_lieux)):
         return
     if a.strict_titre and a.titres:
         voulus = [norm_texte(x) for x in _liste(a.titres)]

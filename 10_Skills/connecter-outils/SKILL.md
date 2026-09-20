@@ -2,7 +2,8 @@
 name: connecter-outils
 description: >
   Branche un par un les 7 outils de la stack (Apify, Unipile, Crustdata, FullEnrich, Ocean.io,
-  Lemlist, HubSpot) et les 2 optionnels pour les signaux (PredictLeads, TheirStack) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
+  Lemlist, HubSpot) et les 3 optionnels (Prospeo pour la recherche par filtres exacts et les emails
+  vérifiés, PredictLeads et TheirStack pour les signaux) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
   le .env, coche "Etat des connexions" dans OUTILS.md et fixe priorite, canal_linkedin,
   canal_email et crm. Gère aussi les cookies LinkedIn pour les actors Sales Navigator d'Apify.
   Se déclenche sur : "connecte mes outils", "branche Unipile", "configure mes clés API",
@@ -54,6 +55,12 @@ Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appe
    bouton New token. Test : `/v2/credits/balance` (gratuit). Les lookalikes passent par l'API en CLI
    (`trouver-lookalikes`) ; le MCP Ocean est optionnel :
    `claude mcp add --transport http ocean_data_api "https://api.ocean.io/mcp/?api-token=<cle>"`.
+5 bis. **Prospeo** (`PROSPEO_API_KEY`, optionnel) : app.prospeo.io, Settings, API, "Create API key". Une base de
+   300 M de contacts et 90 M d'emails vérifiés, avec une recherche par filtres exacts (industries, lieux, technos,
+   ICP inverse, clients clés, lookalike par texte) et des emails et mobiles vérifiés à la révélation. Test :
+   `GET /account-information` (gratuit : crédits restants, plan). Coûts : 1 crédit par page de 25 résultats de
+   recherche, 1 crédit par email vérifié révélé, 10 par mobile, 0 sans résultat. Le MCP Prospeo
+   (`https://mcp.prospeo.io`, en-tête `X-KEY`) reste optionnel : les scripts passent par l'API.
 6. **Lemlist** (`LEMLIST_API_KEY`) : app.lemlist.com, Settings, Integrations, API, "Generate a new key".
    Test : `GET /team`. L'envoi (`envoyer-sequence`) et la lecture des réponses (`verifier-reponses`)
    passent par l'API en CLI. Le MCP Lemlist est optionnel, pour les stats et l'aperçu d'email :
@@ -79,7 +86,7 @@ Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appe
    expirent en quelques semaines : à l'erreur "Cookies are expired", refaire l'étape.
 10. Demandez le canal LinkedIn voulu (Unipile avec le compte de l'utilisateur, ou Lemlist multicanal),
    puis écrivez tout : `python3 scripts/verifier_connexions.py --ecrire-outils --canal-linkedin unipile`.
-11. Résumez l'état des 7 outils (et des 2 optionnels) et proposez un seul next step : `installer-gtm` si `05_Departements/Go-to-Market/contexte.md` a
+11. Résumez l'état des 7 outils (et des 3 optionnels) et proposez un seul next step : `installer-gtm` si `05_Departements/Go-to-Market/contexte.md` a
     encore des crochets, sinon "on construit votre première liste".
 
 ## Garde-fous

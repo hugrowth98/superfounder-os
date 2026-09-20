@@ -76,10 +76,11 @@ La chaîne courte, quand l'utilisateur veut "les décisionnaires de telles entre
 
 ```
 Entreprises précises vers leurs décisionnaires (3 commandes, sans compte LinkedIn si Ocean est branché)
-  trouver-entreprises --source ocean <filtres traduits de la demande>   (ou toute autre source, ou le fichier de l'utilisateur)
+  trouver-entreprises --source ocean|prospeo <filtres traduits de la demande>   (ou toute autre source, ou le fichier de l'utilisateur)
   -> enrichir-entreprise --source ocean   seulement si linkedin_entreprise_url ou domaine manque (par domaine, 1 000 par appel)
   -> trouver-personnes --source ocean --in <csv> --dirigeants --par-entreprise 2 --format large
-     (ou --source employes --dirigeants --strict-titre --par-entreprise 2 --format large, par page LinkedIn)
+     (ou --source prospeo ... --email-verifie --reveler, qui rend l'email vérifié dans le même run ;
+      ou --source employes --dirigeants --strict-titre --par-entreprise 2 --format large, par page LinkedIn)
   -> qualifier-comptes reste obligatoire avant tout email ou appel
 ```
 

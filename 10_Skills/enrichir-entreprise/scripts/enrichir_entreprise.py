@@ -2,6 +2,7 @@
 
 Sources (--source) :
   ocean      Ocean.io lookup par domaine (1 000 par appel) : nom, page LinkedIn, siege, secteurs, taille, CA, annee, technos
+  prospeo    Prospeo bulk enrich (50 par appel, 1 credit par entreprise) : page LinkedIn, siege, industrie, taille, CA, annee, technos, financement
   unipile     page entreprise LinkedIn via le compte de l'utilisateur (GET /api/v1/linkedin/company/{id}) ; par defaut
   crustdata   GET /screener/company?company_domain= (1 credit cache / 4 temps reel) ; ajoute nb_offres_emploi, CA estime
   apify       harvestapi/linkedin-company (0,004 $ par entreprise) : par URL LinkedIn, ou par nom si l'URL manque
@@ -23,7 +24,7 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import (Crustdata, Ocean, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
+from gtm_common import (Crustdata, Ocean, Prospeo, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
                         ecrire_csv, lire_csv, lire_outils, norm_linkedin_url, norm_texte, slug_linkedin, sujet_depuis_fichier)
 from apify_run import lancer, prix  # noqa: E402
 
@@ -189,13 +190,58 @@ def via_ocean(lignes, idx, dry_run, pause):
     return ok
 
 
-SOURCES = {"unipile": via_unipile, "crustdata": via_crustdata, "apify": via_apify, "ocean": via_ocean}
+def via_prospeo(lignes, idx, dry_run, pause):
+    """Prospeo POST /bulk-enrich-company : 50 entreprises par appel, par site, page LinkedIn ou nom ; 1 credit par entreprise
+    trouvee, 0 sinon, 0 si deja enrichie sous 90 jours. Rend page LinkedIn, siege, industrie, taille, CA, annee, description,
+    mots-cles, technos, financement, telephone du siege."""
+    data, par_id = [], {}
+    for i in idx:
+        l = lignes[i]
+        d = {"identifier": str(i)}
+        if l.get("domaine") or l.get("site_web"):
+            d["company_website"] = domaine(l.get("domaine") or l.get("site_web"))
+        if l.get("linkedin_entreprise_url"):
+            d["company_linkedin_url"] = l["linkedin_entreprise_url"]
+        if l.get("entreprise"):
+            d["company_name"] = l["entreprise"]
+        if len(d) == 1:
+            continue
+        data.append(d)
+        par_id[str(i)] = i
+    if dry_run:
+        bandeau_dry_run("Prospeo POST /bulk-enrich-company", [f"{len(data)} entreprise(s) identifiables sur {len(idx)} (lots de 50)",
+                                                             f"cout : au plus {len(data)} credit(s) (1 par entreprise trouvee, 0 sinon, 0 si deja enrichie sous 90 jours)"])
+        return 0
+    if not data:
+        return 0
+    pr = Prospeo()
+    afficher(f"  [prospeo] {pr.solde()}")
+    trouves, non, cout = pr.enrichir_entreprises(data)
+    ok = 0
+    for ident, c in trouves.items():
+        i = par_id.get(ident)
+        if i is None:
+            continue
+        n = Prospeo.normaliser_entreprise(c)
+        for k, v in n.items():
+            if k in ("source", "date_extraction"):
+                continue
+            if v and not (lignes[i].get(k) or "").strip():
+                lignes[i][k] = v
+        lignes[i]["date_enrichissement_entreprise"] = aujourd_hui()
+        lignes[i]["source"] = (lignes[i].get("source") or "") + ("+prospeo" if lignes[i].get("source") else "prospeo")
+        ok += 1
+    afficher(f"  [prospeo] {ok}/{len(data)} trouvees ({len(non)} sans resultat), {cout} credit(s) factures")
+    return ok
+
+
+SOURCES = {"unipile": via_unipile, "crustdata": via_crustdata, "apify": via_apify, "ocean": via_ocean, "prospeo": via_prospeo}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--in", dest="entree", required=True)
-    ap.add_argument("--source", help="unipile, crustdata, apify, ocean (par domaine, 1 000 par appel), ou plusieurs separes par des virgules (defaut selon OUTILS.md)")
+    ap.add_argument("--source", help="unipile, crustdata, apify, ocean (par domaine, 1 000 par appel), prospeo (par site, page LinkedIn ou nom, 50 par appel), ou plusieurs separes par des virgules (defaut selon OUTILS.md)")
     ap.add_argument("--max", type=int)
     ap.add_argument("--pause", type=float, default=1.0)
     ap.add_argument("--force", action="store_true")
@@ -227,7 +273,7 @@ def main() -> None:
         afficher(f"  [source] {', '.join(sources)} (d'apres OUTILS.md)")
     for s in sources:
         if s not in SOURCES:
-            arret(f"source inconnue : {s} (unipile, crustdata, apify, ocean)")
+            arret(f"source inconnue : {s} (unipile, crustdata, apify, ocean, prospeo)")
     lignes = lire_csv(a.entree)
     idx = cibles(lignes, a.force, a.max)
     afficher(f"  [cibles] {len(idx)} entreprise(s) a enrichir sur {len(lignes)}")

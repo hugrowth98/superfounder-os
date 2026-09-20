@@ -9,6 +9,9 @@ Sources (--source) :
                "comptes" + cookies LinkedIn du .env (LINKEDIN_LI_AT, LINKEDIN_LI_A, LINKEDIN_USER_AGENT)
   unipile      Unipile : meme URL Sales Navigator (ou mots-cles) avec le compte LinkedIn de l'utilisateur
   crustdata    Crustdata POST /v1/companies/search (priorite api)
+  prospeo      Prospeo POST /search-company : filtres exacts (industries, lieux et technos resolus par les suggestions gratuites),
+               mots-cles, taille, CA, annee, levee, ICP inverse (--vend-a), clients cles, integrations, lookalike par domaine ou
+               texte, actualites, postes ouverts ; 1 credit par page de 25 ; --total-seulement ; --filtres-json = payload du tableau de bord
   ocean        Ocean.io POST /v3/search/companies : recherche precise par filtres (secteurs exacts du referentiel, mots-cles sur la
                description, technos du site, taille, pays, villes, CA, annee de creation, levee, croissance, lookalikes) ; --lister-secteurs,
                --lister-technos, --lister-mots-cles, --lister-lieux pour trouver les libelles (gratuit) ; --total-seulement pour compter
@@ -21,6 +24,9 @@ Exemples :
   python3 trouver_entreprises.py --source base-large --secteur "computer software" --pays france --taille 11-50 --max 300
   python3 trouver_entreprises.py --source salesnav --url "https://www.linkedin.com/sales/search/company?..." --max 500
   python3 trouver_entreprises.py --source crustdata --secteur "Software Development" --taille 11-50 --lieu France --max 50
+  python3 trouver_entreprises.py --source prospeo --lister-secteurs software
+  python3 trouver_entreprises.py --source prospeo --secteur "Software Development" --lieu "Paris, France" --taille 11-50,51-200 --vend-a "Head of Sales" --total-seulement
+  python3 trouver_entreprises.py --source prospeo --icp-texte "agences de recrutement specialisees tech, 10 a 50 personnes, France" --max 100
   python3 trouver_entreprises.py --source ocean --lister-secteurs "logiciel RH"
   python3 trouver_entreprises.py --source ocean --secteur "Human Resources Software" --pays fr --taille 11-50,51-200 --mots-cles "SaaS,logiciel" --total-seulement
   python3 trouver_entreprises.py --source ocean --secteur "Human Resources Software" --pays fr --villes Paris:fr --taille 11-50,51-200 --max 200 --enregistrer
@@ -37,7 +43,7 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import (Crustdata, Ocean, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie,  # noqa: E402
+from gtm_common import (Crustdata, Ocean, Prospeo, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie,  # noqa: E402
                         domaine, ecrire_csv, enregistrer_requete, env, lire_outils, norm_linkedin_url)
 from apify_run import lancer, prix  # noqa: E402
 
@@ -449,8 +455,153 @@ def commande_ocean(a) -> str:
     return " ".join(parts)
 
 
+# ------------------------------------------------------------------ Prospeo (recherche d'entreprises, 1 credit par page de 25)
+
+def filtres_prospeo(a, pr=None) -> dict:
+    """Traduit les options en filtres Prospeo (search-company). Les valeurs qui ne se devinent pas (lieux, industries, technos)
+    passent par les suggestions gratuites quand `pr` est donne ; sinon elles partent telles quelles (dry-run)."""
+    if a.filtres_json:
+        brut = a.filtres_json
+        if Path(brut).exists():
+            brut = Path(brut).read_text(encoding="utf-8")
+        f = json.loads(brut)
+        return f.get("filters", f)
+    f: dict = {}
+    if a.secteur:
+        vals = _liste(a.secteur)
+        f["company_industry"] = {"include": pr.resoudre("industry", vals, "secteur") if pr else vals}
+    if a.secteurs_exclus:
+        f.setdefault("company_industry", {})["exclude"] = _liste(a.secteurs_exclus)
+    if a.lieu:
+        vals = [x.strip() for x in a.lieu.split(";") if x.strip()]  # "Paris, France" garde sa virgule : plusieurs lieux se separent par ;
+        f["company_location_search"] = {"include": pr.resoudre("location", vals, "lieu") if pr else vals}
+    if a.taille:
+        tailles = []
+        for tr in _liste(a.taille):
+            if tr in Prospeo.TAILLES_DEPUIS_MODULE:
+                tailles += Prospeo.TAILLES_DEPUIS_MODULE[tr]
+            elif tr in Prospeo.TAILLES:
+                tailles.append(tr)
+            else:
+                arret(f"taille inconnue '{tr}' : {', '.join(Prospeo.TAILLES_DEPUIS_MODULE)} (ou une tranche Prospeo : {', '.join(Prospeo.TAILLES)})")
+        f["company_headcount_range"] = tailles
+    mc = {}
+    if a.mots_cles:
+        mc["include"] = _liste(a.mots_cles)
+    if a.mots_cles_tous:
+        mc["include"] = _liste(a.mots_cles_tous)
+        mc["include_all"] = True
+    if a.mots_cles_exclus:
+        mc["exclude"] = _liste(a.mots_cles_exclus)
+    if mc:
+        f["company_keywords"] = mc
+    if a.technos:
+        vals = _liste(a.technos)
+        f["company_technology"] = {"include": pr.resoudre("technology", vals, "techno") if pr else vals}
+    if a.technos_exclues:
+        f.setdefault("company_technology", {})["exclude"] = _liste(a.technos_exclues)
+    if a.ca:
+        vals = _liste(a.ca)
+        for c in vals:
+            if c not in Prospeo.CA:
+                arret(f"tranche de CA inconnue '{c}' : {', '.join(Prospeo.CA)}")
+        f["company_revenue"] = {"min": vals[0], "max": vals[-1], "include_unknown_revenue": False}
+    if a.fondee:
+        d, _, fin = a.fondee.partition("-")
+        f["company_founded"] = {k: int(v) for k, v in (("min", d), ("max", fin)) if v}
+    if a.levee or a.levee_depuis_jours or a.investisseurs:
+        fr = {}
+        if a.levee:
+            fr["stage"] = _liste(a.levee)
+        if a.levee_depuis_jours:
+            j = int(a.levee_depuis_jours)
+            if j not in Prospeo.JOURS:
+                arret(f"--levee-depuis-jours accepte {', '.join(map(str, Prospeo.JOURS))}")
+            fr["funding_date"] = j
+        if a.investisseurs:
+            fr["investors"] = _liste(a.investisseurs)
+        f["company_funding"] = fr
+    if a.vend_a or a.vend_a_tailles:
+        icp = {}
+        if a.vend_a:
+            icp["titles_include"] = _liste(a.vend_a)
+        if a.vend_a_tailles:
+            icp["company_sizes"] = _liste(a.vend_a_tailles)
+        f["company_icp"] = icp
+    if a.clients_cles:
+        f["company_key_customers"] = {"include": _liste(a.clients_cles)}
+    if a.integrations:
+        f["company_integrations"] = {"include": _liste(a.integrations)}
+    if a.lookalike_domaine or a.icp_texte:
+        la = {"minimum_tier": (a.lookalike_niveau or "T3").upper()}
+        if a.lookalike_domaine:
+            la["domain"] = domaine(a.lookalike_domaine)
+        else:
+            la["icp_text"] = a.icp_texte
+        f["company_lookalike"] = la
+    if a.actualites:
+        cats = _liste(a.actualites)
+        f["company_news"] = {"categories": cats, "timeframe_days": int(a.actualites_jours or 90)}
+    if a.recrute:
+        f["company_job_posting_hiring_for"] = {"include": _liste(a.recrute)}
+    if a.exclure_domaines:
+        f["company"] = {"websites": {"exclude": [domaine(d) for d in _liste(a.exclure_domaines)]}}
+    return f
+
+
+def commande_prospeo(a) -> str:
+    parts = ["trouver_entreprises.py --source prospeo"]
+    for nom in ("secteur", "secteurs_exclus", "lieu", "taille", "mots_cles", "mots_cles_tous", "mots_cles_exclus", "technos", "technos_exclues", "ca", "fondee",
+                "levee", "levee_depuis_jours", "investisseurs", "vend_a", "vend_a_tailles", "clients_cles", "integrations", "lookalike_domaine", "icp_texte",
+                "lookalike_niveau", "actualites", "actualites_jours", "recrute", "exclure_domaines", "filtres_json", "max"):
+        v = getattr(a, nom, None)
+        if v not in (None, "", False):
+            parts.append(f"--{nom.replace('_', '-')} \"{v}\"")
+    return " ".join(parts)
+
+
+def prospeo(a) -> tuple[list[dict], str]:
+    """Prospeo POST /search-company : 1 credit par page de 25 (gratuit si la page a deja ete payee dans les 30 jours).
+    La page 1 donne le total : --total-seulement s'arrete la. Les libelles (lieux, industries, technos) sont resolus par les
+    suggestions gratuites avant la recherche : une valeur devinee renvoie zero resultat sans erreur."""
+    if a.lister_secteurs or a.lister_technos or a.lister_lieux or a.lister_titres:
+        pr = Prospeo()
+        for genre, mots, lib in (("industry", a.lister_secteurs, "secteur"), ("technology", a.lister_technos, "techno"),
+                                 ("location", a.lister_lieux, "lieu"), ("job_title", a.lister_titres, "titre")):
+            if mots:
+                for s in pr.suggestions(genre, mots):
+                    print(f"{lib}\t{s}")
+        return [], "prospeo"
+    if a.dry_run:
+        f = filtres_prospeo(a, None)
+        if not f:
+            arret("prospeo : donnez au moins un filtre positif (--secteur, --lieu, --taille, --mots-cles, --technos, --vend-a, --clients-cles, --lookalike-domaine, --icp-texte, --filtres-json...)")
+        bandeau_dry_run("Prospeo POST /search-company", [f"filters : {json.dumps(f, ensure_ascii=False)[:900]}",
+                                                        f"pages : jusqu'a {max(1, -(-a.max // 25))} (25 par page, 1 credit par page avec resultats ; gratuit si deja payee sous 30 jours)",
+                                                        "les lieux, industries et technos seront resolus par les suggestions gratuites au vrai run"])
+        return [], "prospeo"
+    pr = Prospeo()
+    afficher(f"  [prospeo] {pr.solde()}")
+    f = filtres_prospeo(a, pr)
+    if not f:
+        arret("prospeo : donnez au moins un filtre positif")
+    if a.total_seulement:
+        total, rep = pr.total("/search-company", f)
+        afficher(f"  [prospeo] total : {total} entreprise(s) ({'page 1 gratuite' if rep.get('free') else '1 credit pour la page 1'})")
+        print(total)
+        if a.enregistrer:
+            enregistrer_requete(a.nom or a.sujet, "", json.dumps(f, ensure_ascii=False), commande_prospeo(a), volume=total, notes="comptage seul")
+        return [], "prospeo"
+    items, total, pages = pr.entreprises(f, max_resultats=a.max)
+    afficher(f"  [prospeo] {len(items)} entreprise(s) prises sur {total} disponibles ; {pages} page(s) facturee(s), soit {pages} credit(s)")
+    lignes = [{**_base("prospeo"), **Prospeo.normaliser_entreprise(c)} for c in items]
+    if a.enregistrer:
+        enregistrer_requete(a.nom or a.sujet, "", json.dumps(f, ensure_ascii=False), commande_prospeo(a), volume=f"{len(lignes)} sur {total}")
+    return lignes, "prospeo"
+
+
 SOURCES = {"google-maps": google_maps, "linkedin": linkedin_search, "base-large": base_large,
-           "salesnav": salesnav_apify, "unipile": unipile, "crustdata": crustdata, "ocean": ocean}
+           "salesnav": salesnav_apify, "unipile": unipile, "crustdata": crustdata, "ocean": ocean, "prospeo": prospeo}
 
 
 def main() -> None:
@@ -459,7 +610,7 @@ def main() -> None:
     ap.add_argument("--sujet", default="", help="mot pour le nom du fichier (defaut : recherche ou mots-cles)")
     ap.add_argument("--recherche", help="google-maps : ce qu'on taperait dans Google Maps")
     ap.add_argument("--mots-cles", help="mots-cles (linkedin, base-large, salesnav, unipile, crustdata)")
-    ap.add_argument("--lieu", help="lieu ou liste de lieux separes par des virgules")
+    ap.add_argument("--lieu", help="lieu ou liste de lieux separes par des virgules (prospeo : libelles canoniques comme \"Paris, France\", plusieurs lieux separes par ;)")
     ap.add_argument("--pays", help="base-large : pays en anglais minuscule (france, belgium)")
     ap.add_argument("--secteur", help="secteur(s) : libelle Crustdata, industrie leads-finder, ou industrie Sales Nav")
     ap.add_argument("--industry-ids", help="linkedin : ids d'industrie LinkedIn separes par des virgules")
@@ -500,7 +651,22 @@ def main() -> None:
     oc_.add_argument("--lister-mots-cles", metavar="MOTS", help="ocean : suggestions de mots-cles (autocomplete)")
     oc_.add_argument("--lister-lieux", metavar="MOTS", help="ocean : suggestions de lieux (autocomplete)")
     oc_.add_argument("--nom", help="nom de la requete pour le registre Ciblage/requetes-booleennes.md")
-    oc_.add_argument("--enregistrer", action="store_true", help="ocean : ajoute la requete (commande, filtres, volume) au registre")
+    oc_.add_argument("--enregistrer", action="store_true", help="ocean / prospeo : ajoute la requete (commande, filtres, volume) au registre")
+    pr_ = ap.add_argument_group("prospeo (recherche par filtres exacts ; --secteur, --lieu, --taille, --mots-cles, --technos, --ca, --fondee, --levee, --total-seulement, --lister-* et --enregistrer sont communs avec ocean)")
+    pr_.add_argument("--levee-depuis-jours", help="prospeo : dernier tour depuis N jours (30, 60, 90, 180, 270, 365)")
+    pr_.add_argument("--investisseurs", help="prospeo : noms d'investisseurs (10 max)")
+    pr_.add_argument("--vend-a", help="prospeo : ICP inverse, titres que l'entreprise vend a (ex : \"VP Sales,Head of Sales\") ; plan Growth")
+    pr_.add_argument("--vend-a-tailles", help="prospeo : tailles des clients de l'entreprise : micro, smb, midmarket, enterprise, large_enterprise")
+    pr_.add_argument("--clients-cles", help="prospeo : entreprises qui citent ces marques comme clients (100 max) ; plan Growth")
+    pr_.add_argument("--integrations", help="prospeo : integrations citees sur le site (20 max) ; plan Growth")
+    pr_.add_argument("--lookalike-domaine", help="prospeo : un domaine de reference (lookalike, mode domaine)")
+    pr_.add_argument("--icp-texte", help="prospeo : description libre du client ideal (lookalike sans graine, 5 000 caracteres max)")
+    pr_.add_argument("--lookalike-niveau", help="prospeo : T1 (le plus proche), T2, T3 (defaut)")
+    pr_.add_argument("--actualites", help="prospeo : categories d'actualite : \"Funding & Investment\", \"Mergers & Acquisitions\", \"Product Launch\", Partnership, Expansion, \"Layoffs & Restructuring\", IPO, \"Leadership Change\"")
+    pr_.add_argument("--actualites-jours", help="prospeo : 60, 90 (defaut), 180 ou 365")
+    pr_.add_argument("--recrute", help="prospeo : intitules de postes ouverts (offres actives)")
+    pr_.add_argument("--lister-titres", metavar="MOTS", help="prospeo : suggestions de titres de poste (gratuit)")
+    pr_.add_argument("--filtres-json", help="prospeo : le JSON copie depuis le tableau de bord (bouton Search API), chaine ou chemin de fichier")
     a = ap.parse_args()
 
     if not a.source:
@@ -508,7 +674,7 @@ def main() -> None:
         afficher(f"  [source] {a.source} (d'apres OUTILS.md)")
     a.sujet = a.sujet or a.recherche or a.mots_cles or a.secteur or a.source
     lignes, outil = SOURCES[a.source](a)
-    if a.dry_run or (a.source == "ocean" and (a.total_seulement or a.lister_secteurs or a.lister_technos or a.lister_mots_cles or a.lister_lieux)):
+    if a.dry_run or (a.source in ("ocean", "prospeo") and (a.total_seulement or a.lister_secteurs or a.lister_technos or a.lister_mots_cles or a.lister_lieux or a.lister_titres)):
         return
     sortie = Path(a.out) if a.out else chemin_sortie(VERBE, a.sujet)
     ecrire_csv(lignes, sortie)

@@ -11,10 +11,11 @@ VERBES = ["trouver-entreprises","trouver-lookalikes","trouver-personnes","enrich
           "qualifier-liste","dedoublonner","crm","envoyer-sequence","verifier-reponses"]
 MASTERS = ["construire-liste","detecter-signaux","cold-email","cold-call"]
 INSTALL = ["installer-gtm","connecter-outils"]
+# Prospeo est un outil de la stack depuis la 5.5.0 : il n'est plus interdit.
 INTERDITS = ["ColdIQ","coldiq","Clay ","Clay.","Claygent","Trigify","RB2B","Bombora","Crunchbase",
              "6sense","Common Room","Koala","Serper","BuiltWith",
              "YALC","data workspace","Evaboot","PhantomBuster","ZoomInfo","Clearbit","NeverBounce",
-             "ZeroBounce","MillionVerifier","Findymail","Prospeo","LeadMagic","Instantly","Smartlead",
+             "ZeroBounce","MillionVerifier","Findymail","LeadMagic","Instantly","Smartlead",
              "Crawford","Braun","Hey ","J'espère que vous allez bien","Je me permets",
              "Apollo","`CONVENTIONS.md`","scripts/valider.py","`GUIDE.md`","Félicitations pour","félicitations pour"]
 TOLERES = {"signalbase/signalbase-api": "Signalbase"}  # nom d'actor autorise

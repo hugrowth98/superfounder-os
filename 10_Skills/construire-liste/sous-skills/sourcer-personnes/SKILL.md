@@ -18,6 +18,7 @@ On part d'une liste d'entreprises qualifiées et de personas écrits, jamais d'u
 - `{SKILL_BASE}/ressources/personas-comite-achat.md` : titres par fonction, ATL et BTL, exclusions de booléen.
 - `{SKILL_BASE}/ressources/sources-par-besoin.md` : recherche par critères ou par page entreprise, la limite des 2 500.
 - `{SKILL_BASE}/ressources/hygiene-liste.md` : la règle "ne relance que si vide", l'ordre d'entrée le moins cher.
+- `{SKILL_BASE}/ressources/prospeo-recherche.md` : si Prospeo est branché, les titres similaires avec expansion, le plafond par entreprise, les emails et mobiles vérifiés révélés en lot, et le contrôle sur 20 adresses.
 
 ## Méthode
 
@@ -36,11 +37,11 @@ On part d'une liste d'entreprises qualifiées et de personas écrits, jamais d'u
 | Étape | Verbe | Skill d'exécution | Entrée | Sortie |
 |---|---|---|---|---|
 | 3, par page entreprise | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-company-employees`, `--dirigeants --strict-titre --par-entreprise 2`) | `linkedin_entreprise_url`, titres du persona, plafond par compte |
-| 3, par domaine | `trouver_personnes` | `trouver-personnes --source ocean --in <csv> --dirigeants --par-entreprise 2` (Ocean, sans compte LinkedIn) | `domaine`, titres ou séniorités du persona, plafond par compte | `prenom`, `nom`, `titre`, `seniorite`, `entreprise`, `linkedin_url`, `linkedin_entreprise_url`, `ville`, `source`, `date_extraction` |
+| 3, par domaine | `trouver_personnes` | `trouver-personnes --source ocean --in <csv> --dirigeants --par-entreprise 2` (Ocean) ou `--source prospeo --in <csv> --dirigeants --par-entreprise 2 --email-verifie --cacher-deja-reveles --reveler` (Prospeo : recherche puis emails vérifiés en lot, sans compte LinkedIn) | `domaine` (500 max par recherche Prospeo), titres ou séniorités du persona, plafond par compte | `prenom`, `nom`, `titre`, `seniorite`, `entreprise`, `linkedin_url`, `linkedin_entreprise_url`, `ville`, `source`, `date_extraction` |
 | 2 | `construire_requete_salesnav` | `construire-requete-salesnav` | titres du persona (`--persona atl`), `--titres-exclus`, `--region`, `--effectif`, `--seniorites`, et un filtre à cocher si le signal le demande | l'URL Sales Navigator, le résumé des filtres, une ligne dans `Ciblage/requetes-booleennes.md` (`--enregistrer`) |
 | 3, par critères | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-profile-search`, Unipile ou vos cookies sur l'URL Sales Navigator construite à l'étape 2, ou Crustdata) | booléen de titres, secteur, effectif, zone, ou `--url` | mêmes colonnes, plus `domaine` quand l'outil le donne |
 | 7 | `enrichir_personne` | `enrichir-personne` | `linkedin_url`, lignes où `titre` ou `entreprise` est vide | `titre`, `entreprise`, `domaine`, `ville`, `pays` complétés, plus `headline`, `resume`, `anciennete_poste`, `experiences` (et `posts_recents` avec `--posts`) |
-| 8 | `trouver_email` | `trouver-email` | `prenom`, `nom`, `domaine`, puis `linkedin_url` ; lignes où `email` est vide | `email`, `email_statut` |
+| 8 | `trouver_email` | `trouver-email` (FullEnrich, puis `--source prospeo` sur ce qui reste vide si Prospeo est branché) | `prenom`, `nom`, `domaine`, puis `linkedin_url` ; lignes où `email` est vide | `email`, `email_statut` |
 | 8, tiers A | `trouver_telephone` | `trouver-telephone` | `linkedin_url` ou `prenom`, `nom`, `entreprise` | `telephone` |
 
 Sortie : `trouver-personnes_<persona>-<sujet>_<date>.csv`, colonnes de `docs/conventions-gtm.md` section 8, avec `score_icp` et `tier` recopiés depuis la ligne entreprise.

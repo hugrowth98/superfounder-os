@@ -18,6 +18,7 @@ Une base B2B perd environ 2 % de ses emails par mois : une liste de six mois env
 
 - `{SKILL_BASE}/ressources/hygiene-liste.md` : statuts et actions, seuils, calendrier, règle "ne relance que si vide", normalisation colonne par colonne.
 - `{SKILL_BASE}/ressources/conseils-list-building.md` : la liste de contrôle avant remise à `cold-email`.
+- `{SKILL_BASE}/ressources/prospeo-recherche.md`, section 4 : le contrôle sur 20 adresses, à faire sur toute liste venue d'un fournisseur (Prospeo, FullEnrich ou autre) avant le premier envoi.
 
 ## Méthode
 
@@ -26,7 +27,7 @@ Une base B2B perd environ 2 % de ses emails par mois : une liste de six mois env
 3. Séparez les lignes selon `email` : vide (rien à faire ici : canal LinkedIn ou téléphone, ou `trouver_email` via `sourcer-personnes`), rempli sans `email_statut` (adresse importée, non vérifiée), rempli avec un statut de moins de 30 jours (rien à faire), rempli avec un statut de plus de 30 jours ou `date_extraction` de plus de 30 jours (à re-chercher).
 4. Il n'existe pas de vérification d'une adresse existante : FullEnrich ne vérifie que les emails qu'il trouve. Sur les lignes sans statut ou au statut de plus de 30 jours, relancez `trouver_email` avec `--force` (1 crédit par email trouvé, le statut FullEnrich remplace l'adresse importée). Une ligne où rien n'est trouvé reste non vérifiée : elle ne part qu'avec `--sans-verification`, déconseillé. Annoncez le coût, lancez sur 50 lignes, montrez la répartition, puis le reste.
 5. Appliquez les actions : `INVALID` et `INVALID_DOMAIN` sont re-cherchés par `trouver_email` sans `--force` (une seule fois, avec `linkedin_url` si présent) et, si rien ne revient, `email` est vidé ; `NOT_FOUND` reste sans email ; une adresse générique (contact@, info@, rh@, ce n'est pas un statut, elle se repère à la main) exclut d'une séquence email, sauf entreprise locale sans autre adresse, où la ligne reste pour le téléphone ; `CATCH_ALL` et `UNKNOWN` restent, marqués, à envoyer par petits lots.
-6. Calculez le bounce attendu : part des `CATCH_ALL` et `UNKNOWN` dans la liste. Au-dessus de 20 %, proposez de basculer ces lignes sur LinkedIn ou de les envoyer dans un lot séparé.
+6. Calculez le bounce attendu : part des `CATCH_ALL` et `UNKNOWN` dans la liste. Au-dessus de 20 %, proposez de basculer ces lignes sur LinkedIn ou de les envoyer dans un lot séparé. Sur une liste qui vient d'un fournisseur, faites le contrôle sur 20 adresses : 20 adresses prises au hasard dans la vraie liste, passées dans un vérificateur que l'utilisateur contrôle (pas le statut du fournisseur), et le taux de rebond obtenu comparé à ce que le fournisseur annonce. Si ça tient, le lot part ; sinon, la liste est en cause avant le texte.
 7. Rendez le rapport : lignes traitées, champs modifiés par colonne, répartition des statuts, couverture email (part des lignes en `DELIVERABLE` ou `HIGH_PROBABILITY`), lignes sans statut, lignes exclues et pourquoi, date de la prochaine vérification. Next step : `dedoublonner-liste` contre le CRM si ce n'est pas fait, sinon `cold-email`.
 
 ## Exécution

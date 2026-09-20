@@ -22,6 +22,12 @@ envoi, avec `--force` (la colonne `email` est déjà remplie ; 1 crédit si Full
 adresse, et son statut remplace). Sinon la ligne reste non vérifiée et ne part qu'avec
 `--sans-verification` d'`envoyer-sequence`. Pas de clé : dites-le et renvoyez vers `connecter-outils`.
 
+Second fournisseur, si Prospeo est branché : `--source prospeo` passe les lignes restées sans email (ou une liste venue de
+Prospeo, par `prospeo_person_id`) à `POST /bulk-enrich-person`, 50 par appel, 1 crédit par email vérifié trouvé, 0 sinon, 0 si le
+contact a déjà été enrichi depuis moins de 90 jours ; statut écrit `DELIVERABLE` (`UNKNOWN` avec `--emails-non-verifies`),
+colonne `email_source = prospeo`. L'ordre : FullEnrich d'abord, Prospeo sur ce qui reste vide, puis le contrôle sur 20 adresses
+de `nettoyer-verifier`.
+
 ## Entrée
 
 Un CSV normalisé de personnes. Pour chaque ligne, FullEnrich a besoin de `prenom` + `nom` +

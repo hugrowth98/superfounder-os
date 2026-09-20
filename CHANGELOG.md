@@ -3,6 +3,18 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.5.0] - 2026-09-20
+
+Prospeo entre dans la stack en option : recherche d'entreprises et de personnes par filtres exacts, emails et mobiles vérifiés révélés en lot, et la méthode qui va avec.
+
+### Ajouté
+- Client `Prospeo` dans `_commun/gtm_common.py` (doc REST lue le 2026-09-20 : `X-KEY`, `POST /search-company`, `/search-person`, `/search-suggestions` gratuit, `/bulk-enrich-person`, `/bulk-enrich-company`, `GET /account-information`), avec la résolution des libellés (industries, lieux, technos, titres), la pagination à 1 crédit par page de 25, la pause de débit, et la normalisation vers les colonnes du module (`email_statut` `DELIVERABLE` pour `VERIFIED`, `prospeo_person_id`, `prospeo_company_id`).
+- `trouver-entreprises --source prospeo` : industries, lieux (libellés canoniques, plusieurs lieux séparés par `;`), taille (tranches traduites : 11-50 devient 11-20 et 21-50), mots-clés, technos, CA, année, levée (`--levee`, `--levee-depuis-jours`, `--investisseurs`), ICP inverse (`--vend-a`, `--vend-a-tailles`), clients clés, intégrations, lookalike par domaine ou par texte libre (`--icp-texte`, `--lookalike-niveau`), actualités, postes ouverts ; `--lister-secteurs`, `--lister-lieux`, `--lister-technos`, `--lister-titres` (gratuits), `--total-seulement`, `--filtres-json` (le payload du tableau de bord tel quel), `--enregistrer`.
+- `trouver-personnes --source prospeo` : titres (contient, `--titres-similaires --intensite`, ou `--booleen`), séniorités, départements, lieux, entreprises par domaine (500 max), `--par-entreprise`, `--email-verifie`, `--mobile-verifie`, `--cacher-deja-reveles`, `--changement-poste` (90 jours), `--total-seulement` (total et part d'emails vérifiés), puis `--reveler` et `--reveler-mobile` (révélation en lot, 50 par appel).
+- `trouver-email --source prospeo` (second fournisseur sur ce que FullEnrich n'a pas trouvé, ou une liste venue de Prospeo) et `enrichir-entreprise --source prospeo` (50 par appel).
+- `construire-liste/ressources/prospeo-recherche.md` : la méthode, en français et sans marque tierce : le workflow en trois temps (résoudre gratuitement, chercher la page 1 pour le total et la couverture, révéler en lot), les filtres par modèle d'affaires, les formes de filtres qu'on ne devine pas, le piège de la taxonomie d'industries, le contrôle sur 20 adresses, et où Prospeo intervient dans chaque sous-skill. `sourcer-entreprises`, `sourcer-personnes`, `nettoyer-verifier` (le contrôle sur 20 adresses) et `sources-par-besoin.md` y renvoient.
+- `connecter-outils` : Prospeo en outil optionnel (`PROSPEO_API_KEY`, test gratuit `GET /account-information`), `.env.example`, `OUTILS.md` (état des connexions, quatre verbes), `docs/conventions-gtm.md`, `docs/prospection.md`, `CLAUDE.md`, `AGENTS.md`, `README.md`.
+
 ## [5.4.0] - 2026-09-20
 
 Ocean.io devient une source de recherche précise, la chaîne "entreprises, page LinkedIn, décisionnaires" tient en trois commandes, et l'URL LinkedIn d'une personne se retrouve sans compte.
