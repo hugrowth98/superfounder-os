@@ -31,7 +31,9 @@ Aucun outil branché : dites lequel manque, renvoyez vers `connecter-outils`, ne
 Soit des critères (titres du persona, lieu, taille, séniorité), soit un CSV d'entreprises déjà
 qualifié (tiers A et B seulement) avec `linkedin_entreprise_url` remplie par
 `trouver-entreprises` ou `enrichir-entreprise`, soit une URL de recherche Sales Navigator copiée
-depuis le navigateur.
+depuis le navigateur ou construite en texte par `construire-requete-salesnav` (titres, région,
+effectif, relation, et les filtres à cocher : a consulté votre profil, suit votre page, a publié,
+a changé de poste).
 
 ## Sortie
 
@@ -61,8 +63,15 @@ Dédoublonnage par `linkedin_url`.
    `trouver-email` sur les tiers A et B, ou `qualifier-liste` si la liste vient d'une recherche large.
 
 Option `--changement-poste` (sources `profils` et `salesnav`) : seulement les personnes arrivées
-en poste depuis moins de 90 jours, un signal à part entière (`signal_type` à poser dans
-`detecter-signaux` (script `detecter_signal.py`)).
+en poste depuis moins de 90 jours, un signal à part entière.
+
+Option `--signal <type>` (toutes sources, pensée pour une URL Sales Navigator à filtre) : pose
+`signal_type`, `signal_date` (la date du run, pas celle de l'action), `signal_detail` et
+`fraicheur` sur chaque ligne. Types : `visite_profil`, `abonne_entreprise`, `a_publie`,
+`changement_poste`. Exemple : `--source unipile --url "<url avec --vues-profil>" --signal
+visite_profil`. Les sous-skills `visite-profil`, `abonnes-entreprise`, `a-publie` et
+`changement-poste` de `detecter-signaux` s'en servent ; la fenêtre et le diff contre le run
+précédent (`dedoublonner --contre`) sont décrits là-bas.
 
 ## Garde-fous
 

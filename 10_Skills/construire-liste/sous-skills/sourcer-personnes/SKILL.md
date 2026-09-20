@@ -36,14 +36,15 @@ On part d'une liste d'entreprises qualifiées et de personas écrits, jamais d'u
 | Étape | Verbe | Skill d'exécution | Entrée | Sortie |
 |---|---|---|---|---|
 | 3, par page entreprise | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-company-employees`) | `linkedin_entreprise_url`, titres du persona, plafond par compte | `prenom`, `nom`, `titre`, `seniorite`, `entreprise`, `linkedin_url`, `linkedin_entreprise_url`, `ville`, `source`, `date_extraction` |
-| 3, par critères | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-profile-search`, Unipile Sales Navigator, ou Crustdata) | booléen de titres, secteur, effectif, zone | mêmes colonnes, plus `domaine` quand l'outil le donne |
+| 2 | `construire_requete_salesnav` | `construire-requete-salesnav` | titres du persona (`--persona atl`), `--titres-exclus`, `--region`, `--effectif`, `--seniorites`, et un filtre à cocher si le signal le demande | l'URL Sales Navigator, le résumé des filtres, une ligne dans `Ciblage/requetes-booleennes.md` (`--enregistrer`) |
+| 3, par critères | `trouver_personnes` | `trouver-personnes` (`harvestapi/linkedin-profile-search`, Unipile ou vos cookies sur l'URL Sales Navigator construite à l'étape 2, ou Crustdata) | booléen de titres, secteur, effectif, zone, ou `--url` | mêmes colonnes, plus `domaine` quand l'outil le donne |
 | 7 | `enrichir_personne` | `enrichir-personne` | `linkedin_url`, lignes où `titre` ou `entreprise` est vide | `titre`, `entreprise`, `domaine`, `ville`, `pays` complétés, plus `headline`, `resume`, `anciennete_poste`, `experiences` (et `posts_recents` avec `--posts`) |
 | 8 | `trouver_email` | `trouver-email` | `prenom`, `nom`, `domaine`, puis `linkedin_url` ; lignes où `email` est vide | `email`, `email_statut` |
 | 8, tiers A | `trouver_telephone` | `trouver-telephone` | `linkedin_url` ou `prenom`, `nom`, `entreprise` | `telephone` |
 
 Sortie : `trouver-personnes_<persona>-<sujet>_<date>.csv`, colonnes de `docs/conventions-gtm.md` section 8, avec `score_icp` et `tier` recopiés depuis la ligne entreprise.
 
-**Où ça s'écrit** : chaque requête booléenne validée (persona, requête Sales Navigator ou LinkedIn, filtres, volume obtenu, date) dans `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md`, pour être rejouée sans la reconstruire.
+**Où ça s'écrit** : chaque requête booléenne validée (persona, requête Sales Navigator ou LinkedIn, filtres, URL, volume obtenu, date) dans `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md`, écrite par `construire-requete-salesnav --enregistrer`, pour être rejouée sans la reconstruire.
 
 ## Repères
 

@@ -3,6 +3,22 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.3.0] - 2026-09-20
+
+Les requêtes Sales Navigator se construisent en texte, et trois signaux de proximité arrivent avec elles.
+
+### Ajouté
+- `construire-requete-salesnav` : un skill d'exécution et son script qui transforment des critères en texte (titres ou booléen, région, effectif, séniorité, niveau de relation, entreprise, mots-clés, listes) en URL de recherche Sales Navigator, personnes ou comptes, avec les quatre filtres à cocher (`--vues-profil`, `--suit-entreprise`, `--a-publie`, `--nouveau-poste`). Décode aussi une URL existante (`--decoder`), retrouve un id de région ou de secteur par Unipile (`--resoudre`, gratuit), prend les titres d'un persona de `contexte.md` (`--persona atl`) et enregistre la requête dans `Ciblage/requetes-booleennes.md` (`--enregistrer`). L'encodage est vérifié contre sept URL produites par l'interface.
+- Trois sous-skills dans `detecter-signaux` : `visite-profil` (qui a consulté votre profil, 20 points proposés, j0 à j7), `abonnes-entreprise` (qui suit votre page, 15 points, j0 à j2), `a-publie` (qui a publié ce mois-ci dans votre cible : joignable sur LinkedIn, accroche dans son post, 10 points proposés, départageur). Tous trois passent par la requête Sales Navigator puis `trouver-personnes --signal`, avec le diff contre le run précédent par `dedoublonner --contre`.
+- `trouver-personnes --signal <type>` : pose `signal_type`, `signal_date` (date du run), `signal_detail` et `fraicheur` sur chaque ligne d'une URL Sales Navigator à filtre (`visite_profil`, `abonne_entreprise`, `a_publie`, `changement_poste`).
+- `enrichir-entreprise --techno --techno-source theirstack --recentes-jours N` : les technos d'une entreprise avec leur date de première détection, leur confiance et le nombre d'offres qui les citent (TheirStack `POST /companies/technologies`, 3 crédits par entreprise). Tirée des offres d'emploi, cette source voit les outils internes que le site ne montre pas et donne le signal `techno_ajout` sans attendre deux relevés ; `changement-techno` la préfère quand elle est branchée.
+- `Unipile.parametres()` (ids de recherche LinkedIn et Sales Navigator) et `TheirStack.technographies()` dans `_commun/gtm_common.py`.
+
+### Modifié
+- `detecter-signaux` : table de routage et vérification d'un compte nommé étendues aux trois signaux ; `execution-signaux.md` décrit la voie Sales Navigator ; barème, fenêtres, taxonomie (17 bis), détection par signal (31 à 33), plays (11) et signaux de cœur mis à jour. Les abonnés de votre page entreprise ne sont plus "non listables" : ils le sont par Sales Navigator pour la page reliée à votre compte ; ceux d'un concurrent ou d'un profil personnel restent non listables.
+- `changement-poste` : voie Sales Navigator sans crédit (`--nouveau-poste`, date à confirmer par `enrichir-personne`) ; `changement-techno` : TheirStack en première source datée, le détecteur de site pour les retraits ; `engagement-contenu` et `brief-avant-appel` : la visite de profil et les abonnés de la page passent par un script ; `multi-signaux` : `a_publie` départage à score égal ; `sourcer-personnes` : la requête se construit et s'enregistre par le nouveau skill.
+- `contexte.md` section 4 et `installer-gtm` phase 4 : dix signaux proposés au lieu de sept, les trois nouveaux au prix de l'abonnement Sales Navigator ; `OUTILS.md`, `docs/conventions-gtm.md` (verbe, vocabulaire `signal_type`, TheirStack), `docs/prospection.md` (TheirStack, Sales Navigator), `README.md`, `CLAUDE.md`, `AGENTS.md`.
+
 ## [5.2.0] - 2026-09-19
 
 Audit de cohérence du module GTM (20 bloquants, 12 doublons, 30 contradictions de chiffres corrigés) et tout en CLI.

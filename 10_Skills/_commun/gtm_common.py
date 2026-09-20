@@ -383,6 +383,16 @@ class Unipile:
         data = self.get("/api/v1/accounts")
         return data.get("items", data if isinstance(data, list) else [])
 
+    # ids des filtres de recherche (regions, secteurs, entreprises, listes) : gratuit
+    def parametres(self, type_: str, mots: str | None = None, service: str = "SALES_NAVIGATOR", limite: int = 10) -> list[dict]:
+        """GET /api/v1/linkedin/search/parameters : les ids que LinkedIn attend dans une recherche.
+        type_ : LOCATION, COMPANY, SCHOOL, INDUSTRY, JOB_FUNCTION, JOB_TITLE, SKILL (classique) ;
+        REGION, POSTAL_CODE, SALES_INDUSTRY, ACCOUNT_LISTS, LEAD_LISTS, TECHNOLOGIES, PERSONA (Sales Navigator).
+        Chaque item rend `id` et `title`."""
+        data = self.get("/api/v1/linkedin/search/parameters",
+                        params={"account_id": self.account_id, "type": type_, "keywords": mots, "service": service, "limit": limite})
+        return data.get("items", data if isinstance(data, list) else [])
+
     # recherche LinkedIn / Sales Navigator (meme endpoint, seul `api` change)
     def recherche(self, api: str = "sales_navigator", categorie: str = "people", url: str | None = None,
                   mots_cles: str | None = None, max_resultats: int = 100) -> list[dict]:
@@ -852,7 +862,7 @@ class PredictLeads:
         return self.aplatir(self._req(f"/companies/{dom}/{dataset}", {**(params or {}), "limit": 100}))
 
 
-# ---------------------------------------------------------------- TheirStack (optionnel : offres, technos, intent jobs + techno)
+# ---------------------------------------------------------------- TheirStack (optionnel : offres, technographies datees, intent jobs + techno)
 
 class TheirStack:
     """Client REST TheirStack v1. Cle : THEIRSTACK_API_KEY (Bearer). 1 credit par offre ou par entreprise renvoyee ;
@@ -887,6 +897,18 @@ class TheirStack:
 
     def entreprises(self, body: dict, limit: int = 50, page: int = 0) -> list[dict]:
         rep = self._post("/companies/search", {**body, "limit": min(limit, 500), "page": page, "blur_company_data": False, "expand_technology_slugs": True})
+        return rep.get("data", []) or []
+
+    def technographies(self, dom: str, premiere_apres: str | None = None, confiances: list[str] | None = None, limit: int = 100) -> list[dict]:
+        """POST /companies/technologies : les technos d'une entreprise (nom, slug, categorie, confidence, first_date_found,
+        last_date_found, jobs, jobs_last_30_days). 3 credits par entreprise, 0 si rien n'est renvoye.
+        premiere_apres (YYYY-MM-DD) ne garde que les technos vues pour la premiere fois depuis cette date."""
+        body = {"company_domain": dom, "limit": min(limit, 500)}
+        if premiere_apres:
+            body["first_date_found_gte"] = premiere_apres
+        if confiances:
+            body["confidence_or"] = confiances
+        rep = self._post("/companies/technologies", body)
         return rep.get("data", []) or []
 
 

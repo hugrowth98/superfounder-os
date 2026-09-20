@@ -1,4 +1,4 @@
-# Détection par signal : les 30 déclencheurs principaux
+# Détection par signal : les 33 déclencheurs principaux
 
 > Lu par les sous-skills pour savoir quel verbe lancer, avec quel actor, à quel coût. Les coûts sont ceux affichés par les actors Apify au moment de l'écriture (tarif à l'unité, hors abonnement Apify) ; "inclus" veut dire couvert par votre abonnement Unipile, dans la limite des quotas LinkedIn. Les points renvoient à `bareme-signaux.md`, les fenêtres à `fenetres-fraicheur.md`.
 
@@ -26,9 +26,9 @@
 
 | # | Signal | Verbe | Outil de la stack | Coût indicatif | Fenêtre | Points |
 |---|---|---|---|---|---|---|
-| 11 | Adoption d'une techno visible sur le site | detecter_techno | `scrapemint/website-tech-stack-detector`, comparaison avec le mois précédent | 0,01 $ par site | j0 à j30 | 35 (adjacent), 20 (concurrent) |
+| 11 | Adoption d'une techno | detecter_techno | TheirStack si branché (`--techno-source theirstack --recentes-jours 60` : `first_date_found` par techno, tirée des offres, outils internes compris) ; sinon `scrapemint/website-tech-stack-detector`, comparaison avec le mois précédent (le site seulement) | 3 crédits par entreprise (TheirStack) ou 0,01 $ par site | j0 à j30 | 35 (adjacent), 20 (concurrent) |
 | 12 | Retrait d'une techno | detecter_techno | idem, ligne disparue entre deux relevés | 0,01 $ par site | j0 à j30 | 45 si c'est un concurrent |
-| 13 | Migration d'outil annoncée dans une offre d'emploi | scraper_offres_emploi | `tagadanar/linkedin-jobs-scraper` avec le nom de l'outil en `keywords`, `scrapeDetails: true` | 0,0036 $ par offre détaillée | j0 à j30 | 30 |
+| 13 | Migration d'outil annoncée dans une offre d'emploi | scraper_offres_emploi | TheirStack si branché (`--source theirstack --technos <slug>`, techno taguée par offre, 1 crédit par offre) ; sinon `tagadanar/linkedin-jobs-scraper` avec le nom de l'outil en `keywords`, `scrapeDetails: true` | 1 crédit par offre, ou 0,0036 $ par offre détaillée | j0 à j30 | 30 |
 | 14 | Refonte du site | detecter_techno | changement de CMS ou de framework entre deux relevés, vérifié à l'œil | 0,01 $ par site | j30 à j60 | 15 |
 | 15 | Pubs Meta ou LinkedIn actives | scraper_pubs | `curious_coder/facebook-ads-library-scraper` (Meta) ; LinkedIn via le skill `enrichir-entreprise --pubs` | 0,00075 $ par pub Meta | tant que la pub tourne | 15 |
 
@@ -61,6 +61,9 @@
 | 28 | Prix, récompense, classement | à la main | posts de la page entreprise | inclus | j14 à j30 | 15 |
 | 29 | Mention presse | à la main | votre veille | 0 | j7 à j30 | 15 |
 | 30 | Changement de sujet dans le contenu de l'entreprise | à la main | `posts_recents` (`enrichir-entreprise --posts`), comparés au trimestre précédent | inclus | j30 à j60 | 15 |
+| 31 | Visite de votre profil LinkedIn | construire_requete_salesnav, puis trouver_personnes | URL Sales Navigator `--vues-profil` filtrée sur vos personas, run hebdomadaire avec votre compte (Unipile) ou vos cookies, `--signal visite_profil`, diff contre le run précédent | inclus (Unipile) ou 0,005 $ par résultat | j0 à j7 | 20 (proposé) |
+| 32 | Abonné de votre page entreprise | construire_requete_salesnav, puis trouver_personnes | URL `--suit-entreprise`, page reliée à votre compte, run hebdomadaire, `--signal abonne_entreprise` | inclus ou 0,005 $ par résultat | j0 à j2 | 15 |
+| 33 | A publié sur LinkedIn dans les 30 derniers jours | construire_requete_salesnav, puis trouver_personnes | URL `--a-publie` sur une cible ICP, `--signal a_publie`, puis `enrichir-personne --posts` pour l'accroche | inclus ou 0,005 $ par résultat | j0 à j7 après le post | 10 (proposé, départageur) |
 
 ## Fiabilité d'un signal pris seul
 

@@ -12,6 +12,8 @@ Les jours se comptent depuis la date du signal (`signal_date`), pas depuis le jo
 | Nouveau dirigeant inconnu dans un compte cible | 90 j | j0 à j13 | j14 à j45 | j46 à j90 | modérée | lente |
 | Like, commentaire sur un post | 30 j | jamais | j0 à j7 | j8 à j14 | rapide | rapide |
 | Nouvel abonné à votre page ou profil | 30 j | jamais | j0 à j2 | j3 à j7 | rapide | rapide |
+| Visite de votre profil (datée par le run qui la détecte) | 30 j | jamais | j0 à j7 | j8 à j14 | rapide | rapide |
+| A publié sur LinkedIn (accessibilité, pas un signal d'achat) | 30 j | jamais | j0 à j7 après le post | j8 à j30 | rapide | rapide |
 | Participation à un webinar ou à un événement | 21 j | jamais | j0 à j2 (envoi du replay) | j3 à j7 | rapide | rapide |
 | Salon, conférence où le prospect va | 21 j | plus de 14 j avant | j-7 à j+7 autour de l'événement | j-14 à j-8 | rapide | rapide |
 | Levée de fonds (Seed à Série B) | 90 j | semaine 1 | semaines 2 à 4 | semaines 5 à 8 | modérée | lente |
@@ -52,6 +54,6 @@ Les jours se comptent depuis la date du signal (`signal_date`), pas depuis le jo
 | Cadence | Signaux |
 |---|---|
 | chaque jour | champions (changements de poste sur votre liste), engagement sur vos posts, demandes entrantes |
-| chaque semaine | levées, offres d'emploi, changements de poste sur le marché, engagement sur les posts des concurrents, pubs actives |
-| chaque mois | techno (comparaison avec le mois précédent), rachats et fusions, nouveaux bureaux, avis sur les concurrents |
+| chaque semaine | levées, offres d'emploi, changements de poste sur le marché, engagement sur les posts des concurrents, pubs actives, visites de votre profil et nouveaux abonnés de votre page (Sales Navigator, le même jour chaque semaine) |
+| chaque mois | techno (comparaison avec le mois précédent, ou adoptions datées TheirStack), rachats et fusions, nouveaux bureaux, avis sur les concurrents, personnes de la cible qui ont publié (par campagne) |
 | chaque trimestre | rôles manquants dans les comptes cibles, clients des concurrents |

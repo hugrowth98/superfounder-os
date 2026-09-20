@@ -50,8 +50,9 @@ Le post-contact n'a pas de liste propre : ce sont les déclencheurs entrants 12 
 
 | # | Déclencheur | Ce que ça révèle | Détection | Fenêtre | Points |
 |---|---|---|---|---|---|
-| 16 | Abonné à votre page ou à votre profil | notoriété | non listable : notifications LinkedIn à la main, ou engageurs | j0 à j2 | **15** |
+| 16 | Abonné à votre page ou à votre profil | notoriété | votre page : trouver_personnes sur une requête Sales Navigator "suit votre entreprise" (`abonnes-entreprise`) ; votre profil : notifications à la main, ou engageurs | j0 à j2 | **15** |
 | 17 | Réaction ou commentaire sur vos posts | engagement | scraper_engagement (Unipile) | j0 à j7 | **25** like, **35** commentaire |
+| 17 bis | A consulté votre profil LinkedIn | curiosité, recherche en cours | trouver_personnes sur une requête Sales Navigator "vues de profil récentes" (`visite-profil`), rejouée chaque semaine | j0 à j7 | **20** (proposé) |
 | 18 | Intention d'achat vue sur un comparateur de logiciels | comparaison en cours | non couvert par ce master | j7 à j30 | **60** |
 | 19 | Pic de recherche sur votre thème (donnée d'intention achetée) | recherche en cours | non couvert par ce master | j0 à j7 | **40** |
 | 20 | Visite de votre site | intérêt, de la simple visite à la page tarifs | non couvert par ce master | j0 à j7 | **10** à **80** |

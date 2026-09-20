@@ -31,7 +31,7 @@ if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
 from gtm_common import (Crustdata, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
-                        ecrire_csv, env, lire_csv, lire_outils, norm_linkedin_url, norm_texte, seniorite_depuis_titre)
+                        ecrire_csv, env, fraicheur, lire_csv, lire_outils, norm_linkedin_url, norm_texte, seniorite_depuis_titre)
 from apify_run import lancer, prix  # noqa: E402
 
 VERBE = "trouver-personnes"
@@ -295,6 +295,8 @@ def main() -> None:
     ap.add_argument("--industry-ids", help="profils : ids d'industrie LinkedIn")
     ap.add_argument("--url", help="salesnav / unipile : URL d'une recherche Sales Navigator de leads")
     ap.add_argument("--changement-poste", action="store_true", help="profils / salesnav : seulement les gens qui ont change de poste recemment")
+    ap.add_argument("--signal", help="etiquette de signal a poser sur chaque ligne (URL Sales Navigator a filtre) : visite_profil, "
+                                     "abonne_entreprise, a_publie, changement_poste ; ecrit signal_type, signal_date (aujourd'hui), signal_detail, fraicheur")
     ap.add_argument("--par-entreprise", type=int, help="garder N contacts max par entreprise (defaut 3 pour employes, illimite sinon)")
     ap.add_argument("--max", type=int, default=100)
     ap.add_argument("--complet", action="store_true", help="profils : mode Full (+0,004 $ par profil)")
@@ -310,6 +312,17 @@ def main() -> None:
     lignes, outil = SOURCES[a.source](a)
     if a.dry_run:
         return
+    if a.signal:
+        detail = {"visite_profil": "a consulte votre profil (Sales Navigator, vues de profil recentes)",
+                  "abonne_entreprise": "suit votre page entreprise (Sales Navigator)",
+                  "a_publie": "a publie sur LinkedIn dans les 30 derniers jours (Sales Navigator)",
+                  "changement_poste": "a change de poste dans les 90 derniers jours (Sales Navigator, date a confirmer par enrichir-personne)"}
+        for l in lignes:
+            l["signal_type"] = a.signal
+            l["signal_date"] = aujourd_hui()
+            l["signal_detail"] = detail.get(a.signal, f"filtre Sales Navigator {a.signal}")
+            l["fraicheur"] = fraicheur(l["signal_date"])
+        afficher(f"  [signal] {a.signal} pose sur {len(lignes)} lignes (signal_date = {aujourd_hui()} : la date du run, pas celle de l'action)")
     if a.par_entreprise:
         avant = len(lignes)
         lignes = plafonner(lignes, a.par_entreprise, _liste(a.titres))

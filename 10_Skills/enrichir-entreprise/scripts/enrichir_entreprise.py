@@ -176,8 +176,9 @@ def main() -> None:
     ap.add_argument("--cherche", help="avec --techno : technos a reperer, separees par des virgules")
     ap.add_argument("--diff", action="store_true", help="avec --techno : comparer au dernier run")
     ap.add_argument("--plateforme", default="les-deux", help="avec --pubs : meta, linkedin ou les-deux")
-    ap.add_argument("--techno-source", choices=["apify", "predictleads"], default="apify", help="avec --techno : apify (photo + diff) ou predictleads (detections datees)")
-    ap.add_argument("--recentes-jours", type=int, help="avec --techno-source predictleads : une ligne techno_ajout par techno vue depuis N jours")
+    ap.add_argument("--techno-source", choices=["apify", "theirstack", "predictleads"], default="apify",
+                    help="avec --techno : apify (photo du site + diff), theirstack (technos datees tirees des offres, 3 credits par entreprise) ou predictleads (detections datees)")
+    ap.add_argument("--recentes-jours", type=int, help="avec --techno-source theirstack ou predictleads : une ligne techno_ajout par techno vue depuis N jours")
     ap.add_argument("--posts", action="store_true", help="ajouter posts_recents (5 derniers posts de la page, Unipile)")
     a = ap.parse_args()
 

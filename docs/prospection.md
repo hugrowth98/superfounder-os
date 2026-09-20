@@ -21,7 +21,8 @@ Le principe : vous validez, Claude exécute. Rien ne part sans votre oui.
 | Ocean.io | trouver des entreprises qui ressemblent à vos meilleurs clients | non | sur devis, essai gratuit |
 | HubSpot | votre CRM : import, dédoublonnage, pipeline | non | gratuit pour démarrer |
 | PredictLeads (optionnel) | les événements d'entreprise (expansion, partenariat, lancement, nomination), les levées, les technos datées | non | abonnement mensuel avec quota de requêtes |
-| TheirStack (optionnel) | les offres d'emploi filtrées par techno citée, et l'intent (recrute et utilise telle techno) | non | 1 crédit par résultat, palier gratuit à l'inscription |
+| TheirStack (optionnel) | les offres d'emploi filtrées par techno citée, l'intent (recrute et utilise telle techno), et les technos adoptées par une entreprise avec leur date (le CRM, l'ERP, les outils RH cités dans ses offres) | non | 1 crédit par offre, 3 par entreprise pour les technos, palier gratuit à l'inscription |
+| Sales Navigator (abonnement LinkedIn) | lancer des recherches de personnes et de comptes avec votre compte, et trois signaux gratuits : qui a consulté votre profil, qui suit votre page, qui a publié ce mois-ci | non, mais il rend Unipile bien plus utile | dès 100 € par mois environ |
 
 Un seul outil suffit pour commencer. Le minimum pour une première liste : Claude Code et Apify. Le minimum pour appeler : ajouter FullEnrich. Le minimum pour envoyer : ajouter Lemlist.
 
@@ -38,7 +39,7 @@ Un master est un skill qui connaît une méthode entière et route votre demande
 | Master | Il sait faire | Exemples de phrases |
 |---|---|---|
 | Construire une liste | définir l'ICP, trouver des entreprises et des décideurs, qualifier, nettoyer, dédoublonner | "Trouve-moi 30 dirigeants de cabinets de recrutement à Lyon" ; "Qualifie cette liste selon mon ICP" ; "Trouve des entreprises qui ressemblent à mes trois meilleurs clients" |
-| Détecter des signaux | qui recrute, qui a levé, qui vient de changer de poste, qui a réagi à un post, qui utilise tel outil | "Qui a levé des fonds ce mois-ci dans la fintech en France ?" ; "Regarde qui a commenté ce post" ; "Quels comptes de ma liste recrutent un SDR ?" |
+| Détecter des signaux | qui recrute, qui a levé, qui vient de changer de poste, qui a réagi à un post, qui utilise tel outil, qui a consulté votre profil, qui suit votre page, qui publie dans votre cible | "Qui a levé des fonds ce mois-ci dans la fintech en France ?" ; "Regarde qui a commenté ce post" ; "Quels comptes de ma liste recrutent un SDR ?" ; "Qui a visité mon profil cette semaine dans ma cible ?" ; "Construis-moi la recherche Sales Navigator des DRH en France qui ont publié ce mois-ci" |
 | Cold email | premier contact, relances, objets, personnalisation par persona, délivrabilité | "Écris une séquence de 3 emails pour cette liste" ; "Relance ceux qui n'ont pas répondu, dans ma voix" ; "Cet email sent l'IA, corrige-le" |
 | Cold call | script d'appel, objections, no-show, brief avant appel, débrief après | "Prépare l'appel avec Marie Dupont de Transactis" ; "Il m'a dit envoyez-moi un mail, je réponds quoi ?" ; "Débriefe cet appel : voici mes notes" ; "Mon rendez-vous de 14h n'est pas venu" |
 

@@ -24,9 +24,9 @@
 
 - **Pourquoi ça marche** : la personne vous connaît déjà. Un commentaire, une participation à un webinar, un abonnement à votre newsletter montrent une recherche en cours. Taux de réponse 25 à 30 %.
 - **Où on le voit** : vos posts LinkedIn, vos webinars, vos emails, votre newsletter.
-- **Détection** : scraper_engagement (`--mes-posts 5`, réactions et commentaires de vos posts), vos listes d'inscrits et l'export de votre outil d'emailing.
+- **Détection** : scraper_engagement (`--mes-posts 5`, réactions et commentaires de vos posts), vos listes d'inscrits et l'export de votre outil d'emailing ; et, avec Sales Navigator, les personnes de votre cible qui ont consulté votre profil (`visite-profil`) ou suivent votre page (`abonnes-entreprise`), rejouées chaque semaine.
 - **Quand écrire** : dans les 24 à 48 heures. Un commentaire vaut deux likes.
-- **Points** : commentaire 35, like 25, webinar 25, abonnement à la newsletter 15.
+- **Points** : commentaire 35, like 25, webinar 25, visite de profil 20 (proposé), abonnement à la page ou à la newsletter 15.
 - **Ce que ce master ne couvre pas** : les visiteurs anonymes de votre site (page tarifs, page démo), qui font partie de ce signal dans le classement d'origine et valent 50 à 80 points quand vous avez la donnée.
 - **Sous-skill** : `engagement-contenu`.
 
@@ -34,7 +34,7 @@
 
 - **Pourquoi ça marche** : un projet de changement en cours prouve une ouverture aux nouveaux fournisseurs. La transition crée des trous dans les process, et des douleurs fraîches.
 - **Où on le voit** : un outil disparaît ou apparaît sur le site du prospect ; une offre d'emploi demande une compétence sur un outil qu'il n'utilisait pas.
-- **Détection** : detecter_techno (`scrapemint/website-tech-stack-detector`, comparaison mensuelle), scraper_offres_emploi (mots-clés outils).
+- **Détection** : detecter_techno avec TheirStack si branché (`--techno-source theirstack --recentes-jours 60` : technos datées tirées des offres d'emploi, y compris les outils internes, 3 crédits par entreprise), sinon `scrapemint/website-tech-stack-detector` (le site seulement, comparaison mensuelle) ; scraper_offres_emploi (mots-clés outils).
 - **Quand écrire** : j0 à j30 après le changement, frais 60 jours.
 - **Points** : retrait d'un concurrent 45, ajout d'un outil adjacent 35, migration vue dans une offre 30.
 - **Sous-skill** : `changement-techno`.

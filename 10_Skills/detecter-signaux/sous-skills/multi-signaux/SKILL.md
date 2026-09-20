@@ -20,7 +20,7 @@ Trois signaux ou plus sur le même compte donnent 35 à 40 % de réponses contre
 3. **Pondérer chaque signal** : points du barème × multiplicateur. Courbe rapide (engagement, champion, actualité, avis) selon l'ancienneté ; courbe lente (levée, recrutement, techno, événement, nouveau dirigeant) selon la position dans la fenêtre.
 4. **Additionner** dans `score_signal`, arrondi à l'entier.
 5. **Regrouper par compte** (`domaine`) : deux personnes ou plus avec un signal dans les 30 jours, on ajoute 70 au compte et on le traite comme une seule affaire (colonne de travail `comite = oui` ; `tier` reste le tier ICP).
-6. **Classer** : score décroissant, puis signal le plus récent en premier à score égal. Brûlant toujours en tête.
+6. **Classer** : score décroissant, puis signal le plus récent en premier à score égal, puis celui qui a publié ce mois-ci (`a_publie`, joignable sur LinkedIn). Brûlant toujours en tête.
 7. **Fixer l'action et le délai** par niveau (Repères). Un signal trop tôt (semaine 1 d'une levée, j0 à j13 d'une nomination) garde son score mais son action est datée à l'ouverture de la fenêtre.
 8. **Passer le test "et alors ?"** sur chaque ligne Chaud et Brûlant : l'empilement donne l'angle, le message n'en cite aucun.
 9. **Livrer la file de priorité** (Template) et lancer les verbes d'action.

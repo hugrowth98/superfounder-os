@@ -92,16 +92,19 @@ Objectif : les titres à chercher, l'angle par persona, et qui décide vraiment.
 
 Objectif : cinq signaux classés, avec la raison pour cette offre.
 
-Présenter les sept signaux en une ligne chacun, dans les mots de l'utilisateur :
+Présenter les dix signaux en une ligne chacun, dans les mots de l'utilisateur :
 - Changement de poste : un décideur arrive, il cadre ses priorités dans les 90 jours.
 - Levée de fonds : du budget neuf et un plan à tenir.
 - Recrutement : ils cherchent un profil ou une compétence que vous fournissez.
 - Événement : votre cible est réunie au même endroit, avant ou après.
 - Techno : ils adoptent ou quittent un outil lié à votre offre.
-- Engagement contenu : ils ont réagi à un post, visité un profil, répondu à quelque chose.
+- Engagement contenu : ils ont réagi à un post, participé à un webinar, répondu à quelque chose.
 - Concurrents : ils sont clients d'un concurrent, ou un concurrent fait de la pub chez eux.
+- Visite de profil : quelqu'un de la cible a consulté votre profil LinkedIn (Sales Navigator).
+- Abonnés de la page : quelqu'un de la cible suit votre page entreprise (Sales Navigator).
+- A publié : quelqu'un de la cible a publié ce mois-ci, donc il est joignable sur LinkedIn et son post donne l'accroche (Sales Navigator).
 
-Recommander selon l'offre, en une phrase, avant de demander : service ou conseil, recrutement et changement de poste en tête ; logiciel, techno et levée ; formation ou coaching, engagement contenu et événement ; agence, concurrents et recrutement. Puis : "Lesquels gardez-vous, dans quel ordre ? Et pour chacun, pourquoi c'est un bon moment pour vous appeler ?" Fixer la fraîcheur maximale par signal (proposer les fenêtres de la table de `05_Departements/Go-to-Market/contexte.md`).
+Recommander selon l'offre, en une phrase, avant de demander : service ou conseil, recrutement et changement de poste en tête ; logiciel, techno et levée ; formation ou coaching, engagement contenu et événement ; agence, concurrents et recrutement. Avec un abonnement Sales Navigator, visite de profil et abonnés de la page sont gratuits à surveiller : les proposer à tout le monde en complément. Puis : "Lesquels gardez-vous, dans quel ordre ? Et pour chacun, pourquoi c'est un bon moment pour vous appeler ?" Fixer la fraîcheur maximale par signal (proposer les fenêtres de la table de `05_Departements/Go-to-Market/contexte.md`).
 
 Écrire la section 4 et compléter la couche 3 de la section 2.
 

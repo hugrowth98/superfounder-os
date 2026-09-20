@@ -50,19 +50,22 @@
 | Engagement avec la page d'un de vos collaborateurs | 20 | notoriété par votre réseau | `engagement-contenu` |
 | Client d'un concurrent identifié (son outil sur le site, sa page clients) | 20 | besoin couvert, à revoir au renouvellement | `signaux-concurrents` |
 | Déménagement du siège | 20 | possible changement de fournisseurs | `evenements-entreprise` |
+| Visite de votre profil LinkedIn (Sales Navigator, vues de profil récentes, filtrées sur vos personas) | 20 (proposé) | il vous a cherché, il n'a rien demandé | `visite-profil` |
 
 ## 3. Tier 3 : signaux frais (5 à 19 points)
 
 | Signal | Points | Ce que ça révèle | Sous-skill |
 |---|---|---|---|
 | Actualité d'entreprise sans autre précision (expansion, prix, presse) | 15 | déclencheur possible | `evenements-entreprise` |
-| Abonnement à votre page ou à votre profil (non listable : relevé à la main dans vos notifications) | 15 | notoriété | `engagement-contenu` |
+| Abonnement à votre page entreprise (Sales Navigator, filtre "suit votre entreprise", pour la page reliée à votre compte) | 15 | notoriété | `abonnes-entreprise` |
+| Abonnement à votre profil (non listable : relevé à la main dans vos notifications) | 15 | notoriété | `engagement-contenu` |
 | Abonnement à votre newsletter | 15 | notoriété | votre outil d'emailing |
 | Abonné d'un concurrent (non listable : à la main, ou passez par les engageurs) | 15 | conscience de la catégorie | `signaux-concurrents` |
 | Pub active d'un concurrent ou d'une entreprise de votre catégorie | 15 | budget marketing actif | `signaux-concurrents` |
 | Refonte du site (CMS ou framework changé entre deux relevés) | 15 | chantier en cours | `changement-techno` |
 | Partenariat ou nouvelle intégration annoncés | 15 | écosystème qui s'étend | `evenements-entreprise` |
 | Téléchargement d'un rapport sectoriel | 10 | intérêt général | votre site |
+| A publié sur LinkedIn dans les 30 derniers jours (Sales Navigator) | 10 (proposé) | joignable sur LinkedIn, accroche dans son post ; départageur, jamais seul | `a-publie` |
 
 ### Signaux du barème d'origine que ce master ne détecte pas
 

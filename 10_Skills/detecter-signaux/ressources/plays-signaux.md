@@ -177,7 +177,7 @@ Un café dans les deux semaines pour voir si ça se rejoue ?
 
 ## Play 11 : nouveaux abonnés et engageurs
 
-- **Signal** : une personne dans l'ICP réagit à un de vos posts, commente, ou s'abonne à votre profil (les abonnés ne se listent pas par l'API : relevez-les à la main dans vos notifications, les engageurs viennent du script).
+- **Signal** : une personne dans l'ICP réagit à un de vos posts, commente, s'abonne à votre page entreprise ou consulte votre profil (les engageurs viennent de `scraper_engagement` ; les abonnés de votre page et vos visiteurs de profil viennent d'une requête Sales Navigator rejouée chaque semaine, sous-skills `abonnes-entreprise` et `visite-profil` ; les abonnés de votre profil personnel restent à relever à la main).
 - **Verbes** : scraper_engagement (`--mes-posts 5`, chaque jour ou chaque semaine), puis qualifier_liste (ICP, exclusion des concurrents), puis dedoublonner (déjà en séquence ? déjà client ?), puis enrichir_personne, puis trouver_email, puis envoyer_sequence.
 - **Message** (un like ne se mentionne pas ; un commentaire se continue) :
 

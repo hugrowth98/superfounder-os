@@ -96,7 +96,7 @@ Dans une TPE, décideur et champion sont souvent la même personne : ne remplir 
 
 ## 4. Les 5 signaux prioritaires
 
-Un signal dit "c'est le bon moment". Choisir cinq signaux parmi ces sept, les classer, dire pourquoi chacun compte pour votre offre. `detecter-signaux` ne surveille que ceux-là.
+Un signal dit "c'est le bon moment". Choisir cinq signaux parmi ces dix, les classer, dire pourquoi chacun compte pour votre offre. `detecter-signaux` ne surveille que ceux-là. Les trois derniers (visite de profil, abonnés de la page, a publié) demandent Sales Navigator et coûtent le prix de l'abonnement : ce sont les moins chers à mettre en place.
 
 | Signal | Ce que c'est | Fenêtre utile | Verbe |
 |---|---|---|---|
@@ -107,6 +107,9 @@ Un signal dit "c'est le bon moment". Choisir cinq signaux parmi ces sept, les cl
 | Techno | adopte ou abandonne un outil lié à votre offre | jours 0 à 30 (pic), frais 60 jours | detecter_techno |
 | Engagement contenu | like, commentaire sur votre sujet | jours 0 à 7 (pic), frais 30 jours | scraper_engagement |
 | Concurrents | engagement sur leurs posts (7 jours), avis négatif (60 jours), client identifié (permanent), pub active (tant qu'elle tourne) | selon le cas | scraper_engagement, scraper_pubs, detecter_techno |
+| Visite de profil | quelqu'un de votre cible a consulté votre profil LinkedIn | jours 0 à 7 après la détection, frais 30 jours | construire_requete_salesnav, trouver_personnes |
+| Abonnés de la page | quelqu'un de votre cible suit votre page entreprise | jours 0 à 2 pour un nouvel abonné | construire_requete_salesnav, trouver_personnes |
+| A publié | quelqu'un de votre cible a publié sur LinkedIn ce mois-ci : joignable, et son post donne l'accroche | jours 0 à 7 après le post | construire_requete_salesnav, trouver_personnes |
 
 | Rang | Signal choisi | Pourquoi il compte pour cette offre | Fraîcheur max |
 |---|---|---|---|

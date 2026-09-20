@@ -52,6 +52,7 @@ source : `site_web`, `telephone_entreprise`, `adresse`, `note_google`, `nb_avis`
    `--source google-maps --recherche "cabinet d'expertise comptable" --lieu "Lyon, France" --max 100 --avec-site`
    `--source base-large --secteur "computer software" --pays france --taille 11-50 --max 300`
    `--source salesnav --url "https://www.linkedin.com/sales/search/company?..." --max 500`
+   (l'URL de comptes se construit en texte : `construire-requete-salesnav --comptes --region France --effectif 11-50 --mots-cles SaaS`)
    `--source crustdata --secteur "Software Development" --taille 11-50 --lieu France --max 50`
 5. Ouvrez le CSV, vérifiez 3 lignes au hasard (nom, domaine, secteur cohérents), donnez le nombre
    de lignes et le lien cliquable.

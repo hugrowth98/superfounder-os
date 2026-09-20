@@ -107,3 +107,17 @@ python3 scripts/detecter_signal.py --type hiring --source theirstack --pays FR -
 Sortie : mêmes colonnes normalisées, `source` = `predictleads` ou `theirstack`, `signal_type` = `levee`, `evenement:<catégorie>`, `offre_emploi` ou `intent`, plus `url_source` (PredictLeads) et `technos` (TheirStack).
 
 Champs de sortie lus de façon tolérante (à vérifier au premier run) : les attributs JSON:API de PredictLeads (`company_lite` fusionné en `company_*`), `company_object` de TheirStack.
+
+## La voie Sales Navigator : quatre filtres à cocher, trois signaux de proximité
+
+Sales Navigator sait filtrer, pour votre compte, les personnes qui ont consulté votre profil, celles qui suivent votre page entreprise, celles qui ont publié dans les 30 derniers jours et celles qui ont changé de poste dans les 90 derniers jours. Ces quatre filtres se construisent en texte avec `construire-requete-salesnav` et se lancent avec `trouver-personnes`, qui pose le `signal_type` sur chaque ligne. Pas de script séparé : c'est la même URL que pour une recherche de personnes, avec un filtre de plus.
+
+| Signal | Sous-skill | Requête | Run | `signal_type` |
+|---|---|---|---|---|
+| a consulté votre profil | `visite-profil` | `construire-requete-salesnav --persona atl --region France --vues-profil --enregistrer` | `trouver-personnes --source unipile --url "<url>" --signal visite_profil` | `visite_profil` |
+| suit votre page | `abonnes-entreprise` | `... --suit-entreprise` | `... --signal abonne_entreprise` | `abonne_entreprise` |
+| a publié ce mois-ci | `a-publie` | `... --a-publie` | `... --signal a_publie` | `a_publie` |
+| a changé de poste (90 jours) | `changement-poste` | `... --nouveau-poste` | `... --signal changement_poste`, puis `enrichir-personne` pour dater | `changement_poste` |
+
+Trois règles : les deux premiers filtres ne marchent qu'avec le compte concerné (Unipile avec votre compte, ou vos cookies) ; `signal_date` est la date du run, pas celle de l'action, donc on rejoue la requête le même jour chaque semaine et on garde les nouveaux avec `dedoublonner --contre <run précédent>` ; le coût est celui de l'abonnement avec Unipile, 0,005 $ par résultat avec l'actor.
+

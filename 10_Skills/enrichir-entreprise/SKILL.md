@@ -67,13 +67,14 @@ Deux enrichissements de plus, sur le même CSV, sans skill séparé :
 
 | Option | Verbe | Ce que ça ajoute | Actor Apify | Coût |
 |---|---|---|---|---|
-| `--techno` | detecter_techno | une colonne par catégorie (`cms`, `ecommerce`, `analytics`, `marketing`, `chat`, `crm`, `paiement`, `hebergement`, `framework`), `technos`, `techno_cible` avec `--cherche`, et le mode `--diff` (ajouts, retraits depuis le dernier run). Avec `--techno-source predictleads` : détections datées (`first_seen_at`), et `--recentes-jours 60` sort une ligne `techno_ajout` par techno vue pour la première fois depuis 60 jours, sans attendre deux runs | `scrapemint/website-tech-stack-detector` ; PredictLeads `companies/{domaine}/technology_detections` | 0,01 $ par domaine détecté ; PredictLeads sur quota mensuel |
+| `--techno` | detecter_techno | une colonne par catégorie (`cms`, `ecommerce`, `analytics`, `marketing`, `chat`, `crm`, `paiement`, `hebergement`, `framework`), `technos`, `techno_cible` avec `--cherche`, et le mode `--diff` (ajouts, retraits depuis le dernier run). Avec `--techno-source theirstack` : technos tirées des offres d'emploi (outils internes compris), datées (`first_date_found`), avec confiance et nombre d'offres, 3 crédits par entreprise ; avec `--techno-source predictleads` : détections datées (`first_seen_at`) ; dans les deux cas `--recentes-jours 60` sort une ligne `techno_ajout` par techno vue pour la première fois depuis 60 jours, sans attendre deux runs | `scrapemint/website-tech-stack-detector` ; PredictLeads `companies/{domaine}/technology_detections` | 0,01 $ par domaine détecté ; PredictLeads sur quota mensuel |
 | `--pubs` | scraper_pubs | une ligne par pub active : plateforme, dates, texte, CTA, page d'atterrissage | `curious_coder/facebook-ads-library-scraper`, `s-r/linkedin-ads-library` | 0,00075 $ (Meta) et 0,005 $ (LinkedIn) par pub |
 
 ```
 python3 scripts/enrichir_entreprise.py --in <csv> --techno --cherche "hubspot,pipedrive" --dry-run
 python3 scripts/enrichir_entreprise.py --in <csv> --sans-base --pubs --plateforme meta --dry-run
 python3 scripts/enrichir_entreprise.py --in 05_Departements/Go-to-Market/Signaux/comptes-suivis.csv --sans-base --techno --diff
+python3 scripts/enrichir_entreprise.py --in 05_Departements/Go-to-Market/Signaux/comptes-suivis.csv --sans-base --techno --techno-source theirstack --recentes-jours 60
 python3 scripts/enrichir_entreprise.py --in 05_Departements/Go-to-Market/Signaux/comptes-suivis.csv --sans-base --techno --techno-source predictleads --recentes-jours 60
 python3 scripts/enrichir_entreprise.py --in <csv> --posts
 ```

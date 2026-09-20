@@ -11,7 +11,7 @@ priorite: [apify | api]
 canal_linkedin: [unipile | lemlist]      choisi à l'onboarding
 canal_email: lemlist
 crm: [hubspot | aucun]
-signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branchés pour les événements et l'intent
+signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branchés pour les événements, l'intent et les technos datées
 ```
 
 ## Carte verbe vers outil
@@ -20,7 +20,8 @@ signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branché
 |---|---|---|---|---|
 | trouver_entreprises | Apify | Crustdata | Unipile (Sales Nav comptes) | `compass/crawler-google-places` (local), `harvestapi/linkedin-company-search` (filtres LinkedIn), `code_crafter/leads-finder` (bases larges, une ligne par entreprise), `curious_coder/linkedin-sales-navigator-search-scraper` (URL Sales Nav comptes, cookies du .env) ; Crustdata `POST /v1/companies/search` |
 | trouver_lookalikes | Ocean.io | Ocean.io | aucun | API `POST /v3/search/companies` avec `lookalikeDomains` (10 domaines par lot, 0,2 crédit par résultat, `/preview` gratuit) ; MCP Ocean en option pour explorer à la main |
-| trouver_personnes | Apify | Crustdata | Unipile (recherche classique ou Sales Nav) | `harvestapi/linkedin-profile-search` (filtres, sans cookies), `harvestapi/linkedin-company-employees` (depuis des URLs entreprise), `curious_coder/linkedin-sales-navigator-search-scraper` (URL Sales Nav leads, cookies du .env) ; Crustdata `POST /screener/persondb/search/` |
+| construire_requete_salesnav | interne | interne | Unipile pour les ids de région, secteur, liste (gratuit) | `construire-requete-salesnav/scripts/construire_requete_salesnav.py` : critères en texte vers URL Sales Navigator (personnes ou comptes), décodage d'une URL, ids via Unipile `GET /api/v1/linkedin/search/parameters` |
+| trouver_personnes | Apify | Crustdata | Unipile (recherche classique ou Sales Nav) | `harvestapi/linkedin-profile-search` (filtres, sans cookies), `harvestapi/linkedin-company-employees` (depuis des URLs entreprise), `curious_coder/linkedin-sales-navigator-search-scraper` (URL Sales Nav leads, cookies du .env) ; Crustdata `POST /screener/persondb/search/` ; `--signal` pose `visite_profil`, `abonne_entreprise`, `a_publie`, `changement_poste` sur une URL Sales Nav à filtre |
 | enrichir_personne | Unipile (profil) + FullEnrich (contact) | idem | Apify `harvestapi/linkedin-profile-scraper` | Unipile `GET /api/v1/users/{id}` ; FullEnrich `POST /contact/enrich/bulk` |
 | enrichir_entreprise | Unipile (page) + Crustdata | idem | Apify `harvestapi/linkedin-company` | Unipile `GET /api/v1/linkedin/company/{id}` ; Crustdata `GET /screener/company?company_domain=` |
 | trouver_email | FullEnrich | FullEnrich | aucun | `POST /api/v2/contact/enrich/bulk`, champ `contact.emails` (1 crédit par email trouvé) |
@@ -28,7 +29,7 @@ signaux_secours: [predictleads, theirstack | aucun]   outils optionnels branché
 | detecter_signal (master `detecter-signaux`) | Apify | Apify | PredictLeads (`--source predictleads` : levées, événements d'entreprise, offres ; quota mensuel), TheirStack (`--source theirstack` : offres, intent jobs + techno ; 1 crédit par résultat) | `signalbase/signalbase-api` (funding, acquisitions, hiring, job-changes, investors, companies ; 0,04 $ par résultat) ; PredictLeads `discover/financing_events`, `discover/news_events`, `discover/job_openings` ; TheirStack `jobs/search`, `companies/search` |
 | scraper_offres_emploi | Apify | Apify | PredictLeads (`--source predictleads`), TheirStack (`--source theirstack`, filtre par techno citée) | `tagadanar/linkedin-jobs-scraper` (LinkedIn), `borderline/indeed-scraper` (Indeed), `signalbase/signalbase-api` signalType=hiring ; PredictLeads `discover/job_openings` ; TheirStack `jobs/search` |
 | scraper_engagement | Unipile | Unipile | Apify | Unipile `posts/{id}/reactions` et `/comments` ; secours `harvestapi/linkedin-post-comments`, `harvestapi/linkedin-post-reactions` |
-| detecter_techno (`enrichir-entreprise --techno`) | Apify | Apify | PredictLeads (`--source predictleads` : détections datées, `first_seen_at`, sans diff à faire) | `scrapemint/website-tech-stack-detector` ; PredictLeads `companies/{domaine}/technology_detections` |
+| detecter_techno (`enrichir-entreprise --techno`) | Apify (le site) ; TheirStack si branché (les offres, daté) | idem | TheirStack (`--techno-source theirstack --recentes-jours N` : technographies tirées des offres, `first_date_found`, outils internes compris, 3 crédits par entreprise), PredictLeads (`--techno-source predictleads` : détections datées, `first_seen_at`) | `scrapemint/website-tech-stack-detector` ; TheirStack `POST /companies/technologies` ; PredictLeads `companies/{domaine}/technology_detections` |
 | scraper_pubs (`enrichir-entreprise --pubs`) | Apify | Apify | aucun | `curious_coder/facebook-ads-library-scraper` (Meta), `s-r/linkedin-ads-library` (LinkedIn) |
 | qualifier_liste | interne (Claude) | interne | aucun | lit `05_Departements/Go-to-Market/contexte.md` |
 | dedoublonner | interne + HubSpot | interne + HubSpot | aucun | HubSpot search API |

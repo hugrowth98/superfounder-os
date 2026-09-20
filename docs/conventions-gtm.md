@@ -17,7 +17,7 @@ Ce fichier est le contrat que suit tout ce qui est écrit dans ce dossier. Il es
 
 ## 3. Les verbes (l'interface entre méthode et outil)
 
-Chaque skill de méthode décrit ses actions avec ces verbes, jamais avec un nom d'outil. Chaque verbe a un skill d'exécution dans `10_Skills/` qui lit `05_Departements/Go-to-Market/OUTILS.md` pour savoir quel outil appeler. Exception assumée : un verbe qui n'est qu'un appel d'actor n'a pas son propre dossier, il est porté par le skill du même sujet (detecter_signal par le master `detecter-signaux`, detecter_techno et scraper_pubs par `enrichir-entreprise`).
+Chaque skill de méthode décrit ses actions avec ces verbes, jamais avec un nom d'outil. Chaque verbe a un skill d'exécution dans `10_Skills/` qui lit `05_Departements/Go-to-Market/OUTILS.md` pour savoir quel outil appeler. Exception assumée : un verbe qui n'est qu'un appel d'actor n'a pas son propre dossier, il est porté par le skill du même sujet (detecter_signal par le master `detecter-signaux`, detecter_techno et scraper_pubs par `enrichir-entreprise`). Le verbe `construire_requete_salesnav` (skill `construire-requete-salesnav`) ne fait aucun appel : il fabrique l'URL Sales Navigator que `trouver_personnes` et `trouver_entreprises` exécutent ; les signaux `visite_profil`, `abonne_entreprise`, `a_publie` et la voie Sales Navigator de `changement_poste` passent par lui puis par `trouver_personnes --signal`.
 
 | Verbe | Skill d'exécution | Ce qu'il fait |
 |---|---|---|
@@ -51,7 +51,7 @@ Chaque skill de méthode décrit ses actions avec ces verbes, jamais avec un nom
 | Lemlist | envoi email et lecture des réponses par l'API (`envoyer-sequence`, `verifier-reponses`), LinkedIn si l'utilisateur le choisit ; MCP optionnel pour les étapes de séquence et les stats | `LEMLIST_API_KEY` |
 | HubSpot | CRM : lecture des clients, import, dédup, pipeline | `HUBSPOT_ACCESS_TOKEN` |
 | PredictLeads (optionnel) | secours du verbe detecter_signal : événements d'entreprise (expansion, partenariat, lancement, nomination), levées, offres, détections techno datées | `PREDICTLEADS_API_KEY`, `PREDICTLEADS_API_TOKEN` |
-| TheirStack (optionnel) | secours du verbe detecter_signal : offres d'emploi filtrées par techno citée, intent (entreprises qui recrutent et utilisent une techno) | `THEIRSTACK_API_KEY` |
+| TheirStack (optionnel) | secours du verbe detecter_signal : offres d'emploi filtrées par techno citée, intent (entreprises qui recrutent et utilisent une techno) ; source datée de detecter_techno (`--techno-source theirstack`, technographies tirées des offres, `first_date_found`, 3 crédits par entreprise) | `THEIRSTACK_API_KEY` |
 
 Règle de priorité, fixée à l'onboarding et écrite dans `05_Departements/Go-to-Market/OUTILS.md` : Apify d'abord si l'utilisateur a un compte Apify ; sinon l'outil API du verbe (Crustdata, FullEnrich, Unipile). Jamais redemandé en cours de session.
 
@@ -112,7 +112,7 @@ Vocabulaires fixés (les scripts les écrivent, les docs les citent tels quels) 
 | `categorie_titre` | `dirigeant`, `direction`, `manager`, `marketing`, `sales`, `executant`, `independant`, `stagiaire`, `inconnu` (écrite par `qualifier-liste/scripts/pre_qualifier.py`) |
 | `tier` | `A`, `B`, `C`, `D` (tier ICP, jamais écrasé) |
 | `chaleur` | `brulant`, `chaud`, `tiede`, `frais`, `froid` (écrite par `detecter-signaux/multi-signaux`) |
-| `signal_type` | écrits par les scripts : `levee`, `acquisition`, `offre_emploi`, `vague_recrutement`, `changement_poste`, `champion`, `investisseur`, `profil_entreprise`, `evenement:<categorie>`, `intent`, `techno`, `techno_ajout`, `techno_retrait`, `commentaire`, `like`, `pub_active`, `pub_arretee`, `lookalike` ; saisis à la main (imports) : `avis_negatif`, `webinar_present`, `webinar_inscrit`, `newsletter_abonne`, `event_present`. Le détail va dans `signal_detail`. |
+| `signal_type` | écrits par les scripts : `levee`, `acquisition`, `offre_emploi`, `vague_recrutement`, `changement_poste`, `champion`, `investisseur`, `profil_entreprise`, `evenement:<categorie>`, `intent`, `techno`, `techno_ajout`, `techno_retrait`, `commentaire`, `like`, `pub_active`, `pub_arretee`, `lookalike`, `visite_profil`, `abonne_entreprise`, `a_publie` (les trois derniers par `trouver-personnes --signal` sur une URL Sales Navigator, `signal_date` = date du run) ; saisis à la main (imports) : `avis_negatif`, `webinar_present`, `webinar_inscrit`, `newsletter_abonne`, `event_present`. Le détail va dans `signal_detail`. |
 | réponses | `reponse_canal` (`email`, `linkedin`), `reponse_date`, `reponse_texte`, `ne_plus_contacter` |
 | `linkedin_url` | `https://www.linkedin.com/in/<slug>`, sans paramètres ni slash final |
 

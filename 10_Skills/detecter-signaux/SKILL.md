@@ -1,7 +1,7 @@
 ---
 name: detecter-signaux
 description: >
-  Détecte les signaux d'achat d'un marché ou d'un compte (changement de poste, levée, recrutement, événement d'entreprise, changement d'outil, activité autour d'un concurrent, engagement avec votre contenu), les score, les empile, et dit à qui écrire, quand, et sur quel problème. Se déclenche sur : "signaux d'achat", "signaux", "pourquoi maintenant", "qui contacter en premier", "prospection sur signal", "changement de poste", "levée de fonds", "qui recrute", "offres d'emploi", "rachat", "nouveau bureau", "stack technique", "mes concurrents", "qui a commenté", "qui a liké", "empiler les signaux", "score de chaleur", "priorise ma liste", "qui j'appelle en premier", "dans quel ordre", "déclencheur", "trigger", "fenêtre de contact", "timing d'approche". Ne pas utiliser pour : construire une liste d'entreprises ou de personnes sans signal (ciblage ICP), écrire une séquence complète ou un script d'appel, importer ou dédoublonner dans le CRM.
+  Détecte les signaux d'achat d'un marché ou d'un compte (changement de poste, levée, recrutement, événement d'entreprise, changement d'outil, activité autour d'un concurrent, engagement avec votre contenu, visite de votre profil, abonnement à votre page, activité de publication), les score, les empile, et dit à qui écrire, quand, et sur quel problème. Se déclenche sur : "signaux d'achat", "signaux", "pourquoi maintenant", "qui contacter en premier", "prospection sur signal", "changement de poste", "levée de fonds", "qui recrute", "offres d'emploi", "rachat", "nouveau bureau", "stack technique", "mes concurrents", "qui a commenté", "qui a liké", "qui a visité mon profil", "qui suit ma page", "qui a publié", "actifs sur LinkedIn", "empiler les signaux", "score de chaleur", "priorise ma liste", "qui j'appelle en premier", "dans quel ordre", "déclencheur", "trigger", "fenêtre de contact", "timing d'approche". Ne pas utiliser pour : construire une liste d'entreprises ou de personnes sans signal (ciblage ICP), écrire une séquence complète ou un script d'appel, importer ou dédoublonner dans le CRM.
 ---
 
 ## Repérage
@@ -26,6 +26,9 @@ Vous êtes l'expert de la prospection sur signal : celui qui sait qu'un message 
 | Un outil apparaît, disparaît, une migration se lit dans une offre | `changement-techno` | "stack", "quel outil ils utilisent", "ont changé de CRM", "migration", "outil adjacent" | `{SKILL_BASE}/sous-skills/changement-techno/SKILL.md` |
 | Engageurs des posts d'un concurrent, avis négatifs, clients d'un concurrent, pubs actives | `signaux-concurrents` | "mon concurrent", "insatisfaits de", "avis négatifs", "clients de", "leurs pubs", "alternative à" | `{SKILL_BASE}/sous-skills/signaux-concurrents/SKILL.md` |
 | Likes, commentaires, webinar, abonnés à votre newsletter | `engagement-contenu` | "qui a liké", "qui a commenté", "mes abonnés", "participants du webinar", "ma newsletter" | `{SKILL_BASE}/sous-skills/engagement-contenu/SKILL.md` |
+| Qui a consulté votre profil LinkedIn | `visite-profil` | "qui a visité mon profil", "vues de profil", "passé sur mon profil", "visiteurs" | `{SKILL_BASE}/sous-skills/visite-profil/SKILL.md` |
+| Qui suit votre page entreprise | `abonnes-entreprise` | "qui suit ma page", "abonnés de ma page", "followers", "nouveaux abonnés" | `{SKILL_BASE}/sous-skills/abonnes-entreprise/SKILL.md` |
+| Qui publie dans votre cible (joignables sur LinkedIn, accroche dans leur post) | `a-publie` | "actifs sur LinkedIn", "qui a publié", "ceux qui postent", "nouveau post" | `{SKILL_BASE}/sous-skills/a-publie/SKILL.md` |
 | Plusieurs signaux, score cumulé, qui contacter en premier, seuils, délais | `multi-signaux` | "empiler", "score", "priorise", "qui j'appelle en premier", "dans quel ordre", "système de scoring", "SLA" | `{SKILL_BASE}/sous-skills/multi-signaux/SKILL.md` |
 | Quels signaux suivre, pourquoi écrire à quelqu'un, les 137 déclencheurs | le master | "quels signaux", "déclencheurs", "raisons de contacter", "taxonomie" | `{SKILL_BASE}/ressources/taxonomie-declencheurs.md` |
 | Passer d'un signal à une campagne | le master, puis le sous-skill | "play", "campagne sur signal", "séquence à partir de" | `{SKILL_BASE}/ressources/plays-signaux.md` |
@@ -41,7 +44,7 @@ Vous êtes l'expert de la prospection sur signal : celui qui sait qu'un message 
 
 ## Ce que le master fait lui-même
 
-- **Tous les signaux d'un compte nommé** ("qu'est-ce qui se passe chez X ?") : six vérifications, puis `multi-signaux` pour le score et l'angle. Lire `{SKILL_BASE}/ressources/detection-par-signal.md`.
+- **Tous les signaux d'un compte nommé** ("qu'est-ce qui se passe chez X ?") : sept vérifications, puis `multi-signaux` pour le score et l'angle. Lire `{SKILL_BASE}/ressources/detection-par-signal.md`.
 
 | Vérification | Verbe | Paramètre |
 |---|---|---|
@@ -50,6 +53,7 @@ Vous êtes l'expert de la prospection sur signal : celui qui sait qu'un message 
 | postes ouverts | scraper_offres_emploi | `companyIds` de la page LinkedIn, `postedSince: month` |
 | stack du site | detecter_techno | la colonne `domaine`, comparée au dernier relevé |
 | ses dirigeants ont réagi à vos posts | dedoublonner | vos CSV d'engagement, clé `linkedin_url` |
+| ses dirigeants ont consulté votre profil ou suivent votre page | construire_requete_salesnav, puis trouver_personnes | `--entreprises "<nom>" --vues-profil` (puis `--suit-entreprise`), run avec votre compte, `--signal visite_profil` ou `abonne_entreprise` |
 | déjà connu de vous | dedoublonner | HubSpot : client, deal ouvert, séquence en cours |
 
 - **Choisir ses 5 signaux** : lire `{SKILL_BASE}/ressources/signaux-6-coeur.md` et la taxonomie ; garder ceux qui collent à l'offre et que la stack détecte sans effort ; les écrire dans `05_Departements/Go-to-Market/contexte.md`, section signaux prioritaires, avec leur cadence.

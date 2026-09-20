@@ -1,7 +1,7 @@
 ---
 name: engagement-contenu
 description: >
-  Détecte les personnes qui réagissent à votre contenu (likes et commentaires sur vos posts, participants à vos webinars, abonnés de votre newsletter exportés de votre outil ; les abonnés d'une page ou d'un profil LinkedIn ne se listent pas, on passe par les engageurs) et déclenche l'approche dans les 24 à 48 heures, sur le sujet du contenu. Se déclenche sur : "qui a liké", "qui a commenté", "engagement sur mes posts", "mes abonnés", "nouveaux followers", "participants du webinar", "inscrits à ma newsletter", "lead magnet", "commentaires sous mon post". Ne pas utiliser pour : l'engagement avec les posts d'un concurrent ou d'un influenceur, voir `signaux-concurrents` et la famille 5 de la taxonomie ; les visiteurs de votre site, non couverts.
+  Détecte les personnes qui réagissent à votre contenu (likes et commentaires sur vos posts, participants à vos webinars, abonnés de votre newsletter exportés de votre outil ; les abonnés de votre page se listent par Sales Navigator, voir `abonnes-entreprise` ; ceux d'un profil, non, on passe par les engageurs) et déclenche l'approche dans les 24 à 48 heures, sur le sujet du contenu. Se déclenche sur : "qui a liké", "qui a commenté", "engagement sur mes posts", "mes abonnés", "nouveaux followers", "participants du webinar", "inscrits à ma newsletter", "lead magnet", "commentaires sous mon post". Ne pas utiliser pour : l'engagement avec les posts d'un concurrent ou d'un influenceur, voir `signaux-concurrents` et la famille 5 de la taxonomie ; les visiteurs de votre site, non couverts.
 ---
 
 Quelqu'un qui commente votre post, vient à votre webinar ou s'abonne à votre newsletter vous connaît déjà et parle de votre sujet cette semaine : taux de réponse de 25 à 30 %, un commentaire vaut 35 points, un like 25, et la fenêtre se ferme en 7 jours.
@@ -30,7 +30,7 @@ Quelqu'un qui commente votre post, vient à votre webinar ou s'abonne à votre n
 |---|---|---|---|
 | 1a | scraper_engagement | `scraper-engagement` | Unipile : `--mes-posts 5` pour vos derniers posts, `--post <url>` pour un post précis, `--mes-posts 5 --posts-de <slug>` pour un collaborateur qui publie. Inclus dans l'abonnement, dans les quotas LinkedIn. Secours : `harvestapi/linkedin-post-comments`, 0,002 $ par commentaire. |
 | 1b | import | interne (Claude) | webinar, événement, newsletter : votre export CSV (inscrits, présents, abonnés), colonnes ramenées aux noms normalisés |
-| 1d | à la main | | nouveaux abonnés de votre profil ou de votre page : LinkedIn ne les liste pas par l'API, relevez-les depuis vos notifications, ou travaillez les engageurs |
+| 1d | construire_requete_salesnav, puis trouver_personnes | `abonnes-entreprise` (sous-skill) | les abonnés de votre page entreprise se listent par Sales Navigator (`--suit-entreprise`, compte relié à la page) ; les abonnés de votre profil personnel, non : relevez-les depuis vos notifications, ou travaillez les engageurs. Vos visiteurs de profil : `visite-profil`. |
 | 2 | qualifier_liste | `qualifier-liste` | ICP, exclusions : concurrents, clients, salariés de clients, personnes déjà en séquence |
 | 3 | dedoublonner | `dedoublonner` | contre HubSpot et vos séquences ; cumul des réactions d'une même personne sur 30 jours |
 | 4 | enrichir_personne, trouver_email | `enrichir-personne`, `trouver-email` | profil complet, email vérifié |

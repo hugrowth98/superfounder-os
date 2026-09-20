@@ -281,7 +281,7 @@ def main() -> None:
     ap.add_argument("--url", help="linkedin : URL(s) de recherche jobs copiee(s) du navigateur")
     ap.add_argument("--details", action="store_true", help="linkedin : description complete (+0,0018 $ par offre)")
     ap.add_argument("--rayon", default="25", help="indeed : km")
-    ap.add_argument("--jours", default="7", help="indeed : offres publiees depuis N jours (1,3,7,14 ; vide = toutes)")
+    ap.add_argument("--jours", default="7", help="indeed et theirstack : offres publiees depuis N jours (indeed : 1,3,7,14 ; vide = toutes)")
     ap.add_argument("--pays-indeed", default="fr", help="indeed : domaine pays (fr, be, ch, uk, us)")
     ap.add_argument("--pays", help="signalbase : codes ISO (FR,BE)")
     ap.add_argument("--periode", default="last_7d", help="signalbase : last_7d, last_30d, ...")
