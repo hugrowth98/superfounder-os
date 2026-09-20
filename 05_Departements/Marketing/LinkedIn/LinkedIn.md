@@ -16,7 +16,7 @@ Ne va pas ici : les messages de prospection envoyés en DM (`05_Departements/Go-
 
 ## Cadre
 
-Un post par fichier : `Post-Sujet_YYYY-MM-DD.md`. Le brief de veille hebdo : `Brief-veille_YYYY-MM-DD.md`. Les sources (transcripts, articles, idées brutes) dans `sources/`.
+Un post par fichier : `Post-Sujet_YYYY-MM-DD.md`. Le brief de veille hebdo : `Brief-veille_YYYY-MM-DD.md`. Une infographie : `Infographie-Sujet_YYYY-MM-DD.md` (le brief) et `.png` (l'image), produits par le master `infographie` à partir de `03_Branding/charte-visuelle.md`. Les sources (transcripts, articles, idées brutes) dans `sources/`.
 
 Les posts qui ont bien marché remontent dans `ressources/posts-de-reference.md`. Les posts des autres qui arrêtent le scroll vont dans `ressources/swipe-file.md`. Plus l'échantillon est riche, plus la voix est juste.
 

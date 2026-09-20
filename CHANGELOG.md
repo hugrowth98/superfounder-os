@@ -3,6 +3,18 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.6.0] - 2026-09-20
+
+Le premier master de contenu visuel : un post, une idée ou un framework devient une infographie 4:5 aux couleurs de la charte, avec un brief sauvegardé et l'image générée.
+
+### Ajouté
+- Master `infographie` (`10_Skills/infographie/`) : rôle de designer B2B, table de routage vers quatre sous-skills, logique "la charte d'abord, le brief avant l'image, une image à la fois", choix du moteur (outil d'image natif de Codex ou du client, sinon OpenAI, sinon fal.ai), rangement `Infographie-<sujet>_<date>.md` et `.png` dans `05_Departements/Marketing/LinkedIn/`.
+- Sous-skills : `brief-visuel` (brief en neuf blocs : contexte, idée centrale, structure parmi quinze, contenu extrait, texte exact de chaque bloc, hiérarchie, direction artistique, prompt, checklist), `infographie-editoriale` (le one-pager premium aux couleurs de la charte, composants, densité, direction artistique par défaut), `carnet-manuscrit` (la page de carnet en noir et blanc, prompt de base en anglais), `sketchnote-tableau-blanc` (la photo de tableau blanc au marqueur, palette des feutres fixe, doodles utiles).
+- Ressources : `bibliotheque-structures.md` (quinze structures avec le contenu qui les appelle, sept patterns de composition, la méthode pour choisir), `copywriting-visuel.md` (titre, points, badges, blocs prompt et conseil, longueurs, interdits), `lecture-charte.md` (ce qu'on extrait de `03_Branding/charte-visuelle.md`, l'ordre de priorité en cas de conflit, le style neutre quand la charte est vide), `prompt-generation.md` (anatomie du prompt en anglais avec le texte exact entre guillemets, réglages par moteur, checklist avant de lancer, relance d'une variante).
+- `scripts/generer_image.py` : `--brief <brief.md>` (extrait le bloc "Prompt de génération"), `--prompt`, `--prompt-fichier` ; moteur automatique d'après les clés (`OPENAI_API_KEY` puis `FAL_KEY`), OpenAI `gpt-image-2` par défaut (repli de taille automatique), fal.ai `openai/gpt-image-2`, `fal-ai/nano-banana-pro` (aspect_ratio, resolution) ou tout autre modèle ; formats 4:5, 1:1, 3:2, 2:3, 16:9, 9:16 ; `--qualite`, `--resolution`, `--variante N`, `--out`, `--dry-run` qui affiche le moteur, le modèle, la taille et le corps de la requête sans rien lancer ; le prompt utilisé est écrit à côté de l'image (`.prompt.txt`).
+- `03_Branding/charte-visuelle.md` : le gabarit que le master lit (palette par rôle, typographies, composants, ton, interdits, logo, exemples, style neutre de repli), avec la note `Branding.md` qui y renvoie ; `installer-contenu` le propose en fin d'installation ; la note `Marketing/LinkedIn/LinkedIn.md` nomme les fichiers d'infographie.
+- `.env.example` : `OPENAI_API_KEY` et `FAL_KEY` (section génération d'images). `CLAUDE.md`, `AGENTS.md` : section 13. `README.md` : 47 skills.
+
 ## [5.5.0] - 2026-09-20
 
 Prospeo entre dans la stack en option : recherche d'entreprises et de personnes par filtres exacts, emails et mobiles vérifiés révélés en lot, et la méthode qui va avec.

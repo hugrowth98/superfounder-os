@@ -111,6 +111,11 @@ Confirme que la machine est installée et propose de la tester tout de suite :
 Rappelle-lui que plus il ajoute de posts dans `posts-de-reference.md`, plus la voix sera
 juste, et qu'il peut relancer cet installeur quand son positionnement bouge.
 
+Si `03_Branding/charte-visuelle.md` contient encore `[à remplir]`, propose en une phrase de
+noter ses couleurs et sa police dedans (une ligne suffit) : c'est ce que le master
+`infographie` lit pour transformer un post en visuel à ses couleurs. Il peut le faire plus
+tard, ce n'est pas bloquant.
+
 ---
 
 ## Règles

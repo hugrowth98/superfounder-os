@@ -14,11 +14,11 @@ Ne va pas ici : les visuels produits (ils vont dans `05_Departements/Marketing/`
 
 ## Cadre
 
-Une seule charte à la fois. Les fichiers binaires (logos, polices) vivent ici mais ne se versionnent pas dans un dépôt public. Une ligne dans cette note suffit pour commencer : vos couleurs et votre police.
+Une seule charte à la fois, dans `charte-visuelle.md` : palette par rôle, typographies, composants, ton, interdits, logo. C'est le fichier que le master `infographie` lit avant tout visuel. Les fichiers binaires (logos, polices) vivent ici mais ne se versionnent pas dans un dépôt public. Une ligne suffit pour commencer : vos couleurs et votre police.
 
 ## Où on en est
 
-- [ ] Poser la charte
+- [ ] Remplir `charte-visuelle.md` (au moins la palette et les typographies)
 
 ## Key Notes
 
