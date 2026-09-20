@@ -5,7 +5,7 @@
 | Fichier | Contenu | Écrit par |
 |---|---|---|
 | `decisionnaires-par-taille.md` | pour chaque tranche d'effectif, le titre qui décide, celui qui vit le problème, celui qui signe | `cartographier-personas` |
-| `requetes-booleennes.md` | les requêtes Sales Navigator et LinkedIn par persona, testées, avec le volume obtenu et la date | `sourcer-personnes` |
+| `requetes-booleennes.md` | le registre des requêtes : Sales Navigator (URL), LinkedIn et Ocean (commande et filtres), par persona, avec le volume obtenu et la date ; se crée à la première requête et se met à jour à chaque run | `construire-requete-salesnav --enregistrer`, `trouver-personnes` (volume), `trouver-entreprises --source ocean --enregistrer` |
 | `mots-cles-exclusion.md` | les mots-clés B2C et concurrents propres à votre marché, le seul endroit où ils vivent (`contexte.md` ne garde que les concurrents nommés et les secteurs exclus) | `qualifier-comptes` |
 | `comptes-cibles.csv` | la liste ABM des comptes à travailler en 1:1, avec tier et signal | `selectionner-comptes` |
 

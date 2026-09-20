@@ -1,6 +1,7 @@
 """enrichir_entreprise : complete un CSV d'entreprises (firmographique, site, LinkedIn, effectif, secteur).
 
 Sources (--source) :
+  ocean      Ocean.io lookup par domaine (1 000 par appel) : nom, page LinkedIn, siege, secteurs, taille, CA, annee, technos
   unipile     page entreprise LinkedIn via le compte de l'utilisateur (GET /api/v1/linkedin/company/{id}) ; par defaut
   crustdata   GET /screener/company?company_domain= (1 credit cache / 4 temps reel) ; ajoute nb_offres_emploi, CA estime
   apify       harvestapi/linkedin-company (0,004 $ par entreprise) : par URL LinkedIn, ou par nom si l'URL manque
@@ -22,7 +23,7 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import (Crustdata, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
+from gtm_common import (Crustdata, Ocean, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
                         ecrire_csv, lire_csv, lire_outils, norm_linkedin_url, norm_texte, slug_linkedin, sujet_depuis_fichier)
 from apify_run import lancer, prix  # noqa: E402
 
@@ -157,13 +158,44 @@ def via_apify(lignes, idx, dry_run, pause):
     return ok
 
 
-SOURCES = {"unipile": via_unipile, "crustdata": via_crustdata, "apify": via_apify}
+def via_ocean(lignes, idx, dry_run, pause):
+    """Ocean.io POST /v2/lookup/companies : jusqu'a 1 000 domaines par appel, rend nom, page LinkedIn, siege, secteurs, taille,
+    CA, annee, description, technos du site, telephone. Facture par entreprise trouvee (creditsUsed dans la reponse)."""
+    doms = [(i, domaine(lignes[i].get("domaine") or lignes[i].get("site_web"))) for i in idx]
+    doms = [(i, d) for i, d in doms if d]
+    if dry_run:
+        bandeau_dry_run("Ocean.io POST /v2/lookup/companies", [f"{len(doms)} entreprise(s) avec un domaine ({len(idx) - len(doms)} sans domaine, ignorees), par lots de 1 000",
+                                                              "cout : credits Ocean par entreprise trouvee (creditsUsed affiche apres le run)"])
+        return 0
+    oc = Ocean()
+    afficher(f"  [ocean] solde : {oc.solde()}")
+    trouves, credits = oc.lookup_entreprises(sorted({d for _, d in doms}))
+    ok = 0
+    for i, d in doms:
+        c = trouves.get(d)
+        if not c:
+            lignes[i]["erreur_enrichissement_entreprise"] = (lignes[i].get("erreur_enrichissement_entreprise") or "") or "ocean : domaine inconnu"
+            continue
+        n = Ocean.normaliser_entreprise(c)
+        for k, v in n.items():
+            if k in ("source", "date_extraction"):
+                continue
+            if v and not (lignes[i].get(k) or "").strip():
+                lignes[i][k] = v
+        lignes[i]["date_enrichissement_entreprise"] = aujourd_hui()
+        lignes[i]["source"] = (lignes[i].get("source") or "") + ("+ocean" if lignes[i].get("source") else "ocean")
+        ok += 1
+    afficher(f"  [ocean] {ok}/{len(doms)} trouvees, {credits} credit(s) factures")
+    return ok
+
+
+SOURCES = {"unipile": via_unipile, "crustdata": via_crustdata, "apify": via_apify, "ocean": via_ocean}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--in", dest="entree", required=True)
-    ap.add_argument("--source", help="unipile, crustdata, apify, ou plusieurs separes par des virgules (defaut selon OUTILS.md)")
+    ap.add_argument("--source", help="unipile, crustdata, apify, ocean (par domaine, 1 000 par appel), ou plusieurs separes par des virgules (defaut selon OUTILS.md)")
     ap.add_argument("--max", type=int)
     ap.add_argument("--pause", type=float, default=1.0)
     ap.add_argument("--force", action="store_true")
@@ -195,7 +227,7 @@ def main() -> None:
         afficher(f"  [source] {', '.join(sources)} (d'apres OUTILS.md)")
     for s in sources:
         if s not in SOURCES:
-            arret(f"source inconnue : {s} (unipile, crustdata, apify)")
+            arret(f"source inconnue : {s} (unipile, crustdata, apify, ocean)")
     lignes = lire_csv(a.entree)
     idx = cibles(lignes, a.force, a.max)
     afficher(f"  [cibles] {len(idx)} entreprise(s) a enrichir sur {len(lignes)}")

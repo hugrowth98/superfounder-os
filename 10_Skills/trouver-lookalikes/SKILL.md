@@ -14,7 +14,7 @@ description: >
 
 Ocean.io uniquement, quelle que soit la priorité de `05_Departements/Go-to-Market/OUTILS.md`, par l'API
 (`OCEAN_API_KEY`, branchée par `connecter-outils`) : `scripts/trouver_lookalikes.py`. Deux appels :
-`POST /v3/search/companies/preview` (gratuit : le total disponible) puis `POST /v3/search/companies`
+`POST /api/public_api/v3/search/companies/preview` (gratuit, réservé aux comptes Enterprise : sinon le script compte avec une recherche de taille 1) puis `POST /api/public_api/v3/search/companies`
 avec `lookalikeDomains` (10 domaines de référence par lot, 0,2 crédit par résultat, pagination
 `searchAfter`). Filtres : pays (`--pays fr,be`), tailles (`--tailles 11-50,51-200`), les domaines de
 référence sont exclus des résultats. Pas de clé : dites-le et renvoyez vers `connecter-outils`. Le MCP

@@ -348,6 +348,54 @@ def estimer(n: int, prix_unitaire: float, depart: float = 0.0, unite: str = "res
 
 # ---------------------------------------------------------------- Unipile
 
+# ---------------------------------------------------------------- registre des requetes (Ciblage/requetes-booleennes.md)
+
+REQUETES_ENTETE = ("# Requêtes Sales Navigator, LinkedIn et Ocean.io\n\n"
+                   "> Écrit par `construire-requete-salesnav --enregistrer`, `trouver-personnes` et `trouver-entreprises` "
+                   "(colonne Volume remplie après chaque run). Une ligne par requête ; rejouer la commande ou l'URL telle quelle.\n\n"
+                   "| Date | Nom | Persona | Filtres | URL ou commande | Volume | Notes |\n|---|---|---|---|---|---|---|\n")
+
+
+def chemin_requetes() -> Path:
+    return dossier_gtm() / "Ciblage" / "requetes-booleennes.md"
+
+
+def _cellule(s) -> str:
+    return str(s or "").replace("|", "/").replace("\n", " ").strip()
+
+
+def enregistrer_requete(nom: str, persona: str, filtres: str, reference: str, volume="", notes="") -> Path:
+    """Ajoute une ligne au registre (ou remplit la colonne Volume si la reference, URL ou commande, y est deja)."""
+    chemin = chemin_requetes()
+    chemin.parent.mkdir(parents=True, exist_ok=True)
+    if not chemin.exists():
+        chemin.write_text(REQUETES_ENTETE, encoding="utf-8")
+    if reference and maj_volume_requete(reference, volume, notes):
+        return chemin
+    with chemin.open("a", encoding="utf-8") as f:
+        f.write(f"| {aujourd_hui()} | {_cellule(nom)} | {_cellule(persona)} | {_cellule(filtres)} | {_cellule(reference)} | {_cellule(volume)} | {_cellule(notes)} |\n")
+    return chemin
+
+
+def maj_volume_requete(reference: str, volume, notes="") -> bool:
+    """Remplit Volume (et Notes) sur la ligne du registre dont la colonne URL ou commande vaut `reference`. Vrai si trouvee."""
+    chemin = chemin_requetes()
+    if not chemin.exists() or not reference:
+        return False
+    lignes = chemin.read_text(encoding="utf-8").splitlines()
+    ref = _cellule(reference)
+    for i, l in enumerate(lignes):
+        cells = [c.strip() for c in l.strip().strip("|").split("|")] if l.startswith("|") else []
+        if len(cells) >= 7 and cells[4] == ref and not cells[0].startswith("-"):
+            cells[5] = f"{volume} ({aujourd_hui()})" if volume != "" else cells[5]
+            if notes:
+                cells[6] = _cellule(notes)
+            lignes[i] = "| " + " | ".join(cells) + " |"
+            chemin.write_text("\n".join(lignes) + "\n", encoding="utf-8")
+            return True
+    return False
+
+
 class Unipile:
     """Client REST Unipile (compte LinkedIn de l'utilisateur). Cles : UNIPILE_API_KEY, UNIPILE_DSN,
     UNIPILE_ACCOUNT_ID (et UNIPILE_OWN_PROVIDER_ID pour distinguer nos messages des reponses)."""
@@ -990,27 +1038,198 @@ class Lemlist:
 # ---------------------------------------------------------------- Ocean.io (API REST, sans MCP)
 
 class Ocean:
-    """Client REST Ocean.io. Cle : OCEAN_API_KEY (en-tete X-Api-Token). Recherche lookalike : 0,2 credit par resultat,
-    l'apercu (/preview) est gratuit et donne le total."""
-    BASE = "https://api.ocean.io"
+    """Client REST Ocean.io (doc : app.ocean.io/docs, spec OpenAPI 2.0.0 lue le 2026-09-20). Cle : OCEAN_API_KEY,
+    en-tete X-Api-Token. Chemins : https://api.ocean.io/api/public_api/v2 et /v3. Chaque reponse de recherche porte
+    `total` (nombre de resultats, toutes pages) et `creditsUsed` (credits factures) : le script affiche les deux.
+    /preview est reserve aux comptes Enterprise : on l'essaie, sinon on compte avec une recherche de taille 1."""
+    BASE = "https://api.ocean.io/api/public_api"
+    CHAMPS_ENTREPRISE = ["name", "domain", "rootUrl", "medias", "locations", "primaryCountry", "companySize", "employeeCountLinkedin",
+                         "industries", "industryCategories", "linkedinIndustry", "keywords", "technologies", "revenue", "yearFounded",
+                         "description", "fundingRound", "phones", "emails", "headcountGrowth"]
+    CHAMPS_PERSONNE = ["id", "firstName", "lastName", "name", "jobTitle", "jobTitleEnglish", "seniorities", "departments", "linkedinUrl",
+                       "location", "country", "headline", "domain", "company", "connectionsCount", "followersCount"]
+    TAILLES = ["0-1", "2-10", "11-50", "51-200", "201-500", "501-1000", "1001-5000", "5001-10000", "10001-50000", "50001-100000",
+               "100001-500000", "500000+"]
+    CA = ["0-1M", "1-10M", "10-50M", "50-100M", "100-500M", "500-1000M", ">1000M"]
+    SENIORITES = {"fondateur": "Founder", "founder": "Founder", "owner": "Owner", "proprietaire": "Owner", "board": "Board Member",
+                  "cxo": "C-Level", "c_level": "C-Level", "c-level": "C-Level", "partner": "Partner", "associe": "Partner", "vp": "VP",
+                  "head": "Head", "director": "Director", "directeur": "Director", "manager": "Manager", "senior": "Senior",
+                  "professional": "Professional", "entry": "Entry", "junior": "Entry"}
+    SENIORITE_VERS_MODULE = {"Founder": "fondateur", "Owner": "fondateur", "Board Member": "c_level", "C-Level": "c_level", "Partner": "c_level",
+                             "VP": "vp", "Head": "head", "Director": "directeur", "Manager": "manager", "Senior": "senior",
+                             "Professional": "senior", "Entry": "junior", "Intern": "junior", "Other": "autre"}
 
     def __init__(self, exiger_cle: bool = True):
         self.cle = env("OCEAN_API_KEY", obligatoire=exiger_cle, aide="Token sur app.ocean.io, Settings, API tokens (admin).")
+        self._data_fields = None
 
     def _req(self, methode: str, chemin: str, body=None, params=None):
-        h = {"X-Api-Token": self.cle, "Content-Type": "application/json"}
+        h = {"X-Api-Token": self.cle, "Content-Type": "application/json", "Accept": "application/json"}
         st, corps = http(methode, f"{self.BASE}{chemin}", headers=h, json_body=body, params=params)
         if st in (401, 403):
-            raise RuntimeError(f"Ocean.io {st} : token invalide ou absent")
+            raise RuntimeError(f"Ocean.io {st} : token invalide, absent, ou endpoint reserve a un autre plan ({str(corps)[:120]})")
         if st == 402:
             raise RuntimeError("Ocean.io 402 : plus de credits")
         if st >= 400:
             raise RuntimeError(f"Ocean.io {methode} {chemin} -> HTTP {st} : {str(corps)[:300]}")
-        return corps
+        return corps if isinstance(corps, dict) else {}
 
+    # ---- compte
     def credits(self) -> dict:
+        """{'credits': {'oneTime', 'recurrent'}, 'emailCredits', 'phoneCredits', 'previewCredits', 'dailyLimitRateLeft'}."""
         return self._req("GET", "/v2/credits/balance")
 
+    def solde(self) -> str:
+        c = self.credits().get("credits") or {}
+        return f"{(c.get('recurrent') or 0) + (c.get('oneTime') or 0)} credits (recurrents {c.get('recurrent', 0)}, ponctuels {c.get('oneTime', 0)})"
+
+    # ---- referentiels (gratuits)
+    def data_fields(self) -> dict:
+        """Industries, categories d'industrie, industries LinkedIn, technologies, regions, seniorites, departements. Gratuit."""
+        if self._data_fields is None:
+            self._data_fields = self._req("GET", "/v2/data-fields")
+        return self._data_fields
+
+    def chercher_referentiel(self, cle: str, mots: str, limite: int = 15) -> list[str]:
+        """Les valeurs d'un referentiel (industries, industryCategories, linkedinIndustries, technologies, departments...)
+        qui contiennent chaque mot demande, sans accent ni casse."""
+        valeurs = self.data_fields().get(cle) or []
+        if isinstance(valeurs, dict):
+            valeurs = list(valeurs.keys())
+        noms = [v if isinstance(v, str) else (v.get("name") or v.get("title") or str(v)) for v in valeurs]
+        termes = [norm_texte(m) for m in re.split(r"[ ,]+", mots) if m.strip()]
+        return [n for n in noms if all(t in norm_texte(n) for t in termes)][:limite]
+
+    def autocomplete(self, genre: str, mots: str, limite: int = 10, type_lieu: str | None = None) -> list:
+        """genre : keywords, locations, job-titles, companies, skills. Rend la liste brute de l'API."""
+        body = {"query": mots, "limit": limite}
+        if type_lieu:
+            body["locationType"] = type_lieu
+        rep = self._req("POST", f"/v2/autocomplete/{genre}", body)
+        for k in ("keywords", "locations", "jobTitles", "companies", "skills"):
+            if k in rep:
+                return rep[k] or []
+        return []
+
+    # ---- entreprises
+    def rechercher_entreprises(self, filtres: dict, size: int = 50, search_after: str | None = None, fields: list[str] | None = None,
+                               people_filters: dict | None = None) -> dict:
+        body = {"companiesFilters": filtres, "size": max(1, min(size, 10000)), "fields": fields or self.CHAMPS_ENTREPRISE}
+        if people_filters:
+            body["peopleFilters"] = people_filters
+        if search_after:
+            body["searchAfter"] = search_after
+        return self._req("POST", "/v3/search/companies", body)
+
+    def total_entreprises(self, filtres: dict, people_filters: dict | None = None) -> tuple[int, str]:
+        """(total, comment on l'a eu). /preview d'abord (gratuit, Enterprise) ; sinon une recherche de taille 1."""
+        try:
+            body = {"companiesFilters": filtres}
+            if people_filters:
+                body["peopleFilters"] = people_filters
+            rep = self._req("POST", "/v3/search/companies/preview", body)
+            return int(rep.get("total") or rep.get("count") or 0), "apercu gratuit"
+        except RuntimeError:
+            rep = self.rechercher_entreprises(filtres, size=1, fields=["domain"], people_filters=people_filters)
+            return int(rep.get("total") or 0), f"recherche de taille 1 ({rep.get('creditsUsed', '?')} credit(s))"
+
+    def entreprises(self, filtres: dict, max_resultats: int = 100, taille_page: int = 50, fields: list[str] | None = None,
+                    people_filters: dict | None = None) -> tuple[list[dict], int, float]:
+        """(entreprises, total, credits factures)."""
+        items, after, total, credits = [], None, 0, 0.0
+        while len(items) < max_resultats:
+            rep = self.rechercher_entreprises(filtres, size=min(taille_page, max_resultats - len(items)), search_after=after,
+                                              fields=fields, people_filters=people_filters)
+            lot = rep.get("companies") or []
+            items += lot
+            total = int(rep.get("total") or total)
+            credits += float(rep.get("creditsUsed") or 0)
+            after = rep.get("searchAfter")
+            if not lot or not after:
+                break
+        return items[:max_resultats], total, credits
+
+    def lookup_entreprises(self, domaines: list[str], fields: list[str] | None = None) -> tuple[dict, float]:
+        """POST /v2/lookup/companies (1 000 domaines max par appel) : {domaine: entreprise ou None}, credits factures."""
+        resultat, credits = {}, 0.0
+        for i in range(0, len(domaines), 1000):
+            rep = self._req("POST", "/v2/lookup/companies", {"domains": domaines[i:i + 1000], "fields": fields or self.CHAMPS_ENTREPRISE})
+            for it in rep.get("companies") or []:
+                if isinstance(it, dict) and it.get("domain"):
+                    resultat[domaine(it["domain"])] = it
+            for src, dst in (rep.get("redirectMap") or {}).items():
+                if dst in resultat and domaine(src) not in resultat:
+                    resultat[domaine(src)] = resultat[dst]
+            credits += float(rep.get("creditsUsed") or 0)
+        return resultat, credits
+
+    # ---- personnes
+    def rechercher_personnes(self, people_filters: dict, companies_filters: dict | None = None, size: int = 50,
+                             par_entreprise: int | None = None, search_after: str | None = None, fields: list[str] | None = None) -> dict:
+        body = {"peopleFilters": people_filters, "size": max(1, min(size, 10000)), "fields": fields or self.CHAMPS_PERSONNE}
+        if companies_filters:
+            body["companiesFilters"] = companies_filters
+        if par_entreprise:
+            body["peoplePerCompany"] = par_entreprise
+        if search_after:
+            body["searchAfter"] = search_after
+        return self._req("POST", "/v3/search/people", body)
+
+    def personnes(self, people_filters: dict, companies_filters: dict | None = None, max_resultats: int = 100, taille_page: int = 50,
+                  par_entreprise: int | None = None, fields: list[str] | None = None) -> tuple[list[dict], int, float]:
+        items, after, total, credits = [], None, 0, 0.0
+        while len(items) < max_resultats:
+            rep = self.rechercher_personnes(people_filters, companies_filters, size=min(taille_page, max_resultats - len(items)),
+                                            par_entreprise=par_entreprise, search_after=after, fields=fields)
+            lot = rep.get("people") or []
+            items += lot
+            total = int(rep.get("total") or total)
+            credits += float(rep.get("creditsUsed") or 0)
+            after = rep.get("searchAfter")
+            if not lot or not after:
+                break
+        return items[:max_resultats], total, credits
+
+    # ---- normalisation vers les colonnes du module
+    @staticmethod
+    def normaliser_entreprise(c: dict) -> dict:
+        locs = c.get("locations") or []
+        prim = next((l for l in locs if isinstance(l, dict) and l.get("primary")), locs[0] if locs and isinstance(locs[0], dict) else {})
+        medias = c.get("medias") or {}
+        fr = c.get("fundingRound") or {}
+        techs = c.get("technologies") or []
+        return {"entreprise": c.get("name") or c.get("legalName") or "", "domaine": domaine(c.get("domain") or c.get("rootUrl") or ""),
+                "linkedin_entreprise_url": norm_linkedin_url(medias.get("linkedin") or ""), "site_web": c.get("rootUrl") or "",
+                "ville": prim.get("locality") or "", "pays": (prim.get("country") or c.get("primaryCountry") or "").upper(),
+                "secteur": " | ".join(c.get("industries") or []) if isinstance(c.get("industries"), list) else (c.get("industries") or ""),
+                "industrie_linkedin": c.get("linkedinIndustry") or "", "effectif": c.get("companySize") or "",
+                "effectif_linkedin": c.get("employeeCountLinkedin") or "", "chiffre_affaires": c.get("revenue") or "",
+                "annee_creation": c.get("yearFounded") or "", "description": (c.get("description") or "")[:500],
+                "technos": " | ".join(x if isinstance(x, str) else (x.get("name") or "") for x in techs)[:1000],
+                "mots_cles": " | ".join(c.get("keywords") or [])[:500],
+                "financement": f"{fr.get('type') or ''} {fr.get('date') or ''}".strip(), "financement_montant": fr.get("moneyRaisedInUsd") or "",
+                "telephone_entreprise": next((ph.get("number") for ph in (c.get("phones") or []) if isinstance(ph, dict) and ph.get("number")), ""),
+                "source": "ocean", "date_extraction": aujourd_hui()}
+
+    @classmethod
+    def normaliser_personne(cls, p: dict) -> dict:
+        comp = p.get("company") or {}
+        sen = p.get("seniorities") or []
+        sen = sen[0] if isinstance(sen, list) and sen else (sen if isinstance(sen, str) else "")
+        prenom, nom = p.get("firstName") or "", p.get("lastName") or ""
+        if not prenom and p.get("name"):
+            parts = p["name"].split(" ", 1)
+            prenom, nom = parts[0], parts[1] if len(parts) > 1 else ""
+        return {"prenom": prenom, "nom": nom, "titre": p.get("jobTitle") or p.get("jobTitleEnglish") or "",
+                "seniorite": cls.SENIORITE_VERS_MODULE.get(sen, seniorite_depuis_titre(p.get("jobTitle") or "")),
+                "entreprise": comp.get("name") or "", "domaine": domaine(p.get("domain") or comp.get("domain") or ""),
+                "linkedin_url": norm_linkedin_url(p.get("linkedinUrl") or ""),
+                "linkedin_entreprise_url": norm_linkedin_url(((comp.get("medias") or {}).get("linkedin")) or ""),
+                "ville": p.get("location") or "", "pays": (p.get("country") or "").upper(), "headline": p.get("headline") or "",
+                "departement": " | ".join(p.get("departments") or []) if isinstance(p.get("departments"), list) else "",
+                "ocean_id": p.get("id") or "", "source": "ocean", "date_extraction": aujourd_hui()}
+
+    # ---- lookalikes (compatibilite trouver_lookalikes.py)
     def _filtres(self, domaines: list[str], pays: list[str] | None, tailles: list[str] | None, exclure: list[str] | None) -> dict:
         f = {"lookalikeDomains": domaines}
         if pays:
@@ -1022,19 +1241,11 @@ class Ocean:
         return f
 
     def apercu_lookalikes(self, domaines, pays=None, tailles=None, exclure=None) -> int:
-        rep = self._req("POST", "/v3/search/companies/preview", {"companiesFilters": self._filtres(domaines, pays, tailles, exclure)})
-        return int(rep.get("total") or rep.get("count") or 0)
+        total, comment = self.total_entreprises(self._filtres(domaines, pays, tailles, exclure))
+        afficher(f"  [ocean] total obtenu par {comment}")
+        return total
 
     def lookalikes(self, domaines, taille_page: int = 50, max_resultats: int = 100, pays=None, tailles=None, exclure=None) -> list[dict]:
-        items, after = [], None
-        while len(items) < max_resultats:
-            body = {"companiesFilters": self._filtres(domaines, pays, tailles, exclure), "size": min(taille_page, max_resultats - len(items))}
-            if after:
-                body["searchAfter"] = after
-            rep = self._req("POST", "/v3/search/companies", body)
-            lot = rep.get("companies") or []
-            items += lot
-            after = rep.get("searchAfter")
-            if not lot or not after:
-                break
+        items, total, credits = self.entreprises(self._filtres(domaines, pays, tailles, exclure), max_resultats=max_resultats, taille_page=taille_page)
+        afficher(f"  [ocean] {len(items)} entreprise(s) sur {total}, {credits} credit(s) factures")
         return items

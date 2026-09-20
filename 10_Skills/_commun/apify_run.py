@@ -35,6 +35,7 @@ PRIX = {
     "harvestapi/linkedin-company-employees": ("par profil (Short) ; 0,02 $ de depart par requete", 0.003, 0.02),
     "harvestapi/linkedin-profile-scraper": ("par profil", 0.004, 0.0),
     "harvestapi/linkedin-company": ("par entreprise", 0.004, 0.0),
+    "apify/google-search-scraper": ("par page de resultats Google (une par personne cherchee)", 0.0025, 0.001),
     "signalbase/signalbase-api": ("par resultat", 0.04, 0.0),
     "tagadanar/linkedin-jobs-scraper": ("par offre (+0,0018 $ si details)", 0.0018, 0.001),
     "borderline/indeed-scraper": ("par offre", 0.005, 0.0),

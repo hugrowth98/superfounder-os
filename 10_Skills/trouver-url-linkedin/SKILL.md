@@ -1,67 +1,70 @@
 ---
 name: trouver-url-linkedin
 description: >
-  Skill pour retrouver l'URL LinkedIn d'une personne a partir de son nom (et
-  optionnellement son entreprise), via l'API Unipile. Utilise ce skill des que
-  l'utilisateur cherche le profil LinkedIn de quelqu'un dont il n'a que le nom. Se
-  declenche sur : "trouve l'URL LinkedIn de", "cherche le profil de", "c'est qui sur
-  LinkedIn", "retrouve-moi ce contact sur LinkedIn".
+  Exécute le verbe trouver_url_linkedin : retrouve l'URL du profil LinkedIn d'une ou plusieurs
+  personnes à partir du prénom, du nom et de l'entreprise, avec votre compte LinkedIn (Unipile) ou,
+  sans compte, par une recherche Google scrapée (Apify), et pose un niveau de confiance par ligne.
+  Se déclenche sur : "trouve l'URL LinkedIn de", "retrouve les profils LinkedIn de cette liste",
+  "c'est qui sur LinkedIn", "il me manque les URL LinkedIn", "linkedin depuis le nom", "je n'ai
+  que les noms et l'entreprise". Ne pas utiliser pour chercher des personnes par critères (voir
+  `trouver-personnes`), ni pour retrouver un profil depuis un email (voir `enrichir-personne`, qui
+  passe par FullEnrich).
 ---
 
-# Trouver l'URL LinkedIn d'une personne (Unipile)
+## Outil
 
-## Vue d'ensemble
+Lisez `05_Departements/Go-to-Market/OUTILS.md`. Deux voies, dans cet ordre :
 
-**Auth** : header `X-API-KEY: $UNIPILE_API_KEY`, DSN dans `$UNIPILE_DSN`, charges depuis
-le `.env` racine.
-**Endpoint** : `POST {UNIPILE_DSN}/api/v1/linkedin/search?account_id=<id>` avec
-`category: "people"`.
-
-## Workflow
-
-### Etape 1 - Recuperer le nom (et l'entreprise si connue)
-
-Demander a l'utilisateur le nom complet, et l'entreprise si elle est connue (ca affine
-beaucoup la recherche quand le nom est courant).
-
-### Etape 2 - Lancer la recherche
-
-```bash
-python3 .claude/skills/trouver-url-linkedin/scripts/client.py "<account_id>" "<nom complet>" \
-  --entreprise "<entreprise>" --max 5
-```
-
-Sans entreprise connue :
-```bash
-python3 .claude/skills/trouver-url-linkedin/scripts/client.py "<account_id>" "<nom complet>"
-```
-
-### Etape 3 - Si 0 resultat avec nom + entreprise
-
-Le script retente automatiquement avec le nom seul (une entreprise mal orthographiee ou
-abregee peut faire echouer la recherche exacte - deja observe en test). Les resultats
-issus de ce fallback sont marques `fallback_recherche_nom_seul: true`.
-
-### Etape 4 - Restituer
-
-## Format de sortie
-
-Toujours restituer les resultats sous forme de **tableau markdown**, avec le maximum de
-colonnes disponibles dans la reponse (pas seulement l'URL) :
-
-| Nom | Headline | Localisation | Degre de relation | URL LinkedIn |
+| Voie | `--source` | Outil | Coût vérifié | Quand |
 |---|---|---|---|---|
-| Fabrice ALLARD | Fondateur Jobberry \| Conseil en Recrutement cadres | Paris | 1er degre | linkedin.com/in/fabrice-allard-recruteur |
+| 1 | `unipile` | recherche de personnes avec votre compte LinkedIn (`POST /api/v1/linkedin/search`, classique) | abonnement, pas de crédit | dès que Unipile est branché : c'est le défaut |
+| 2 | `google` | Apify `apify/google-search-scraper`, une requête `"Prénom Nom" Entreprise site:linkedin.com/in` par personne, premier résultat `linkedin.com/in` | 0,0025 $ par page de résultats (une par personne) + 0,001 $ par run | sans compte LinkedIn, ou quand Unipile ne trouve pas |
 
-Trier par degre de relation (1er degre et soi-meme en premier, puis 2e, 3e, hors reseau) -
-le script renvoie deja les resultats dans cet ordre. Si plusieurs personnes portent le
-meme nom sans element pour trancher, presenter tout le tableau et demander a
-l'utilisateur laquelle il vise plutot que de deviner.
+Sans `--source`, le script prend Unipile si `UNIPILE_API_KEY` et `UNIPILE_ACCOUNT_ID` sont dans `.env`,
+Google sinon. Rien de branché : dites-le, renvoyez vers `connecter-outils`, ne devinez aucune URL.
 
-## Erreurs a gerer
+## Entrée
 
-| Code | Sens | Action |
+Un CSV avec `prenom`, `nom`, `entreprise` (les lignes qui ont déjà `linkedin_url` sont sautées, sauf
+`--force`), ou une seule personne : `--nom "Prénom Nom" --entreprise "Société"`.
+
+## Sortie
+
+Le même CSV dans `05_Departements/Go-to-Market/Listes-prospection/trouver-url-linkedin_<sujet>_<date>.csv`, avec
+`linkedin_url` (normalisée, `https://www.linkedin.com/in/<slug>`), `linkedin_confiance` (`haute` :
+prénom et nom lus dans le résultat ; `moyenne` : un seul des deux ; `faible` : résultat sans le nom,
+homonyme probable ; `aucune`), `linkedin_entreprise_match` (`oui`, `partiel`, `non`),
+`linkedin_titre_trouve` et `linkedin_source`. Pour une personne seule, l'URL s'affiche directement.
+
+## Procédure
+
+1. Vérifiez les colonnes : `prenom` et `nom` sont obligatoires, `entreprise` divise les homonymes par
+   dix. Un fichier sans entreprise passe par Unipile de préférence.
+2. Dry-run : `python3 scripts/trouver_url_linkedin.py --in <csv> --dry-run` (le nombre de personnes, la voie, le coût).
+3. Annoncez, attendez le oui, lancez. Exemples :
+   `python3 scripts/trouver_url_linkedin.py --nom "Hugo Dollfus" --entreprise "Growth Hiring"`
+   `python3 scripts/trouver_url_linkedin.py --in <csv>` (Unipile si branché)
+   `python3 scripts/trouver_url_linkedin.py --in <csv> --source google --pays fr`
+   `python3 scripts/trouver_url_linkedin.py --in <csv> --source google --force --max 50` (relance sur ce qu'Unipile n'a pas trouvé)
+4. Lisez la répartition des confiances. `haute` s'utilise telle quelle ; `moyenne` se vérifie sur
+   `linkedin_titre_trouve` et `linkedin_entreprise_match` ; `faible` se relit à la main ou se vide.
+5. Un seul next step : `enrichir-personne` (le profil complet, puis l'email) ou `dedoublonner`.
+
+Ordre de grandeur, mesuré sur vos listes : Google trouve environ 7 personnes sur 10, la plupart en
+confiance haute. Unipile fait mieux sur les noms courants quand l'entreprise est donnée.
+
+## Garde-fous
+
+- Aucune URL n'est devinée à partir d'un format (`prenom-nom`) : une personne non trouvée reste vide.
+- Une confiance `faible` ne part jamais en séquence sans relecture.
+- Unipile compte dans les quotas de votre compte (`05_Departements/Go-to-Market/GARDE-FOUS.md`) ; Google n'y touche pas.
+- Les requêtes Google ne contiennent que le nom et l'entreprise, jamais l'email ni le téléphone.
+
+## Erreurs fréquentes
+
+| Symptôme | Cause | Fix |
 |---|---|---|
-| 401 | cle/DSN invalide | verifier `UNIPILE_API_KEY`/`UNIPILE_DSN` dans le `.env` racine |
-| 0 resultat (meme apres fallback) | orthographe ou personne non indexee | redemander le nom, proposer une recherche par entreprise seule a la place |
-| 429 | rate limit Unipile | attendre et reessayer |
+| `[source] google (pas de compte Unipile dans .env)` alors que vous en avez un | `UNIPILE_ACCOUNT_ID` absent | `connecter-outils`, étape Unipile |
+| Beaucoup de `faible` | noms courants sans entreprise | ajoutez la colonne `entreprise`, ou passez par Unipile |
+| `aucune` sur des noms sûrs | profil peu indexé par Google | `--source unipile`, ou `trouver-personnes --source employes` sur la page entreprise |
+| Google : 0 résultat partout | `countryCode` inadapté | `--pays` du marché de la personne |

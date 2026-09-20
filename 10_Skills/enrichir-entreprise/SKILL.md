@@ -25,6 +25,7 @@ manque, renvoyez vers `connecter-outils`, ne simulez rien.
 | `unipile` (défaut) | Unipile page entreprise | abonnement | nom, site, secteur, effectif et tranche, siège, abonnés, année, type, spécialités, description |
 | `crustdata` | Crustdata screener/company | 1 crédit (cache) ou 4 (temps réel) par entreprise | idem + `nb_offres_emploi`, `chiffre_affaires_estime`, `stade_financement` |
 | `apify` | `harvestapi/linkedin-company` | 0,004 $ par entreprise | même contenu que la page LinkedIn, sans compte |
+| `ocean` | Ocean.io `POST /api/public_api/v2/lookup/companies`, par domaine, 1 000 par appel | crédits Ocean par entreprise trouvée (`creditsUsed`) | nom, page LinkedIn, siège, secteurs fins, taille, CA, année, description, technos du site, téléphone : la voie la plus rapide pour poser `linkedin_entreprise_url` sur une liste de domaines |
 
 Les sources se cumulent (`--source unipile,crustdata`) : chacune ne remplit que ce qui est vide.
 
@@ -53,6 +54,7 @@ normalisées complétées (`entreprise`, `domaine`, `linkedin_entreprise_url`, `
    `python3 scripts/enrichir_entreprise.py --in <csv>`
    `python3 scripts/enrichir_entreprise.py --in <csv> --source unipile,crustdata --max 100`
    `python3 scripts/enrichir_entreprise.py --in <csv> --source apify`
+   `python3 scripts/enrichir_entreprise.py --in <csv> --source ocean` (une liste de domaines vers leurs pages LinkedIn, en un appel)
 4. Relisez les lignes enrichies par nom (sans URL ni domaine en entrée) : comparez `site_web` et
    `domaine` d'origine, un écart signale un homonyme.
 5. Lien cliquable, compteur par source, un seul next step : `qualifier-liste` (le score ICP a

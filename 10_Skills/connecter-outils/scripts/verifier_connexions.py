@@ -80,11 +80,11 @@ def tester_fullenrich() -> tuple[bool, str]:
 
 
 def tester_ocean() -> tuple[bool, str]:
-    st, corps = http("GET", "https://api.ocean.io/v2/credits/balance", params={"apiToken": env("OCEAN_API_KEY")})
+    st, corps = http("GET", "https://api.ocean.io/api/public_api/v2/credits/balance", headers={"X-Api-Token": env("OCEAN_API_KEY")})
     if st != 200:
         return False, f"HTTP {st}"
-    solde = corps.get("balance") if isinstance(corps, dict) else corps
-    return True, f"solde {solde if solde is not None else corps} credits (appel gratuit)"
+    c = (corps.get("credits") or {}) if isinstance(corps, dict) else {}
+    return True, f"solde {(c.get('recurrent') or 0) + (c.get('oneTime') or 0)} credits (recurrents {c.get('recurrent', 0)}, ponctuels {c.get('oneTime', 0)} ; appel gratuit)"
 
 
 def tester_lemlist() -> tuple[bool, str]:

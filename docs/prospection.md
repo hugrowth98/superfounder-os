@@ -18,7 +18,7 @@ Le principe : vous validez, Claude exécute. Rien ne part sans votre oui.
 | Lemlist | envoyer vos séquences email, et LinkedIn si vous préférez tout dans un outil | si vous envoyez des emails | dès 40 € par mois, multicanal dès 80 € |
 | FullEnrich | trouver l'email pro vérifié et le mobile d'un décideur | si vous voulez appeler ou emailer | dès 30 $ par mois, 1 crédit par email, 10 par téléphone |
 | Crustdata | rechercher des entreprises et des personnes par API, sans passer par Apify | non | sur devis, crédits à l'usage |
-| Ocean.io | trouver des entreprises qui ressemblent à vos meilleurs clients | non | sur devis, essai gratuit |
+| Ocean.io | trouver des entreprises qui ressemblent à vos meilleurs clients, chercher une cible décrite précisément (secteur fin, ce que fait la boîte, ses outils, sa ville, son stade), et en tirer les décisionnaires par domaine, sans compte LinkedIn | non | sur devis, essai gratuit, crédits à l'usage |
 | HubSpot | votre CRM : import, dédoublonnage, pipeline | non | gratuit pour démarrer |
 | PredictLeads (optionnel) | les événements d'entreprise (expansion, partenariat, lancement, nomination), les levées, les technos datées | non | abonnement mensuel avec quota de requêtes |
 | TheirStack (optionnel) | les offres d'emploi filtrées par techno citée, l'intent (recrute et utilise telle techno), et les technos adoptées par une entreprise avec leur date (le CRM, l'ERP, les outils RH cités dans ses offres) | non | 1 crédit par offre, 3 par entreprise pour les technos, palier gratuit à l'inscription |

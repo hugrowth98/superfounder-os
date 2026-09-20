@@ -67,19 +67,23 @@ Si une phrase d'offre proposée par l'utilisateur dépasse 25 mots ou contient u
 
 Objectif : des critères qui se traduisent en filtres de recherche, et un barème sur 100.
 
+La méthode complète est celle du sous-skill `definir-icp` de `construire-liste` : lisez `10_Skills/construire-liste/sous-skills/definir-icp/SKILL.md` et appliquez-le (meilleurs et pires clients, trois couches, points, test sur les clients, test de volume, écriture de la section 2 sur oui explicite). Ce qui suit est la version conversation, pour tenir le rythme d'une question à la fois ; en cas d'écart, le sous-skill fait foi.
+
 Commencer par les meilleurs clients : "Citez vos 5 à 10 meilleurs clients, ceux que vous voudriez cloner. On va en déduire les critères plutôt que les deviner." Si le parent contient déjà l'ICP, le présenter et demander seulement ce qui manque.
 
 Couche 1, firmographique, quatre questions : secteur (et secteur adjacent acceptable), effectif (fourchette), zone géographique (principale puis secondaire), stade ou chiffre d'affaires. Couche 2, technographique, deux questions : un outil ou une stack qui rend l'offre pertinente, un outil concurrent à repérer ; si l'offre ne dépend d'aucun outil, mettre la couche à 0 et le dire. Couche 3, comportementale : elle se remplit en Phase 4 avec les signaux.
 
 Pondérations : proposer 40 / 20 / 40 et les seuils de tiers 75 / 55 / 35. Ne changer que si l'utilisateur le demande. Puis les exclusions : "B2C exclu par défaut, d'accord ? Vos concurrents à écarter ? Des secteurs ou des tailles à ne jamais toucher ?"
 
-Test de volume, avant d'écrire : proposer d'estimer la taille du marché. "Je peux lancer une recherche à blanc pour compter combien d'entreprises correspondent à ces critères, sans rien exporter." Si Unipile est branché, lancer `trouver-entreprises --source unipile` sur une recherche Sales Navigator de comptes avec `--max 25` : la réponse donne le total de comptes correspondants, sans crédit. Sinon, lancer la source Apify choisie avec `--max 25` (quelques centimes) et lire le total dans le dry-run et le premier lot ; si aucun outil n'est encore branché, noter que le test se fera juste après la Phase 6 et y revenir. Lecture du résultat : moins de 300 comptes, l'ICP est trop étroit ou le marché est petit, il faudra ouvrir un critère ; plus de 5 000, c'est trop large pour du signal, il faut resserrer ; entre les deux, c'est bon. Faire choisir un ajustement si besoin, une seule fois.
+Test de volume, avant d'écrire : proposer d'estimer la taille du marché. "Je peux lancer une recherche à blanc pour compter combien d'entreprises correspondent à ces critères, sans rien exporter." Si Ocean est branché, `trouver-entreprises --source ocean <filtres> --total-seulement` compte sans exporter (aperçu gratuit en Enterprise, sinon une entreprise facturée). Si Unipile est branché, lancer `trouver-entreprises --source unipile` sur une recherche Sales Navigator de comptes (construite par `construire-requete-salesnav --comptes`) avec `--max 25` : la réponse donne le total de comptes correspondants, sans crédit. Sinon, lancer la source Apify choisie avec `--max 25` (quelques centimes) et lire le total dans le dry-run et le premier lot ; si aucun outil n'est encore branché, noter que le test se fera juste après la Phase 6 et y revenir. Lecture du résultat : moins de 300 comptes, l'ICP est trop étroit ou le marché est petit, il faudra ouvrir un critère ; plus de 5 000, c'est trop large pour du signal, il faut resserrer ; entre les deux, c'est bon. Faire choisir un ajustement si besoin, une seule fois.
 
 Écrire la section 2.
 
 ## Phase 3 : personas et comité d'achat (section 3)
 
 Objectif : les titres à chercher, l'angle par persona, et qui décide vraiment.
+
+Même règle : la méthode est celle du sous-skill `cartographier-personas` (`10_Skills/construire-liste/sous-skills/cartographier-personas/SKILL.md`), y compris le test des titres sur 10 comptes (`trouver-personnes`, 25 lignes) et l'écriture de `05_Departements/Go-to-Market/Ciblage/decisionnaires-par-taille.md`. Les questions ci-dessous en sont la version courte.
 
 1. "Chez vos clients, qui signe ? Titres exacts tels qu'ils apparaissent sur LinkedIn." C'est l'ATL.
 2. "Qui vit le problème tous les jours et vous fait entrer ?" C'est le BTL. Dans une TPE c'est souvent la même personne : le noter et ne pas forcer deux personas.

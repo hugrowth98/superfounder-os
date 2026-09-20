@@ -63,7 +63,7 @@ def main() -> None:
     resume = [f"{len(seeds)} domaine(s) de reference en {len(lots)} lot(s) de 10 max", f"filtres : pays={pays or 'tous'}, tailles={tailles or 'toutes'}",
               f"resultats : jusqu'a {par_lot} par lot, {a.max} au total ; cout : 0,2 credit par resultat, soit au plus {a.max * 0.2:.0f} credit(s)"]
     if a.dry_run:
-        bandeau_dry_run("Ocean.io lookalikes", resume + ["l'apercu gratuit donnera le total disponible au vrai run"])
+        bandeau_dry_run("Ocean.io lookalikes", resume + ["le total sera lu par l'apercu (gratuit en Enterprise) ou par une recherche de taille 1"])
         return
     oc = Ocean()
     vus, lignes = set(seeds), []
@@ -75,14 +75,10 @@ def main() -> None:
             if not d or d in vus:
                 continue
             vus.add(d)
-            lignes.append({"entreprise": c.get("name", ""), "domaine": d, "linkedin_entreprise_url": norm_linkedin_url(c.get("linkedinUrl") or c.get("linkedin_url") or ""),
-                           "pays": c.get("primaryCountry", ""), "ville": c.get("primaryCity", "") or c.get("city", ""),
-                           "secteur": "|".join(c.get("industries") or []) if isinstance(c.get("industries"), list) else c.get("industries", ""),
-                           "effectif": c.get("companySize", ""), "source": "ocean", "date_extraction": aujourd_hui(),
-                           "technos": "|".join(c.get("technologies") or []) if isinstance(c.get("technologies"), list) else "",
-                           "seeds": ",".join(lot), "signal_type": "lookalike", "signal_detail": f"ressemble a {', '.join(lot[:3])}"})
+            lignes.append({**Ocean.normaliser_entreprise(c), "pertinence": c.get("relevance") or "", "seeds": ",".join(lot),
+                           "signal_type": "lookalike", "signal_detail": f"ressemble a {', '.join(lot[:3])}"})
     sortie = Path(a.out) if a.out else chemin_sortie(VERBE, a.sujet)
-    ecrire_csv(lignes, sortie, colonnes_extra=["technos", "seeds"])
+    ecrire_csv(lignes, sortie, colonnes_extra=["technos", "pertinence", "seeds"])
     afficher(f"{len(lignes)} lookalike(s) -> {sortie}")
 
 

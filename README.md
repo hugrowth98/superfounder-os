@@ -20,7 +20,7 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en t
 | Module | Ce que vous installez | La phrase à taper | Où |
 |---|---|---|---|
 | **Le second cerveau** | Qui vous êtes, votre offre, vos départements, vos projets, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
-| **La prospection (module GTM)** | Quatre masters de méthode (construire une liste, détecter des signaux, cold email, cold call) avec leurs sous-skills et leurs ressources (13 frameworks, 34 templates, 137 déclencheurs), et quinze skills d'exécution qui appellent vos outils (dont un constructeur de requêtes Sales Navigator). Vous parlez en phrases simples, sans nommer d'outil. | `Installe ma prospection` | racine |
+| **La prospection (module GTM)** | Quatre masters de méthode (construire une liste, détecter des signaux, cold email, cold call) avec leurs sous-skills et leurs ressources (13 frameworks, 34 templates, 137 déclencheurs), et seize skills d'exécution qui appellent vos outils (dont un constructeur de requêtes Sales Navigator et la recherche précise Ocean.io). Vous parlez en phrases simples, sans nommer d'outil. | `Installe ma prospection` | racine |
 | **Le contenu** | Veille, idéation, rédaction par format, hook, optimisation. 10 skills qui écrivent dans votre voix. | `Installe mon contenu` | racine |
 
 Le second cerveau se fait en premier. Les deux autres le lisent et n'interviewent que sur ce qui manque, dans l'ordre que vous voulez. Le détail de chaque module est dans [docs/](docs/).

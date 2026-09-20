@@ -72,6 +72,17 @@ Fichier existant (export, achat, ancienne liste)
   -> sourcer-personnes seulement pour les comptes tier A sans contact -> nettoyer-verifier
 ```
 
+La chaîne courte, quand l'utilisateur veut "les décisionnaires de telles entreprises" sans construire toute la liste :
+
+```
+Entreprises précises vers leurs décisionnaires (3 commandes, sans compte LinkedIn si Ocean est branché)
+  trouver-entreprises --source ocean <filtres traduits de la demande>   (ou toute autre source, ou le fichier de l'utilisateur)
+  -> enrichir-entreprise --source ocean   seulement si linkedin_entreprise_url ou domaine manque (par domaine, 1 000 par appel)
+  -> trouver-personnes --source ocean --in <csv> --dirigeants --par-entreprise 2 --format large
+     (ou --source employes --dirigeants --strict-titre --par-entreprise 2 --format large, par page LinkedIn)
+  -> qualifier-comptes reste obligatoire avant tout email ou appel
+```
+
 Chaque étape écrit son CSV dans `05_Departements/Go-to-Market/Listes-prospection/`, nommé `<verbe>_<sujet>_<AAAA-MM-JJ>.csv`, avec les colonnes de `docs/conventions-gtm.md` section 8 dans l'ordre. Une étape ne remplit jamais une colonne déjà remplie : elle ne relance un outil que si la cellule est vide. Le fichier final de la chaîne porte le sujet demandé par l'utilisateur, par exemple `trouver-email_agences-immo-lyon_2026-09-19.csv`.
 
 Trois règles d'ordre que vous appliquez à chaque chaîne : qualifier les entreprises avant de chercher les personnes (on ne paie pas des contacts chez des comptes exclus), dédoublonner (entre sources et contre le CRM) avant d'enrichir et de chercher les emails (on ne paie pas deux fois la même ligne), nettoyer et vérifier après `trouver-email` et avant de remettre à `cold-email` (on n'envoie pas sur une adresse sans `email_statut` envoyable).

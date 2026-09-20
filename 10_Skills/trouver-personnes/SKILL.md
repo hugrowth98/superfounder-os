@@ -23,6 +23,7 @@ cas (compte LinkedIn de l'utilisateur, recherche classique ou Sales Navigator).
 | URL Sales Navigator de leads, cookies dans `.env` | `salesnav` | `curious_coder/linkedin-sales-navigator-search-scraper` | 0,005 $ par résultat |
 | URL Sales Navigator ou mots-clés avec le compte de l'utilisateur | `unipile` | Unipile `POST /api/v1/linkedin/search` | abonnement, pas de crédit |
 | Priorité api | `crustdata` | Crustdata `POST /screener/persondb/search/` | 3 crédits par tranche de 100 |
+| Décisionnaires d'entreprises précises (domaines) ou d'une cible Ocean, par titres, séniorités, départements ; plafond par entreprise ; arrivés depuis 90 jours | `ocean` | Ocean.io `POST /api/public_api/v3/search/people` (`includeDomains`, `peoplePerCompany`, `changedPositionAfter`) | crédits Ocean par personne renvoyée (`creditsUsed`) |
 
 Aucun outil branché : dites lequel manque, renvoyez vers `connecter-outils`, ne simulez rien.
 
@@ -53,6 +54,8 @@ Dédoublonnage par `linkedin_url`.
    `python3 scripts/trouver_personnes.py --source profils --titres "DRH,Head of People" --lieu France --taille 51-200,201-500 --max 100 --dry-run`
    `python3 scripts/trouver_personnes.py --source salesnav --url "https://www.linkedin.com/sales/search/people?..." --max 500 --dry-run`
    `python3 scripts/trouver_personnes.py --source crustdata --titres "Head of Sales,VP Sales" --seniorites "vp,head" --lieu France --max 100 --dry-run`
+   `python3 scripts/trouver_personnes.py --source ocean --in <csv entreprises avec domaine> --dirigeants --par-entreprise 2 --format large --dry-run`
+   `python3 scripts/trouver_personnes.py --source ocean --secteur "Human Resources Software" --lieu fr --seniorites fondateur,cxo --max 100 --dry-run`
 3. Annoncez volume et coût, attendez le oui, relancez sans `--dry-run`.
 4. Sur-sourcez puis plafonnez : `--par-entreprise 2` (tier A : 2 à 4, tier B : 1 à 2, jamais plus
    de 5). Le script garde les meilleurs contacts dans l'ordre des titres demandés, puis par
@@ -61,6 +64,19 @@ Dédoublonnage par `linkedin_url`.
    (homonymes fréquents sur les noms courts).
 6. Lien cliquable, nombre de lignes, et un seul next step : `enrichir-personne` puis
    `trouver-email` sur les tiers A et B, ou `qualifier-liste` si la liste vient d'une recherche large.
+
+Options communes à toutes les sources :
+- `--dirigeants` : les 20 titres de dirigeants (CEO, PDG, DG, fondateur, gérant, président, general manager, en français et en anglais) à la place de `--titres`. C'est le plafond des actors harvestapi, et la liste qui marche pour "le décisionnaire d'une PME".
+- `--strict-titre` : ne garde que les lignes dont le titre actuel contient un des titres demandés, avec `--titres-exclus` pour sortir les assistants et stagiaires. Les actors LinkedIn matchent aussi sur l'historique des titres : sans ce filtre, un "responsable production" ou une "chargée de communication" peuvent sortir sur une recherche de dirigeants.
+- `--par-entreprise 2` : deux décisionnaires par entreprise, choisis par l'ordre des titres demandés puis par séniorité (le CEO avant le co-fondateur).
+- `--format large` : en plus du CSV normalisé (une ligne par personne), un fichier `_decisionnaires.csv` avec une ligne par entreprise et les colonnes `d1_prenom`, `d1_nom`, `d1_titre`, `d1_linkedin_url`, `d2_*`. C'est le format qu'on lit avant d'appeler.
+- `--enregistrer --nom "<sujet>"` : la requête et son volume vont dans `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md` ; une URL déjà enregistrée par `construire-requete-salesnav` reçoit son volume automatiquement, sans option.
+
+La chaîne courte "des entreprises précises vers leurs décisionnaires", en trois commandes :
+`trouver-entreprises --source ocean ...` (ou toute autre source), puis `enrichir-entreprise --source ocean` si la
+colonne `linkedin_entreprise_url` ou `domaine` manque, puis `trouver-personnes --source ocean --in <csv> --dirigeants
+--par-entreprise 2 --format large` (par domaine, sans compte LinkedIn) ou `--source employes --in <csv> --dirigeants
+--strict-titre --par-entreprise 2 --format large` (par page LinkedIn, actor harvestapi).
 
 Option `--changement-poste` (sources `profils` et `salesnav`) : seulement les personnes arrivées
 en poste depuis moins de 90 jours, un signal à part entière.

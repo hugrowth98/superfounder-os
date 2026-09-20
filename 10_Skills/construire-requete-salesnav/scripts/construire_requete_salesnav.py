@@ -38,7 +38,7 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/).")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
-from gtm_common import afficher, arret, aujourd_hui, dossier_gtm, env  # noqa: E402
+from gtm_common import afficher, arret, aujourd_hui, dossier_gtm, enregistrer_requete, env  # noqa: E402
 
 VERBE = "construire-requete-salesnav"
 BASE_PERSONNES = "https://www.linkedin.com/sales/search/people"
@@ -283,17 +283,7 @@ def titres_du_persona(persona: str) -> list[str]:
 # ------------------------------------------------------------------ enregistrement
 
 def enregistrer(nom: str, persona: str, lignes_resume: list[str], url: str) -> Path:
-    chemin = dossier_gtm() / "Ciblage" / "requetes-booleennes.md"
-    chemin.parent.mkdir(parents=True, exist_ok=True)
-    if not chemin.exists():
-        chemin.write_text("# Requêtes Sales Navigator et LinkedIn\n\n"
-                          "> Écrit par `sourcer-personnes` et `construire-requete-salesnav`. Une ligne par requête validée. "
-                          "Le volume se remplit après le premier run de `trouver-personnes`.\n\n"
-                          "| Date | Nom | Persona | Filtres | URL | Volume | Notes |\n|---|---|---|---|---|---|---|\n", encoding="utf-8")
-    filtres = " ; ".join(lignes_resume).replace("|", "/")
-    with chemin.open("a", encoding="utf-8") as f:
-        f.write(f"| {aujourd_hui()} | {nom} | {persona or ''} | {filtres} | {url} | | |\n")
-    return chemin
+    return enregistrer_requete(nom, persona, " ; ".join(lignes_resume), url)
 
 
 # ------------------------------------------------------------------ main

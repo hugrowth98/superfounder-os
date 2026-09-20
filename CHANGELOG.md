@@ -3,6 +3,23 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [5.4.0] - 2026-09-20
+
+Ocean.io devient une source de recherche précise, la chaîne "entreprises, page LinkedIn, décisionnaires" tient en trois commandes, et l'URL LinkedIn d'une personne se retrouve sans compte.
+
+### Ajouté
+- `trouver-entreprises --source ocean` : recherche par filtres exacts (secteurs du référentiel, catégories, industries LinkedIn, mots-clés au moins un / tous / aucun sur la description, technos du site, taille, pays, villes, CA, année de création, levée, croissance d'effectif, lookalikes combinés, pertinence), avec `--lister-secteurs`, `--lister-technos`, `--lister-mots-cles`, `--lister-lieux` (référentiels et autocomplétion, gratuits), `--total-seulement` (comptage avant de payer) et `--enregistrer` (commande, filtres et volume dans `Ciblage/requetes-booleennes.md`). Le skill décrit la boucle où l'IA traduit une demande en filtres, compte, ajuste, puis lance.
+- `trouver-personnes --source ocean` : les décisionnaires d'entreprises précises (par domaine, `peoplePerCompany`) ou d'une cible Ocean, par titres, séniorités, départements, pays ; `--changement-poste` devient `changedPositionAfter`. Options communes `--dirigeants` (20 titres), `--strict-titre` (anti faux positifs sur le titre actuel), `--format large` (une ligne par entreprise, `d1_*`, `d2_*`), `--enregistrer` ; une URL Sales Navigator déjà au registre reçoit son volume automatiquement.
+- `enrichir-entreprise --source ocean` : enrichissement par domaine (`lookup/companies`, 1 000 par appel) qui pose la page LinkedIn, le siège, les secteurs, la taille, le CA, l'année, la description, les technos.
+- `trouver-url-linkedin` réécrit en skill d'exécution avec un script : Unipile avec votre compte, ou `apify/google-search-scraper` sans compte (`"Prénom Nom" Entreprise site:linkedin.com/in`, 0,0025 $ par personne), confiance haute / moyenne / faible et correspondance d'entreprise par ligne, sur un CSV ou un nom.
+- Registre des requêtes `Ciblage/requetes-booleennes.md` : créé à la première requête, colonne Volume mise à jour par les runs (`enregistrer_requete`, `maj_volume_requete` dans `_commun`).
+
+### Modifié
+- Client Ocean réécrit sur la spec OpenAPI lue le 2026-09-20 : chemins `https://api.ocean.io/api/public_api/v2` et `/v3` (les anciens `/v3/...` étaient faux), `creditsUsed` et `total` lus dans chaque réponse, `/preview` réservé aux comptes Enterprise avec repli sur une recherche de taille 1, normalisation commune des entreprises (page LinkedIn dans `medias.linkedin`) et des personnes ; `trouver-lookalikes` et `connecter-outils` corrigés en conséquence.
+- `installer-gtm` : les phases 2 et 3 appliquent les sous-skills `definir-icp` et `cartographier-personas` (une seule méthode), et le test de volume passe par Ocean `--total-seulement` quand il est branché.
+- `construire-liste` : la chaîne courte "entreprises précises vers leurs décisionnaires" ; `sourcer-entreprises`, `sourcer-personnes`, `sources-par-besoin.md` : Ocean en première source pour une cible décrite précisément et pour les décisionnaires par domaine.
+- `OUTILS.md` (verbe `trouver_url_linkedin`, actor `apify/google-search-scraper`, Ocean sur trois verbes), `docs/conventions-gtm.md`, `docs/prospection.md`, `Ciblage.md`, `CLAUDE.md`, `AGENTS.md`, `README.md`.
+
 ## [5.3.0] - 2026-09-20
 
 Les requêtes Sales Navigator se construisent en texte, et trois signaux de proximité arrivent avec elles.

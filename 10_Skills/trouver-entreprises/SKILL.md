@@ -25,6 +25,7 @@ Navigator et un compte connecté. Aucun outil branché : dites lequel manque et 
 | URL Sales Navigator de comptes, cookies dans `.env` | `salesnav` | `curious_coder/linkedin-sales-navigator-search-scraper` | 0,005 $ par résultat |
 | URL Sales Navigator avec le compte de l'utilisateur | `unipile` | Unipile `POST /api/v1/linkedin/search` (category companies) | abonnement, pas de crédit |
 | Priorité api | `crustdata` | Crustdata `POST /v1/companies/search` | 1 crédit par recherche |
+| Recherche précise : secteurs fins, mots-clés sur la description, technos du site, taille, pays, villes, CA, année, levée, croissance, lookalikes | `ocean` | Ocean.io `POST /api/public_api/v3/search/companies` | crédits Ocean par entreprise renvoyée (`creditsUsed` affiché après le run) ; référentiels et autocomplétion gratuits |
 
 ## Entrée
 
@@ -54,6 +55,7 @@ source : `site_web`, `telephone_entreprise`, `adresse`, `note_google`, `nb_avis`
    `--source salesnav --url "https://www.linkedin.com/sales/search/company?..." --max 500`
    (l'URL de comptes se construit en texte : `construire-requete-salesnav --comptes --region France --effectif 11-50 --mots-cles SaaS`)
    `--source crustdata --secteur "Software Development" --taille 11-50 --lieu France --max 50`
+   `--source ocean --secteur "Human Resources Software" --pays fr --taille 11-50,51-200 --mots-cles "SaaS,logiciel" --max 200 --enregistrer`
 5. Ouvrez le CSV, vérifiez 3 lignes au hasard (nom, domaine, secteur cohérents), donnez le nombre
    de lignes et le lien cliquable.
 6. Un seul next step : `qualifier-liste` (portes d'exclusion et score ICP) avant toute recherche
@@ -62,6 +64,39 @@ source : `site_web`, `telephone_entreprise`, `adresse`, `note_google`, `nb_avis`
 Pour dépasser 1 000 entreprises sur LinkedIn (20 pages de 50), segmentez par lieu ou par taille et
 lancez plusieurs runs, puis `dedoublonner`. Pour Sales Navigator, la limite est 2 500 résultats
 par recherche : segmentez au-delà.
+
+## Ocean.io : la recherche précise, l'IA comme traducteur
+
+Ocean ne prend pas de texte libre : ses filtres attendent des libellés exacts (secteurs, technologies) et des
+structures (mots-clés en "au moins un", "tous", "aucun"). C'est vous, Claude, qui traduisez la demande de
+l'utilisateur en filtres, et qui vérifiez le volume avant de payer. La boucle, à chaque demande précise :
+
+1. **Découper la demande** en critères : le métier (secteur), ce que la boîte fait (mots-clés sur sa
+   description), sa taille, sa zone, son stade, ses outils. "Des SaaS RH à Paris qui viennent de lever"
+   donne : secteur RH + mots-clés SaaS, villes Paris, tailles 11-50 et 51-200, levée depuis 6 mois.
+2. **Chercher les libellés exacts**, gratuit :
+   `python3 scripts/trouver_entreprises.py --source ocean --lister-secteurs "human resources"` (secteurs, catégories, industries LinkedIn qui contiennent les mots)
+   `--lister-technos "hubspot"`, `--lister-mots-cles "recrutement"`, `--lister-lieux "Lyon"` (autocomplétion Ocean).
+   Prenez deux ou trois secteurs voisins plutôt qu'un seul : Ocean découpe fin.
+3. **Compter avant de payer** : `--total-seulement` avec les mêmes filtres (aperçu gratuit sur un compte
+   Enterprise, sinon une seule entreprise facturée). Sous 300, ouvrez un critère (secteur adjacent, mots-clés
+   en "au moins un") ; au-dessus de 5 000, resserrez (taille, ville, "tous" les mots-clés, `--technos`).
+   Deux ou trois allers-retours suffisent.
+4. **Lancer** avec `--max` calé sur le besoin, `--enregistrer --nom "<sujet>"` : la commande, les
+   filtres et le volume vont dans `05_Departements/Go-to-Market/Ciblage/requetes-booleennes.md`, pour être rejoués.
+5. **Lire** `pertinence` (A, B, C avec `--lookalikes`), `mots_cles`, `technos` et `description` : ce sont eux qui
+   disent si la traduction était bonne. Cinq lignes au hasard, sinon on corrige les filtres et on relance.
+
+Les filtres disponibles : `--secteur`, `--categorie`, `--industrie-linkedin`, `--secteurs-exclus`, `--mots-cles` (au
+moins un), `--mots-cles-tous`, `--mots-cles-exclus`, `--pays`, `--pays-exclus`, `--villes Ville:fr`, `--taille`,
+`--ca`, `--technos`, `--technos-exclues`, `--fondee 2015-2024`, `--levee "Seed,Series A"`, `--levee-depuis`,
+`--levee-min`, `--croissance 10` (pourcent d'effectif sur 6 mois), `--lookalikes` (à combiner avec les filtres),
+`--relevance-min`, `--exclure-domaines` (vos clients et concurrents). Chaque entreprise sort avec sa page
+LinkedIn (`linkedin_entreprise_url`), donc la chaîne continue sans enrichissement : `qualifier-liste`, puis
+`trouver-personnes --source ocean --in <csv> --dirigeants` ou `--source employes`.
+
+Le MCP Ocean, s'il est branché, sert à explorer à la main (`find_industries`, `search_companies` en langage
+naturel) ; le script reste la voie qui écrit le CSV et le registre.
 
 ## Garde-fous
 
