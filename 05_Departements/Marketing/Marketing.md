@@ -28,7 +28,7 @@ Ne va pas ici : un email à votre audience ou une pub ([[Go-to-Market]]), un liv
 
 Vouvoiement ou tutoiement selon `02_Contexte/Tone-and-Voice.md`. Règles d'écriture : `01_About-Me/anti-ai-voice.md`. Stratégie, posts de référence et swipe file dans `LinkedIn/`, remplis par "Installe mon contenu".
 
-Skills : `linkedin-writing-core` toujours en premier, puis `linkedin-educational`, `linkedin-storytelling`, `linkedin-hot-take`, `linkedin-lead-magnet`, `linkedin-ideation`, `linkedin-post-optimizer`, `viral-hook-writer`, `linkedin-interview`.
+Skills : le master `linkedin` (veille, idées, interview, hooks, un sous-skill par intention de post, formats, fins de post, optimisation, cadence, engagement, recyclage, profil, performance), le master `infographie` pour les visuels, `planifier-post` pour programmer sur Publora.
 
 Nommage `Nom-Sujet_YYYY-MM-DD.ext`. Un contenu qui appartient à un projet porte son tag en préfixe.
 

@@ -29,3 +29,6 @@ __pycache__/
 # Etat local des scripts du module GTM (jamais partage)
 10_Skills/*/scripts/compteurs.json
 10_Skills/*/scripts/historique_*.json
+
+# Caches et dumps de la veille (donnees de l'utilisateur, regenerees par les scripts)
+05_Departements/Marketing/LinkedIn/sources/veille*

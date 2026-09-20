@@ -2,8 +2,8 @@
 name: connecter-outils
 description: >
   Branche un par un les 7 outils de la stack (Apify, Unipile, Crustdata, FullEnrich, Ocean.io,
-  Lemlist, HubSpot) et les 3 optionnels (Prospeo pour la recherche par filtres exacts et les emails
-  vérifiés, PredictLeads et TheirStack pour les signaux) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
+  Lemlist, HubSpot) et les 4 optionnels (Prospeo pour la recherche par filtres exacts et les emails
+  vérifiés, PredictLeads et TheirStack pour les signaux, Publora pour programmer les posts LinkedIn) depuis le chat : demande la clé, la teste avec un appel gratuit, l'écrit dans
   le .env, coche "Etat des connexions" dans OUTILS.md et fixe priorite, canal_linkedin,
   canal_email et crm. Gère aussi les cookies LinkedIn pour les actors Sales Navigator d'Apify.
   Se déclenche sur : "connecte mes outils", "branche Unipile", "configure mes clés API",
@@ -77,6 +77,14 @@ Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appe
    Settings, API keys ; test : une recherche floutée (0 crédit). Facturation : 1 crédit par offre ou entreprise
    renvoyée, palier gratuit à l'inscription. S'ils sont branchés, écrire `signaux_secours:` dans OUTILS.md ; sinon
    `aucun`, et les sous-skills du master `detecter-signaux` qui en dépendent (événements, intent) restent en lecture manuelle.
+8 bis. **Publora (optionnel, pour le contenu)** (`PUBLORA_API_KEY`) : le skill `planifier-post` programme les posts
+   LinkedIn avec. Trois étapes chez l'utilisateur : créer le compte sur publora.com (palier gratuit : 15 posts par
+   mois, Pro pour l'illimité) ; connecter son profil LinkedIn dans le tableau de bord (menu Connections, bouton
+   LinkedIn, OAuth : l'API ne sait pas connecter un compte) ; menu API (ou Settings, API Keys), Generate API Key,
+   copier tout de suite (elle n'est affichée qu'une fois), la coller dans le chat. Test : `GET /platform-connections`
+   (gratuit) : la clé est valide et le script liste les comptes connectés avec leur état de jeton ; sans compte
+   LinkedIn dans la réponse, renvoyer l'utilisateur au tableau de bord. Aucun coût par appel. Le MCP Publora
+   existe aussi (docs.publora.com/guides/mcp-server) : optionnel, les scripts passent par l'API.
 9. **Cookies Sales Navigator pour Apify** (facultatif, seulement si l'utilisateur veut l'actor
    `curious_coder/linkedin-sales-navigator-search-scraper`) : sur linkedin.com connecté, ouvrir
    l'extension Cookie-Editor, copier la valeur du cookie `li_at` et celle de `li_a` (Sales Navigator),

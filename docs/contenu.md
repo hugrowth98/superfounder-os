@@ -1,53 +1,73 @@
-# Le contenu
+# Le contenu : mode d'emploi
 
-**Ce que vous aurez à la fin** : une chaîne qui transforme une idée brute (un transcript, un article, une conviction) en post LinkedIn publiable, dans votre voix, et ce post en infographie à vos couleurs quand il le mérite. Vous validez, vous ne rédigez plus.
+**Ce que vous aurez à la fin** : une machine qui lit vos sources chaque semaine, vous propose des idées ancrées, écrit vos posts dans votre voix, les transforme en visuels à vos couleurs, les programme au bon créneau et vous dit ce qui marche chez vous. Vous validez, vous ne rédigez plus.
 
-**Durée** : 30 min d'installation, puis 10 min par post.
+**Durée** : 45 minutes à 1h30 d'installation (en plusieurs fois si vous voulez), puis 10 minutes par post et 15 minutes par semaine pour la veille.
 
 ## Avant de commencer
 
 - Le second cerveau est installé. Le contenu lit `02_Contexte/Tone-and-Voice.md`, `Offer-Positioning.md` et `Clients-Problems-and-Messages.md`.
-- Sous la main : 5 à 10 de vos meilleurs posts LinkedIn, avec leurs résultats si vous les connaissez. C'est la meilleure matière pour caler la voix.
-- Pour les visuels, facultatif : vos couleurs et votre police, à noter dans `03_Branding/charte-visuelle.md` (une ligne suffit). Sans charte, le master `infographie` part sur un style éditorial neutre et vous le dit.
+- Sous la main : 5 à 10 de vos meilleurs posts LinkedIn, avec leurs chiffres si vous les avez (impressions, réactions, commentaires). C'est la meilleure matière pour caler la voix et voir ce qui marche chez vous.
+- Les newsletters que vous lisez vraiment et les chaînes YouTube que vous suivez (noms suffisent, les flux se trouvent).
+- Facultatif : vos couleurs et votre police (une ligne), et un compte Publora si vous voulez programmer depuis le chat.
 
 ## La phrase à taper
-
-Dans le chat, depuis n'importe quel dossier :
 
 ```
 Installe mon contenu
 ```
 
-## Ce qui se passe
+## Ce qui se passe, en huit phases
 
 1. Claude lit votre second cerveau. Il ne vous redemande ni votre offre, ni votre cible, ni votre voix.
-2. Vous collez vos posts. Il les range dans `05_Departements/Marketing/LinkedIn/posts-de-reference.md` avec, pour chacun, ce qui marche.
-3. Il construit avec vous `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : niche, monopole personnel, piliers, répartition, convictions, créateurs admirés, sources de veille. Une question à la fois, avec une valeur par défaut à chaque fois que c'est raisonnable.
-4. Il vous propose d'écrire un premier post.
+2. **Voix et style** : vous collez vos posts, il en tire vos marqueurs de style et vos expressions.
+3. **Posts de référence** : rangés par type dans `posts-de-reference.md` avec leurs chiffres, et, dès 10 posts chiffrés, "ce qui marche chez vous".
+4. **Stratégie** : niche, monopole personnel, piliers, répartition, convictions, objectif, cadence et créneaux, formats, fins de post, créateurs admirés, dans `strategie-contenu.md`. Une question à la fois, une valeur par défaut à chaque fois.
+5. **Swipe file** : les posts des autres qui vous arrêtent, pour leurs structures.
+6. **Système de veille** : vos newsletters et vos chaînes dans `sources-veille.json`, un premier run pour vérifier que tout se lit, les transcripts YouTube en option.
+7. **Charte visuelle** : vos couleurs, votre police et votre logo dans `03_Branding/charte-visuelle.md`, pour les infographies.
+8. **Profil** puis **premier brief** : le titre et l'à propos passés en revue, Publora branché si vous le voulez, et la première veille ou le premier post.
 
-Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque exécution. Quand votre positionnement bouge, vous modifiez un fichier, pas dix skills.
+Aucun skill ne contient de donnée sur vous. Ils lisent ces fichiers à chaque exécution. Quand votre positionnement bouge, vous modifiez un fichier, pas seize skills.
 
-## La chaîne en 6 stations
+## Le master `linkedin` et ses seize sous-skills
 
-| Station | Vous écrivez | Ce qui se passe |
+Vous n'avez pas à les nommer : les phrases suffisent.
+
+| Vous voulez | Vous dites | Sous-skill |
 |---|---|---|
-| 1. Trouver quoi dire | "idées de posts", "interviewe-moi" | veille sur vos sources, brief éditorial, ou interview qui fouille votre vécu |
-| 2. Le socle | (automatique) | la grammaire éditoriale, chargée par tous les skills de rédaction |
-| 3. Écrire dans le bon format | "écris un tuto sur", "raconte", "mon avis sur", "post lead magnet" | un skill par intention : enseigner, raconter, trancher, convertir |
-| 4. Maximiser la portée | "propose des hooks", "améliore ce post" | les deux lignes avant le "voir plus", puis le contrôle qualité |
-| 5. Transformer en visuel | "transforme ce post en infographie", "version manuscrite", "sketchnote" | le master `infographie` écrit un brief (structure, texte exact), puis génère l'image en 4:5 aux couleurs de votre charte : éditorial premium, page de carnet en noir et blanc, ou tableau blanc au marqueur ; dans Codex ou un client avec un outil d'image, le prompt se colle dedans, sinon OpenAI ou fal.ai avec une clé dans `.env`, coût annoncé avant |
-| 6. Ré-installer | "Installe mon contenu" | quand votre positionnement change |
+| Savoir ce qui se dit cette semaine chez vos sources | "fais ma veille" | `veille` : brief en 6 sections (sujet le plus discuté, top 10, lancement, 10 idées de posts, 10 de newsletter, 10 de lead magnet), chaque idée ancrée sur une source |
+| Trouver quoi dire, bâtir le calendrier | "idées de posts", "quoi poster" | `ideation` |
+| Partir de votre vécu | "interviewe-moi", "page blanche" | `interview` |
+| Écrire un post | "écris un tuto sur", "raconte", "mon avis sur", "post lead magnet" | `educatif`, `storytelling`, `opinion`, `lead-magnet` |
+| Ouvrir et fermer | "propose des hooks", "comment je termine" | `hooks`, `cta` |
+| Choisir le support | "carrousel ou texte", "je mets le lien où" | `formats` |
+| Améliorer un draft | "améliore ce post", "challenge mon post" | `optimiser` |
+| Publier au bon moment | "quand publier", "programme ma semaine" | `publier`, puis le skill `planifier-post` |
+| Faire grandir la portée | "réponds aux commentaires", "qui commenter" | `engagement` |
+| Tirer plusieurs contenus d'un seul | "recycle ce post", "découpe ce live" | `recycler` |
+| Convertir les visites du profil | "optimise mon profil" | `profil` |
+| Savoir ce qui marche chez vous | "analyse mes posts", "bilan du mois" | `performance` |
+| Un visuel | "transforme ce post en infographie", "version manuscrite" | master `infographie` |
+
+## La veille, chaque lundi
+
+Le sous-skill `veille` lit vos newsletters (flux RSS, avec les likes et les commentaires de chaque article) et vos chaînes YouTube (avec les transcripts si la bibliothèque est installée), calcule un score de vélocité (l'engagement pour 1 000 abonnés par jour) et vous rend un brief en six sections, dans votre voix, où chaque idée cite sa source. Le dump brut reste dans `05_Departements/Marketing/LinkedIn/sources/`, le brief dans `Brief-veille_AAAA-MM-JJ.md` si vous voulez le garder. Une source s'ajoute en une ligne dans `sources-veille.json`. Aucun appel payant : flux et pages publics.
+
+## Programmer avec Publora
+
+Le skill `planifier-post` programme un post validé sur Publora depuis le chat : vous donnez le fichier du post et l'heure locale, il vérifie les bonnes pratiques (longueur, hook, lien en premier commentaire, créneau, collision avec un autre post), joint une image ou le PDF d'un carrousel, tient `Calendrier-publication.md`, poste le premier commentaire après publication et lit les statistiques. Installation, comme les outils de prospection : compte sur publora.com (gratuit pour 15 posts par mois), profil LinkedIn relié dans le tableau de bord, clé API collée dans le chat, écrite dans `.env` et testée par `connecter-outils`. Sans Publora, Claude vous donne le post et l'heure, vous programmez dans LinkedIn.
 
 ## Où vont les choses
 
-`05_Departements/Marketing/` a quatre briques, chacune avec sa note : `LinkedIn/` (les posts, les briefs et les infographies, à plat, avec les trois fichiers de stratégie), `Newsletter/`, `Video/`, `Slides/`. Les emails à votre audience vont dans `05_Departements/Go-to-Market/Mailing/`, un event est un projet dans `04_Projets/`, votre charte dans `03_Branding/charte-visuelle.md`. Les 47 skills vivent dans `10_Skills/` et sont visibles partout.
+`05_Departements/Marketing/` a quatre briques, chacune avec sa note : `LinkedIn/` (les posts, les briefs, les infographies, le calendrier, à plat, avec `strategie-contenu.md`, `posts-de-reference.md`, `swipe-file.md`, `sources-veille.json`), `Newsletter/`, `Video/`, `Slides/`. Les emails à votre audience vont dans `05_Departements/Go-to-Market/Mailing/`, un event est un projet dans `04_Projets/`, votre charte dans `03_Branding/charte-visuelle.md`. Les skills vivent dans `10_Skills/` et sont visibles partout.
 
 ## Comment vérifier que c'est bon
 
-Demandez un post sur un sujet que vous avez déjà traité. Comparez avec le vôtre. Si vous reconnaissez vos tics, vos mots, votre rythme, le contenu est installé. Sinon, ajoutez des posts dans `posts-de-reference.md` : c'est l'échantillon qui calibre.
+Demandez un post sur un sujet que vous avez déjà traité. Comparez avec le vôtre. Si vous reconnaissez vos tics, vos mots, votre rythme, le contenu est installé. Sinon, ajoutez des posts dans `posts-de-reference.md` : c'est l'échantillon qui calibre. Puis "fais ma veille" : si le brief cite vos sources avec des chiffres, la veille tourne.
 
 ## La boucle hebdomadaire, une fois les trois modules installés
 
-Le lundi, la veille sort les idées. Chaque post génère des commentaires. Le mercredi, la prospection récupère ceux qui ont commenté et leur écrit. Le jeudi, les invitations partent. Le vendredi, `/weekly-review`. Et `/done` à la fin de chaque session, pour que le cerveau sache lundi ce qui s'est décidé jeudi.
+Le lundi, la veille sort les idées. Le vendredi ou le dimanche, les posts de la semaine s'écrivent en lot et se programment. Chaque post génère des commentaires ; les 90 minutes qui suivent la publication servent à répondre. Le mercredi, la prospection récupère ceux qui ont commenté et leur écrit. Le vendredi, `/weekly-review`. Et `/done` à la fin de chaque session, pour que le cerveau sache lundi ce qui s'est décidé jeudi.
 
 Le contenu nourrit la prospection. La prospection nourrit les rendez-vous. Les rendez-vous nourrissent le contenu.

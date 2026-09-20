@@ -1444,3 +1444,122 @@ class Ocean:
         items, total, credits = self.entreprises(self._filtres(domaines, pays, tailles, exclure), max_resultats=max_resultats, taille_page=taille_page)
         afficher(f"  [ocean] {len(items)} entreprise(s) sur {total}, {credits} credit(s) factures")
         return items
+
+
+class Publora:
+    """Client REST Publora (spec OpenAPI lue sur docs.publora.com le 2026-09-20). Cle : PUBLORA_API_KEY, en-tete
+    x-publora-key, base https://api.publora.com/api/v1. Programme des posts sur les comptes connectes dans le tableau
+    de bord Publora (LinkedIn, X, Facebook, Instagram, Threads, TikTok, YouTube, Bluesky, Mastodon, Telegram).
+    Abonnement, pas de cout par appel : palier gratuit de 15 posts par mois, Pro illimite.
+    Heures en ISO 8601 UTC ; un post sans scheduledTime est un brouillon ; une heure passee est ramenee a maintenant
+    avec l'avertissement SCHEDULED_TIME_COERCED (le script refuse avant d'envoyer)."""
+    BASE = "https://api.publora.com/api/v1"
+
+    def __init__(self, exiger_cle: bool = True):
+        self.cle = env("PUBLORA_API_KEY", obligatoire=exiger_cle,
+                       aide="Cle sur publora.com, menu API (ou Settings, API Keys), bouton Generate API Key : affichee une seule fois.")
+
+    def _req(self, methode: str, chemin: str, body=None, params=None, timeout: int = 60):
+        h = {"x-publora-key": self.cle, "Content-Type": "application/json", "Accept": "application/json"}
+        st, corps = http(methode, f"{self.BASE}{chemin}", headers=h, json_body=body, params=params, timeout=timeout)
+        corps = corps if isinstance(corps, dict) else {"error": str(corps)[:300]}
+        if st == 401:
+            raise RuntimeError("Publora 401 : cle invalide ou revoquee (PUBLORA_API_KEY)")
+        if st == 429:
+            raise RuntimeError(f"Publora 429 : limite atteinte, reessayez dans {corps.get('retryAfterSec', 60)} s")
+        if st >= 400:
+            raise RuntimeError(f"Publora {methode} {chemin} : HTTP {st} {corps.get('code') or ''} {corps.get('error') or ''}".strip())
+        return corps
+
+    # ---- comptes
+    def comptes(self) -> list[dict]:
+        """Les comptes connectes : platformId (ex. linkedin-Tz9W5i6ZYG), username, displayName, profileUrl, tokenStatus."""
+        return self._req("GET", "/platform-connections").get("connections") or []
+
+    def comptes_linkedin(self) -> list[dict]:
+        return [c for c in self.comptes() if str(c.get("platformId", "")).startswith("linkedin")]
+
+    def tester_compte(self, platform_id: str) -> dict:
+        return self._req("POST", f"/test-connection/{platform_id}")
+
+    def limites(self) -> dict:
+        return self._req("GET", "/platform-limits")
+
+    # ---- posts
+    def creer(self, contenu: str, platform_ids: list[str], quand_utc: str | None = None, media_urls: list[str] | None = None,
+              reglages: dict | None = None, idempotence: str | None = None) -> dict:
+        body = {"content": contenu, "platforms": platform_ids}
+        if quand_utc:
+            body["scheduledTime"] = quand_utc
+        if media_urls:
+            body["mediaUrls"] = media_urls
+        if reglages:
+            body["platformSettings"] = reglages
+        h_extra = {"Idempotency-Key": idempotence} if idempotence else {}
+        h = {"x-publora-key": self.cle, "Content-Type": "application/json", "Accept": "application/json", **h_extra}
+        st, corps = http("POST", f"{self.BASE}/create-post", headers=h, json_body=body)
+        corps = corps if isinstance(corps, dict) else {"error": str(corps)[:300]}
+        if st >= 400:
+            raise RuntimeError(f"Publora create-post : HTTP {st} {corps.get('code') or ''} {corps.get('error') or ''}".strip())
+        return corps
+
+    def lire(self, post_group_id: str) -> dict:
+        return self._req("GET", f"/get-post/{post_group_id}")
+
+    def modifier(self, post_group_id: str, **champs) -> dict:
+        """Champs acceptes : content, platforms (liste complete), status (draft|scheduled), scheduledTime, platformSettings, mediaUrls."""
+        return self._req("PUT", f"/update-post/{post_group_id}", body={k: v for k, v in champs.items() if v is not None})
+
+    def supprimer(self, post_group_id: str) -> dict:
+        return self._req("DELETE", f"/delete-post/{post_group_id}")
+
+    def lister(self, statut: str | None = None, plateforme: str | None = None, depuis: str | None = None, jusqu_a: str | None = None,
+               page: int = 1, limite: int = 50, tri: str = "scheduledTime", ordre: str = "asc") -> dict:
+        params = {"page": page, "limit": limite, "sortBy": tri, "sortOrder": ordre}
+        if statut:
+            params["status"] = statut
+        if plateforme:
+            params["platform"] = plateforme
+        if depuis:
+            params["fromDate"] = depuis
+        if jusqu_a:
+            params["toDate"] = jusqu_a
+        return self._req("GET", "/list-posts", params=params)
+
+    def journal(self, post_group_id: str) -> dict:
+        return self._req("GET", f"/post-logs/{post_group_id}")
+
+    # ---- media (fichier local : URL presignee, PUT, puis probe)
+    def televerser(self, post_group_id: str, chemin: Path, type_media: str | None = None) -> dict:
+        import mimetypes
+        ctype = mimetypes.guess_type(str(chemin))[0] or "application/octet-stream"
+        body = {"fileName": chemin.name, "contentType": ctype, "postGroupId": post_group_id}
+        if type_media:
+            body["type"] = type_media
+        rep = self._req("POST", "/get-upload-url", body=body)
+        url, media_id = rep.get("uploadUrl"), rep.get("mediaId")
+        if not url:
+            raise RuntimeError(f"Publora get-upload-url : pas d'uploadUrl ({str(rep)[:200]})")
+        r = requests.put(url, data=chemin.read_bytes(), headers={"Content-Type": ctype}, timeout=300)
+        if r.status_code >= 300:
+            raise RuntimeError(f"Publora televersement : HTTP {r.status_code} {r.text[:200]}")
+        try:
+            fin = self._req("POST", f"/complete-media/{media_id}")
+        except RuntimeError:
+            fin = {}
+        return {"mediaId": media_id, "fileUrl": rep.get("fileUrl"), "probe": fin.get("mediaFile") or {}}
+
+    # ---- LinkedIn : commentaire et statistiques (apres publication)
+    def commenter_linkedin(self, platform_id: str, posted_id: str, message: str, parent: str | None = None) -> dict:
+        body = {"postedId": posted_id, "message": message, "platformId": platform_id}
+        if parent:
+            body["parentComment"] = parent
+        return self._req("POST", "/linkedin-comments", body=body)
+
+    def stats_post_linkedin(self, platform_id: str, posted_id: str) -> dict:
+        rep = self._req("POST", "/linkedin-post-statistics", body={"postedId": posted_id, "platformId": platform_id, "queryTypes": "ALL"})
+        return rep.get("metrics") or {}
+
+    def stats_compte_linkedin(self, platform_id: str, aggregation: str = "TOTAL") -> dict:
+        rep = self._req("POST", "/linkedin-account-statistics", body={"platformId": platform_id, "queryTypes": "ALL", "aggregation": aggregation})
+        return rep.get("metrics") or {}

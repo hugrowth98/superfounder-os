@@ -8,7 +8,7 @@ description: >
   client, OpenAI gpt-image, ou fal.ai). Se déclenche sur : "infographie", "fais-moi un
   visuel", "transforme ce post en image", "one-pager", "cheat sheet", "version manuscrite",
   "sketchnote", "tableau blanc", "brief visuel", "génère l'image", "image LinkedIn". Ne pas
-  utiliser pour écrire le post lui-même (voir les skills `linkedin-*`), pour un carrousel de
+  utiliser pour écrire le post lui-même (voir le master `linkedin`), pour un carrousel de
   plusieurs pages, ni pour un schéma technique (voir `excalidraw-diagram-generator`).
 ---
 
@@ -37,7 +37,7 @@ Vous êtes un designer senior spécialisé en infographies B2B, information desi
 3. **Le type de visuel** est choisi avec l'utilisateur en une question ; s'il l'a nommé ("version manuscrite"), on ne redemande pas. Sans préférence : éditorial pour un contenu dense ou comparatif, carnet ou sketchnote pour une méthode courte ou une conviction.
 4. **Une structure principale** parmi les quinze de `{SKILL_BASE}/ressources/bibliotheque-structures.md`, choisie en une question (trois propositions plus "laissez-moi proposer").
 5. **Une image à la fois.** On génère, on montre, on corrige un point, on relance une variante. Pas trois variantes d'un coup.
-6. **Ce qui n'est pas une infographie** sort d'ici : un post (skills `linkedin-*`), un carrousel (hors périmètre), un schéma technique (`excalidraw-diagram-generator`), une image d'illustration sans texte (le prompt seul suffit, sans brief).
+6. **Ce qui n'est pas une infographie** sort d'ici : un post (master `linkedin`), un carrousel (hors périmètre), un schéma technique (`excalidraw-diagram-generator`), une image d'illustration sans texte (le prompt seul suffit, sans brief).
 
 ## Ce que le master fait lui-même
 

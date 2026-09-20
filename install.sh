@@ -45,6 +45,13 @@ keep() { [[ $DRY -eq 1 ]] || mkdir -p "$TARGET/$1"; }
 echo "Cible : $TARGET"
 echo; echo "Skills (bibliothèque unique 10_Skills/, liens pour Claude Code et Codex) :"
 sync_skills "$HERE/10_Skills" "$TARGET/10_Skills"
+# Skills déplacés dans un master en 6.0.0 : leur ancienne copie part dans 11_Archives/ de la cible (jamais supprimée)
+for old in linkedin-ideation linkedin-interview linkedin-writing-core linkedin-educational linkedin-storytelling linkedin-hot-take linkedin-lead-magnet viral-hook-writer linkedin-post-optimizer; do
+  if [[ -d "$TARGET/10_Skills/$old" ]]; then
+    echo "  > $TARGET/10_Skills/$old -> 11_Archives/skills-deplaces/$old (devenu un sous-skill du master linkedin)"
+    [[ $DRY -eq 1 ]] || { mkdir -p "$TARGET/11_Archives/skills-deplaces"; rm -rf "$TARGET/11_Archives/skills-deplaces/$old"; mv "$TARGET/10_Skills/$old" "$TARGET/11_Archives/skills-deplaces/$old"; }
+  fi
+done
 for l in .claude/skills .agents/skills; do
   if [[ -e "$TARGET/$l" && ! -L "$TARGET/$l" ]]; then echo "  = $TARGET/$l (existe, conservé : faites-en un lien vers 10_Skills/ si vous voulez une seule bibliothèque)"
   else echo "  ~ $TARGET/$l -> ../10_Skills"; [[ $DRY -eq 1 ]] || { mkdir -p "$(dirname "$TARGET/$l")"; ln -sfn "../10_Skills" "$TARGET/$l"; }; fi

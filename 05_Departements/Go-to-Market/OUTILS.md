@@ -77,3 +77,4 @@ Les prix servent aux estimations affichées par les scripts avant tout run (`api
 | Prospeo (optionnel) | [ ] | | |
 | PredictLeads (optionnel) | [ ] | | |
 | TheirStack (optionnel) | [ ] | | |
+| Publora (optionnel, contenu) | [ ] | | |

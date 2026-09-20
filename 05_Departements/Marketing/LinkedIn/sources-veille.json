@@ -1,0 +1,11 @@
+{
+  "_comment": "Vos sources de veille, lues par le sous-skill veille du master linkedin (scripts veille.py et abonnes.py). Newsletters : un flux RSS par source (Substack : https://<nom>.substack.com/feed ; tout autre blog qui a un flux). YouTube : les identifiants @handle des chaines, par tier (1 = lus chaque semaine, 2 et 3 = revue mensuelle). autres_flux : n'importe quel flux RSS ou Atom. Le champ abonnes (facultatif) sert quand le script ne peut pas le lire seul. Rempli par 'Installe mon contenu' (phase 5), puis a la main quand une source vous plait.",
+  "_exemple": {
+    "newsletters": {"ia_et_outils": {"tier": 1, "description": "IA appliquee au quotidien", "flux": [{"nom": "Nom de la newsletter", "url": "https://exemple.substack.com/feed", "tags": ["ia", "outils"]}]}},
+    "youtube": {"tier_1": {"description": "les chaines lues chaque semaine", "chaines": ["@exemple"]}},
+    "autres_flux": [{"nom": "Blog exemple", "url": "https://exemple.fr/feed.xml", "tags": ["vente"], "abonnes": 5000}]
+  },
+  "newsletters": {},
+  "youtube": {"tier_1": {"description": "", "chaines": []}, "tier_2": {"description": "", "chaines": []}, "tier_3": {"description": "", "chaines": []}},
+  "autres_flux": []
+}

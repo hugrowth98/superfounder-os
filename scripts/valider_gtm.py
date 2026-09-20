@@ -11,6 +11,7 @@ VERBES = ["trouver-entreprises","trouver-lookalikes","trouver-personnes","enrich
           "qualifier-liste","dedoublonner","crm","envoyer-sequence","verifier-reponses"]
 MASTERS = ["construire-liste","detecter-signaux","cold-email","cold-call"]
 INSTALL = ["installer-gtm","connecter-outils"]
+CONTENU = ["linkedin","infographie","planifier-post","installer-contenu","repondre-commentaires","publications-entreprise"]
 # Prospeo est un outil de la stack depuis la 5.5.0 : il n'est plus interdit.
 INTERDITS = ["ColdIQ","coldiq","Clay ","Clay.","Claygent","Trigify","RB2B","Bombora","Crunchbase",
              "6sense","Common Room","Koala","Serper","BuiltWith",
@@ -40,13 +41,15 @@ def main():
     erreurs, avert = [], []
 
     # 1. presence des dossiers attendus
-    for d in MASTERS + INSTALL + VERBES:
+    for d in MASTERS + INSTALL + VERBES + CONTENU:
         p = os.path.join(S, d, "SKILL.md")
         if not os.path.exists(p):
             erreurs.append(f"[manquant] 10_Skills/{d}/SKILL.md")
 
     for p in ["10_Skills/detecter-signaux/scripts/detecter_signal.py", "10_Skills/enrichir-entreprise/scripts/detecter_techno.py",
-              "10_Skills/enrichir-entreprise/scripts/scraper_pubs.py", "10_Skills/_commun/gtm_common.py"]:
+              "10_Skills/enrichir-entreprise/scripts/scraper_pubs.py", "10_Skills/_commun/gtm_common.py",
+              "10_Skills/linkedin/scripts/veille.py", "10_Skills/linkedin/scripts/abonnes.py", "10_Skills/planifier-post/scripts/planifier_post.py",
+              "10_Skills/infographie/scripts/generer_image.py", "05_Departements/Marketing/LinkedIn/sources-veille.json"]:
         if not os.path.exists(os.path.join(R, p)):
             erreurs.append(f"[manquant] {p}")
     # 2. parcours de tous les .md et .py
@@ -89,7 +92,7 @@ def main():
                         erreurs.append(f"[ref] {rel} -> {m.group(1)}/{m.group(2)} introuvable")
             # references vers skills d'execution
             for v in re.findall(r"`([a-z-]+)`", t):
-                if v in VERBES or v in MASTERS or v in INSTALL:
+                if v in VERBES or v in MASTERS or v in INSTALL or v in CONTENU:
                     if not os.path.exists(os.path.join(S, v, "SKILL.md")):
                         erreurs.append(f"[ref-skill] {rel} -> {v} introuvable")
             # tutoiement suspect dans un skill

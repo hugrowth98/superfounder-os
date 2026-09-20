@@ -3,11 +3,11 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![47 skills](https://img.shields.io/badge/skills-47-blue.svg)](#ce-que-contient-le-dépôt)
+[![40 skills](https://img.shields.io/badge/skills-40-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
-Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 47 skills utilisés chaque semaine sur un vrai business : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
+Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 40 skills utilisés chaque semaine sur un vrai business (dont sept masters et leurs cinquante-trois sous-skills) : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
 
 Tout est en français, pensé pour un dirigeant qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
 
@@ -21,7 +21,7 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en t
 |---|---|---|---|
 | **Le second cerveau** | Qui vous êtes, votre offre, vos départements, vos projets, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
 | **La prospection (module GTM)** | Quatre masters de méthode (construire une liste, détecter des signaux, cold email, cold call) avec leurs sous-skills et leurs ressources (13 frameworks, 34 templates, 137 déclencheurs), et seize skills d'exécution qui appellent vos outils (dont un constructeur de requêtes Sales Navigator et la recherche précise par Ocean.io ou Prospeo). Vous parlez en phrases simples, sans nommer d'outil. | `Installe ma prospection` | racine |
-| **Le contenu** | Veille, idéation, rédaction par format, hook, optimisation, et le master `infographie` qui transforme un post en visuel aux couleurs de votre charte (brief, trois types de rendu, image générée par OpenAI ou fal.ai). 11 skills qui écrivent dans votre voix. | `Installe mon contenu` | racine |
+| **Le contenu** | Le master `linkedin` et ses seize sous-skills (veille hebdomadaire de vos newsletters et chaînes avec brief en six sections, idées, interview du vécu, hooks, un sous-skill par intention de post, formats, fins de post, optimisation, cadence, engagement, recyclage, profil, analyse de vos performances), le master `infographie` (un post en visuel aux couleurs de votre charte, image générée par OpenAI ou fal.ai) et `planifier-post` (programmation sur Publora avec les bonnes pratiques). Tout est écrit dans votre voix. | `Installe mon contenu` | racine |
 
 Le second cerveau se fait en premier. Les deux autres le lisent et n'interviewent que sur ce qui manque, dans l'ordre que vous voulez. Le détail de chaque module est dans [docs/](docs/).
 
@@ -61,7 +61,7 @@ superfounder-os/            le dossier que Claude Code ouvre
 ├── 07_Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
 ├── 08_Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
 ├── 09_Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
-├── 10_Skills/              la bibliothèque : 47 skills, une procédure par dossier (les masters GTM et infographie ont leurs sous-skills et ressources imbriqués)
+├── 10_Skills/              la bibliothèque : 40 skills, une procédure par dossier (les masters GTM, linkedin et infographie ont leurs sous-skills et ressources imbriqués)
 ├── 11_Archives/            terminé ou remplacé, gardé accessible
 ├── .claude/skills          lien vers 10_Skills/ (Claude Code)      .agents/skills  lien vers 10_Skills/ (Codex)
 ├── AGENTS.md  opencode.json  .env.example  install.sh  docs/  scripts/validate_skills.py
@@ -76,13 +76,13 @@ Le dépôt applique les pratiques documentées de Claude Code pour la gestion du
 1. **Une information vit à un seul endroit.** L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
 2. **Trois vitesses de changement, trois couches.** `About-Me/` change en années et est importé dans le contexte à chaque session. `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'une note de dossier change en semaines et est réécrit par `/done`.
 3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et les ressources du dossier à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
-4. **Une bibliothèque de skills, trois moteurs.** Les 47 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `Skills/`, les trois le voient.
+4. **Une bibliothèque de skills, trois moteurs.** Les 40 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `Skills/`, les trois le voient.
 5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Rôle, Conventions, Organisation, Roadmap, ETAT, Reprise, Historique, Liens. Vous écrivez les trois premières, `/done` écrit les autres.
 6. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le journal du jour, la note du dossier et son `_log.md`. `/lint` une fois par mois vérifie que rien n'a dérivé. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 
 ## Une journée type, une fois les trois modules installés
 
-Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et les blocs ETAT, et propose. Vous travaillez dans un dossier, vous ouvrez sa note, les 47 skills sont là. Vous capturez en vrac dans `Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `Contexte/`.
+Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et les blocs ETAT, et propose. Vous travaillez dans un dossier, vous ouvrez sa note, les 40 skills sont là. Vous capturez en vrac dans `Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `Contexte/`.
 
 Le contenu nourrit la prospection (ceux qui commentent vos posts sont vos meilleurs prospects). La prospection nourrit les rendez-vous. Les rendez-vous nourrissent le contenu.
 

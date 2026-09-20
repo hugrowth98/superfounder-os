@@ -44,6 +44,20 @@ Les 3 grands thèmes de vos posts, avec leur part :
 - **Mix autorité / perso / offre** : [défaut recommandé 70/15/15]
 - **Funnel** : TOFU 40 % / MOFU 40 % / BOFU 20 %, max 1 lead magnet par semaine
 
+## Objectif et cadence
+
+- **Objectif principal du contenu** : [audience, leads, autorité, recrutement : un seul en premier]
+- **Ce qu'un bon mois donne** : [ex : 12 posts, 2 000 abonnés de plus, 5 demandes entrantes]
+- **Créneaux** : [ex : mardi, mercredi, jeudi à 8h, heure de Paris ; le samedi à 10h en plus]
+- **Créneau d'écriture en lot** : [ex : le vendredi matin]
+- **Programmation** : [native LinkedIn | Publora (skill `planifier-post`)]
+
+## Formats et fins de post
+
+- **Formats par défaut** : [ex : texte pour les récits et les opinions, carrousel pour les cadres, une infographie par semaine]
+- **Fin de post par défaut** : [ex : une question précise ; un mot-clé à commenter pour les ressources]
+- **Signature ou PS récurrent** : [à remplir, ou aucun]
+
 ## Convictions (le carburant des hot takes)
 
 5 à 8 phrases affirmatives que vous diriez même si 30 % des gens ne sont pas d'accord. La première est votre conviction-phare.
@@ -63,9 +77,8 @@ Groupés par thème, les sujets sur lesquels vous prenez position :
 
 ## Sources de veille
 
-- **Chaînes YouTube** : [chaîne : ce qu'elle couvre]
-- **Newsletters** : [newsletter : auteur, sujet]
-- **Autres** (X, Reddit, podcasts, communautés) : [source : ce que vous y cherchez]
+Les newsletters (flux RSS) et les chaînes YouTube que le sous-skill `veille` lit chaque semaine vivent dans `sources-veille.json`, à côté de ce fichier : une seule liste, lue par les scripts. Ici, seulement ce qui n'a pas de flux :
+- **Autres** (X, Reddit, podcasts, communautés, comptes LinkedIn à surveiller) : [source : ce que vous y cherchez]
 
 ## Ressources sauvegardées
 
