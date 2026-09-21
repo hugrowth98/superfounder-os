@@ -17,6 +17,7 @@ Merci de vouloir améliorer Superfounder OS. Le dépôt est fait pour être fork
 - Aucun tiret cadratin ni demi-cadratin dans les fichiers : utilisez `-`, `:` ou des parenthèses.
 - Jamais de clé API, de token ni de donnée client dans le dépôt. Les clés vivent dans un `.env` local, ignoré par git.
 - Un skill ne doit jamais envoyer un message, une invitation ou une campagne sans validation explicite de l'utilisateur.
+- Le dépôt ne garde pas ses anciennes versions dans `11_Archives/` : l'historique, c'est git (`git show vX.Y.Z:chemin`). Un skill remplacé est supprimé du dépôt et noté dans le CHANGELOG ; `11_Archives/` est livré vide, c'est le dossier d'archives de l'utilisateur. `install.sh --into` y déplace les anciennes copies chez lui, jamais dans le dépôt.
 
 ## Vérifier avant d'envoyer
 
@@ -24,4 +25,8 @@ Merci de vouloir améliorer Superfounder OS. Le dépôt est fait pour être fork
 python3 scripts/validate_skills.py
 ```
 
-Le script vérifie que chaque `SKILL.md` a un frontmatter valide, qu'aucun tiret cadratin ne s'est glissé dans les fichiers markdown et qu'aucune chaîne ne ressemble à une clé API.
+```bash
+python3 scripts/valider_gtm.py
+```
+
+Le premier vérifie que chaque `SKILL.md` a un frontmatter valide, qu'aucun tiret cadratin ne s'est glissé dans les fichiers markdown et qu'aucune chaîne ne ressemble à une clé API. Le second vérifie les masters (références vers les sous-skills et les ressources), les noms d'outils tiers interdits, la compilation des scripts et la cohérence avec `OUTILS.md`. Les deux tournent en CI.

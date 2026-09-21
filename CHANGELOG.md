@@ -3,6 +3,18 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [6.2.0] - 2026-09-21
+
+Le dépôt ne transporte plus ses propres vieilles versions, et l'export Sales Navigator a son skill.
+
+### Ajouté
+- `exporter-salesnav` : une URL Sales Navigator (copiée, ou construite par `construire-requete-salesnav`) en CSV normalisé, par Unipile (votre compte) ou par vos cookies (Apify), signal posé d'après le filtre à cocher de l'URL, `dedoublonner --contre` pour ne garder que les nouveaux ; procédure, garde-fous et erreurs. `construire-requete-salesnav`, `OUTILS.md`, `docs/conventions-gtm.md`, `CLAUDE.md` et `AGENTS.md` (dix-sept skills d'exécution) y renvoient.
+- `trouver-personnes` : une URL Sales Navigator sans cookies ni Unipile s'arrête avec le message utile au lieu de tomber sur `profils`.
+- Sous-skill `veille` : les sources sans flux (Product Hunt, comptes X, communautés) restent dans `strategie-contenu.md` et se lisent à la main ou par WebSearch à la demande ; une page entreprise LinkedIn par `publications-entreprise`.
+
+### Supprimé
+- `11_Archives/skills-prospection-v3/` (22 skills de la v3 et leurs docs) et `11_Archives/trouver-url-linkedin-v3/` : l'historique du produit est dans git (`git show v5.2.0:10_Skills/...`), pas dans le dossier d'archives livré à l'utilisateur, qui repart vide avec sa note. Règle écrite dans `CONTRIBUTING.md` et dans `11_Archives/Archives.md` ; `CONTRIBUTING.md` cite aussi le second validateur.
+
 ## [6.1.0] - 2026-09-21
 
 `trouver-personnes` choisit sa source tout seul, du plus puissant au plus rustique parmi ce qui est branché, et sait travailler à partir de simples noms d'entreprises.

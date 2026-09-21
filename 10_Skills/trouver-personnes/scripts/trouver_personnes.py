@@ -690,6 +690,8 @@ def choisir_source(a) -> tuple[str, str]:
         return "salesnav", "Apify + cookies LinkedIn du .env (Sales Navigator)"
     if a.url and _cle("UNIPILE_API_KEY") and _cle("UNIPILE_ACCOUNT_ID"):
         return "unipile", "URL Sales Navigator sans cookies Apify : le compte Unipile"
+    if a.url:
+        arret("une URL Sales Navigator s'exporte avec vos cookies (APIFY_TOKEN + LINKEDIN_LI_AT + LINKEDIN_USER_AGENT, connecter-outils etape 9) ou avec Unipile ; rien des deux dans .env")
     if apify:
         if par_entreprise:
             return "employes", "Apify LinkedIn (employes des entreprises ; URLs manquantes cherchees par Google)"

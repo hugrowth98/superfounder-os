@@ -52,7 +52,7 @@ filtres, URL, volume à remplir après le run).
    l'URL porte un filtre à cocher (le CSV reçoit `signal_type`, `signal_date`, `signal_detail`).
 5. Au-delà de 2 500 résultats, découpez par région, par tranche d'effectif ou par première lettre du
    prénom : une URL par tranche, `dedoublonner` ensuite.
-6. Un seul next step : `trouver-personnes` (ou `trouver-entreprises` pour une recherche de comptes).
+6. Un seul next step : `exporter-salesnav` (l'URL en CSV, avec le signal posé), qui s'appuie sur `trouver-personnes` (ou `trouver-entreprises` pour une recherche de comptes).
 
 ## Filtres pris en charge
 

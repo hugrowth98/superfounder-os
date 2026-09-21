@@ -5,7 +5,7 @@ Usage : python3 scripts/valider.py [--racine <dossier>]
 """
 import os, re, sys, argparse
 
-VERBES = ["trouver-entreprises","trouver-lookalikes","trouver-personnes","enrichir-personne",
+VERBES = ["trouver-entreprises","trouver-lookalikes","trouver-personnes","exporter-salesnav","enrichir-personne",
           "enrichir-entreprise","trouver-email","trouver-telephone",
           "scraper-offres-emploi","scraper-engagement",
           "qualifier-liste","dedoublonner","crm","envoyer-sequence","verifier-reponses"]
