@@ -3,6 +3,20 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [6.1.0] - 2026-09-21
+
+`trouver-personnes` choisit sa source tout seul, du plus puissant au plus rustique parmi ce qui est branché, et sait travailler à partir de simples noms d'entreprises.
+
+### Ajouté
+- Cascade automatique sans `--source` : Prospeo, puis Crustdata, puis Ocean.io (outils API, par domaine ou par cible), sinon Apify par Sales Navigator (cookies du `.env`, URL ou filtres), sinon Apify par LinkedIn (`employes` pour un CSV d'entreprises, `profils` pour une cible), sinon Apify par Google ; le script annonce la source retenue et pourquoi, et s'arrête en listant ce qui manque si rien n'est branché. Une URL Sales Navigator sans cookies passe par Unipile.
+- Source `google` (`apify/google-search-scraper`) : une requête `("CEO" OR "Fondateur" ...) "Entreprise" site:linkedin.com/in` par entreprise (0,0025 $), ou une cible par titres, lieu et mots-clés ; lecture des titres de résultat et de `personalInfo`, colonne `confiance` (haute : entreprise et titre confirmés, moyenne : l'un des deux), `--garder-faibles`, `--pays`.
+- `employes` accepte un CSV sans URL de page : les URLs manquantes sont cherchées par Google (`site:linkedin.com/company "<nom>"`). `profils` accepte un CSV de noms : lots de 10 dans `currentCompanies`, 3 profils par entreprise, et ne garde que les profils dont l'entreprise actuelle correspond (mots significatifs de 4 lettres et plus).
+- Second passage automatique par Google pour les entreprises que `employes` ou `profils` ont laissées sans personne (`--sans-google` pour l'éviter).
+- `sourcer-personnes`, `OUTILS.md`, `docs/prospection.md` (question "je n'ai qu'Apify"), `CLAUDE.md` et `AGENTS.md` décrivent la cascade.
+
+### Modifié
+- `scripts/validate_skills.py` ne compte ni ne valide plus `11_Archives/`, et affiche un comptage lisible : skills de premier niveau, masters, sous-skills. `README.md` : un seul décompte (40 skills de premier niveau, 7 masters, 53 sous-skills), chemins et sections de note alignés sur la structure numérotée (`02_Contexte/`, "Où on en est", Mission à Key Notes), CI décrite avec ses deux validateurs.
+
 ## [6.0.0] - 2026-09-20
 
 Le contenu passe au même patron que la prospection : un master `linkedin` avec seize sous-skills, un système de veille que chacun remplit avec ses sources, un onboarding en huit phases, et la programmation des posts sur Publora. Version majeure parce que neuf skills changent de nom et de place.

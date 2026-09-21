@@ -69,6 +69,9 @@ Chaque réponse de Claude qui produit un fichier finit par un lien cliquable ver
 **Je n'ai aucun outil, je peux quand même démarrer ?**
 Oui. "Installe ma prospection" remplit votre contexte sans outil. Pour la première liste, il faut au moins Apify (essai gratuit) ou Crustdata.
 
+**Je n'ai qu'Apify, je peux quand même trouver les dirigeants d'une liste d'entreprises ?**
+Oui. "Trouve les dirigeants de ces entreprises" avec la liste (même de simples noms) : le script prend le plus puissant de ce qui est branché (Prospeo, Crustdata ou Ocean.io si vous les avez, sinon Apify par Sales Navigator si vos cookies sont là, sinon Apify par LinkedIn, sinon Apify par Google), vous dit lequel, annonce le coût, et repasse par Google pour les entreprises restées sans personne. Les lignes venues de Google portent une confiance, à vérifier quand elle est moyenne.
+
 **Je ne sais pas coder, je dois toucher au terminal ?**
 Non. Vous répondez aux questions dans le chat et vous collez des clés quand Claude vous les demande. Il écrit les fichiers.
 

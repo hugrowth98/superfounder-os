@@ -53,7 +53,12 @@ def iter_files(suffixes):
 
 def main():
     errors = []
-    skills = sorted(p for p in ROOT.rglob("SKILL.md") if ".git" not in p.parts and ".agents" not in p.parts and ".claude" not in p.parts)
+    # les archives (11_Archives/) sont figees : elles ne sont ni validees ni comptees
+    skills = sorted(p for p in ROOT.rglob("SKILL.md") if ".git" not in p.parts and ".agents" not in p.parts and ".claude" not in p.parts
+                    and "11_Archives" not in p.parts)
+    premier_niveau = [p for p in skills if p.parent.parent == ROOT / "10_Skills"]
+    sous_skills = [p for p in skills if "sous-skills" in p.parts]
+    masters = sorted({p.parts[p.parts.index("sous-skills") - 1] for p in sous_skills})
     for path in skills:
         text = path.read_text(encoding="utf-8")
         fm = parse_frontmatter(text)
@@ -94,7 +99,7 @@ def main():
         if n > 200:
             errors.append(f"{cm.relative_to(ROOT)}: {n} lignes, au-dessus des 200 recommandées")
 
-    print(f"{len(skills)} skills vérifiés")
+    print(f"{len(skills)} SKILL.md vérifiés : {len(premier_niveau)} skills de premier niveau (dont {len(masters)} masters : {', '.join(masters)}) et {len(sous_skills)} sous-skills")
     if errors:
         print("\n".join(errors))
         sys.exit(1)

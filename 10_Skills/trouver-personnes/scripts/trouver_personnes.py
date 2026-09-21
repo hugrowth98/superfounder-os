@@ -13,8 +13,15 @@ Sources (--source) :
               (--secteur exact, --taille, --lieu = codes pays), par --titres, --seniorites, --departements ; --par-entreprise (2 par defaut
               avec des domaines) ; --changement-poste = arrives depuis 90 jours
   crustdata   Crustdata /screener/persondb/search/ (priorite api)
+  google      Apify apify/google-search-scraper : sans compte LinkedIn ni outil API. Par entreprise (--in, --entreprise, --domaines) :
+              une requete Google ("titres" OR ...) "entreprise" site:linkedin.com/in, 0,0025 $ par entreprise ; par cible : titres,
+              lieu, mots-cles, jusqu'a 10 pages. Le moins precis : confiance par ligne (haute = entreprise et titre confirmes)
 
-Sans --source : profils si OUTILS.md dit priorite apify (employes si --in est fourni), crustdata sinon.
+Sans --source (auto) : la cascade "le plus puissant de ce qui est branche" : prospeo > crustdata > ocean (outils API) > salesnav
+(Apify + cookies LinkedIn, avec --url ou des filtres) > employes ou profils (Apify LinkedIn) > google (Apify). Chaque source
+saute si sa cle manque ou si l'entree ne lui convient pas ; le script dit laquelle il prend et pourquoi.
+  --in accepte un CSV d'entreprises avec linkedin_entreprise_url, domaine ou seulement entreprise (nom) : employes resout
+  les URLs manquantes par Google (0,0025 $ par entreprise), profils cherche par lots de 10 noms (currentCompanies).
 
 Exemples :
   python3 trouver_personnes.py --source profils --titres "CEO,Fondateur,Directeur Général" --lieu France --taille 11-50,51-200 --max 100
@@ -25,6 +32,9 @@ Exemples :
   python3 trouver_personnes.py --source ocean --in entreprises.csv --dirigeants --par-entreprise 2 --format large
   python3 trouver_personnes.py --source employes --in entreprises.csv --dirigeants --strict-titre --par-entreprise 2 --format large
   python3 trouver_personnes.py --source crustdata --titres "Head of Sales,VP Sales" --seniorites "vp,head" --lieu France --max 100
+  python3 trouver_personnes.py --in entreprises.csv --dirigeants --par-entreprise 2 --format large        (auto : la cascade choisit)
+  python3 trouver_personnes.py --source google --in entreprises.csv --dirigeants --par-entreprise 2 --format large
+  python3 trouver_personnes.py --source profils --in entreprises.csv --dirigeants --par-entreprise 3     (lots de 10 noms, currentCompanies)
 --par-entreprise N garde les N meilleurs contacts par entreprise (ordre des --titres, puis seniorite). --dry-run : input + cout.
 Sortie : Listes-prospection/trouver-personnes_<sujet>_<date>.csv
 """
@@ -112,26 +122,129 @@ def profils(a):
         entree["recentlyChangedJobs"] = True
     if a.industry_ids:
         entree["industryIds"] = _liste(a.industry_ids)
-    if len(entree) <= 2:
-        arret("profils : donnez au moins --titres, --mots-cles, --lieu, --entreprises-urls ou --seniorites")
     actor = "harvestapi/linkedin-profile-search"
+    noms = noms_entreprises(a) if (a.entree or a.entreprise) and not a.entreprises_urls else []
+    if noms:
+        # des noms d'entreprises : par lots de 10 dans currentCompanies (LinkedIn les combine en OU), 3 profils par entreprise
+        par = a.par_entreprise or 3
+        lots = [noms[i:i + 10] for i in range(0, len(noms), 10)]
+        pages = sum(max(1, -(-(par * len(lot)) // 25)) for lot in lots)
+        estimation = f"{len(lots)} lot(s) de 10 entreprises, {pages} page(s) de 25 x 0,10 $ = environ {pages * 0.10:.2f} $"
+        lignes = []
+        for n, lot in enumerate(lots, 1):
+            e = {**entree, "currentCompanies": lot, "maxItems": par * len(lot)}
+            items, _ = lancer(actor, e, label=f"profile-search lot {n}/{len(lots)}", dry_run=a.dry_run, estimation=estimation if n == 1 else "(compris ci-dessus)")
+            for it in items:
+                l = ligne_harvest(it, actor)
+                cible = entreprise_correspondante(l.get("entreprise", ""), lot)
+                if not cible:
+                    continue  # anti faux positif : l'entreprise actuelle doit correspondre a un nom du lot
+                l["entreprise_cible"] = cible
+                lignes.append(l)
+        if not a.dry_run:
+            afficher(f"  [profils] {len(lignes)} profils dont l'entreprise actuelle correspond a un nom demande")
+        return lignes, actor
+    if len(entree) <= 2:
+        arret("profils : donnez au moins --titres, --mots-cles, --lieu, --entreprises-urls, --in (noms d'entreprises) ou --seniorites")
     pages = max(1, -(-a.max // 25))
     estimation = f"{pages} page(s) de 25 x 0,10 $ = environ {pages * 0.10:.2f} $" + (f" + {a.max} x 0,004 $ (mode Full)" if a.complet else "")
     items, _ = lancer(actor, entree, label="profile-search", dry_run=a.dry_run, estimation=estimation)
     return [ligne_harvest(it, actor) for it in items], actor
 
 
+def mots_significatifs(nom: str) -> set:
+    stop = {"sas", "sarl", "sa", "eurl", "sasu", "group", "groupe", "france", "inc", "ltd", "llc", "gmbh", "the", "and", "les", "des"}
+    return {m for m in norm_texte(nom).replace("-", " ").split() if len(m) >= 4 and m not in stop}
+
+
+def entreprise_correspondante(trouvee: str, noms: list[str]) -> str:
+    """Le nom demande qui correspond a l'entreprise trouvee : un mot significatif (4 lettres et plus) en commun, ou un nom court
+    contenu dans l'autre. Rend '' si aucune (faux positif)."""
+    nt = norm_texte(trouvee)
+    if not nt:
+        return ""
+    mt = mots_significatifs(trouvee)
+    for n in noms:
+        nn = norm_texte(n)
+        if nn and (nn in nt or nt in nn):
+            return n
+        if mt & mots_significatifs(n):
+            return n
+    return ""
+
+
+NOMS_FORCES: list[str] = []  # second passage Google : seulement les entreprises restees sans decisionnaire
+
+
+def noms_entreprises(a) -> list[str]:
+    """Les noms d'entreprises de --entreprise, du CSV --in (colonne entreprise, sinon domaine) ou de --domaines."""
+    if NOMS_FORCES:
+        return list(NOMS_FORCES)
+    noms = []
+    if a.entreprise:
+        noms.append(a.entreprise.strip())
+    if a.entree:
+        for l in lire_csv(a.entree):
+            n = (l.get("entreprise") or l.get("nom") or l.get("company") or "").strip()
+            if not n and (l.get("domaine") or l.get("site_web")):
+                n = domaine(l.get("domaine") or l.get("site_web")).split(".")[0]
+            if n and n not in noms:
+                noms.append(n)
+    if a.domaines and not noms:
+        noms = [d.split(".")[0] for d in _liste(a.domaines)]
+    return noms
+
+
+def urls_entreprises_par_google(noms: list[str], a) -> dict:
+    """site:linkedin.com/company "<nom>" pour chaque nom sans URL : rend {nom: url}. 0,0025 $ par entreprise."""
+    actor = "apify/google-search-scraper"
+    requetes = [f"site:linkedin.com/company \"{n}\"" for n in noms]
+    entree = {"queries": "\n".join(requetes), "maxPagesPerQuery": 1, "countryCode": "fr", "languageCode": "fr",
+              "saveHtml": False, "saveHtmlToKeyValueStore": False, "includeIcons": False}
+    items, _ = lancer(actor, entree, label=f"google-company ({len(noms)} entreprises sans URL)", dry_run=a.dry_run, estimation=prix(actor, len(noms)))
+    out = {}
+    for it in items:
+        term = ((it.get("searchQuery") or {}).get("term") or "")
+        nom = next((n for n in noms if norm_texte(n) in norm_texte(term)), "")
+        for r in it.get("organicResults") or []:
+            u = r.get("url") or ""
+            if "linkedin.com/company/" in u and nom and entreprise_correspondante(r.get("title") or "", [nom]):
+                out[nom] = norm_linkedin_url(u.split("?")[0].rstrip("/"))
+                break
+    return out
+
+
 def employes(a):
-    if not a.entree:
-        arret("employes : --in <csv d'entreprises avec linkedin_entreprise_url> est requis")
-    entreprises = [l for l in lire_csv(a.entree) if norm_linkedin_url(l.get("linkedin_entreprise_url") or l.get("linkedin_url") or "")]
+    if not a.entree and not a.entreprises_urls:
+        arret("employes : --in <csv d'entreprises> (linkedin_entreprise_url, ou juste le nom : l'URL est cherchee par Google) ou --entreprises-urls")
+    toutes = lire_csv(a.entree) if a.entree else [{"entreprise": u, "linkedin_entreprise_url": u} for u in _liste(a.entreprises_urls)]
+    sans_url = [l for l in toutes if not norm_linkedin_url(l.get("linkedin_entreprise_url") or l.get("linkedin_url") or "")
+                and (l.get("entreprise") or l.get("nom"))]
+    if sans_url:
+        noms = []
+        for l in sans_url:
+            n = (l.get("entreprise") or l.get("nom")).strip()
+            if n not in noms:
+                noms.append(n)
+        afficher(f"  [employes] {len(noms)} entreprise(s) sans URL LinkedIn : recherche Google site:linkedin.com/company (0,0025 $ chacune)")
+        trouvees = urls_entreprises_par_google(noms, a)
+        for l in sans_url:
+            u = trouvees.get((l.get("entreprise") or l.get("nom")).strip())
+            if u:
+                l["linkedin_entreprise_url"] = u
+        if not a.dry_run:
+            afficher(f"  [employes] {len(trouvees)} URL(s) trouvee(s) sur {len(noms)}" + (f" ; sans URL : {', '.join(n for n in noms if n not in trouvees)}" if len(trouvees) < len(noms) else ""))
+    entreprises = [l for l in toutes if norm_linkedin_url(l.get("linkedin_entreprise_url") or l.get("linkedin_url") or "")]
     urls = []
     for l in entreprises:
         u = norm_linkedin_url(l.get("linkedin_entreprise_url") or l.get("linkedin_url"))
         if u not in urls:
             urls.append(u)
     if not urls:
-        arret("aucune colonne linkedin_entreprise_url remplie dans le CSV : passez d'abord par enrichir-entreprise")
+        if a.dry_run and sans_url:
+            urls = [f"<url de {n}>" for n in (l.get("entreprise") or l.get("nom") for l in sans_url)]
+        else:
+            arret("aucune URL LinkedIn d'entreprise (ni trouvee par Google) : passez par enrichir-entreprise, ou --source profils avec les noms")
     titres = _liste(a.titres)[:20]
     par = a.par_entreprise or 3
     entree = {"companies": urls, "profileScraperMode": "Short ($4 per 1k)", "companyBatchMode": "one_by_one",
@@ -471,7 +584,118 @@ def prospeo(a):
     return lignes, "prospeo"
 
 
-SOURCES = {"profils": profils, "employes": employes, "salesnav": salesnav, "unipile": unipile, "crustdata": crustdata, "ocean": ocean, "prospeo": prospeo}
+# ------------------------------------------------------------------ Google (le dernier recours)
+
+TITRES_GOOGLE_DIRIGEANTS = ["CEO", "PDG", "Directeur Général", "Directrice Générale", "Fondateur", "Fondatrice", "Founder", "Co-founder",
+                            "Président", "Gérant", "General Manager", "Dirigeant"]
+
+
+def _decouper_titre_google(titre: str) -> tuple[str, str, str, str]:
+    """'Prenom Nom - Titre - Entreprise | LinkedIn' -> (prenom, nom, titre, entreprise). Tolere les tirets longs de Google."""
+    tt = titre.replace(" | LinkedIn", "").replace("| LinkedIn", "")
+    for sep in (" \u2013 ", " \u2014 ", " - "):
+        tt = tt.replace(sep, " | ")
+    parts = [x.strip() for x in tt.split(" | ") if x.strip()]
+    nom_complet = parts[0] if parts else ""
+    prenom, nom = _split_nom(nom_complet)
+    poste = parts[1] if len(parts) > 1 else ""
+    entreprise = parts[2] if len(parts) > 2 else ""
+    return prenom, nom, poste, entreprise
+
+
+def google(a):
+    """apify/google-search-scraper : des profils LinkedIn par requete Google. Par entreprise (--in, --entreprise, --domaines) : une requete
+    (titres OR ...) "entreprise" site:linkedin.com/in ; par cible : titres + lieu + mots-cles, jusqu'a 10 pages. Aucun compte, aucun outil
+    API ; le moins precis des chemins : chaque ligne porte une confiance (haute : entreprise et titre confirmes, moyenne : l'un des deux)."""
+    actor = "apify/google-search-scraper"
+    titres = _liste(a.titres)
+    titres_q = (TITRES_GOOGLE_DIRIGEANTS if (a.dirigeants or not titres) else titres)[:10]
+    groupe = "(" + " OR ".join(f'"{x}"' for x in titres_q) + ")"
+    noms = noms_entreprises(a)
+    if noms:
+        requetes = [f'{groupe} "{n}" site:linkedin.com/in' for n in noms]
+        pages_par = 1
+    else:
+        if not (titres or a.mots_cles):
+            arret("google : donnez des entreprises (--in, --entreprise, --domaines) ou une cible (--titres, --lieu, --mots-cles)")
+        q = groupe + (f' "{a.lieu}"' if a.lieu else "") + (f" {a.mots_cles}" if a.mots_cles else "") + " site:linkedin.com/in"
+        requetes, pages_par = [q], min(10, max(1, -(-a.max // 10)))
+    entree = {"queries": "\n".join(requetes), "maxPagesPerQuery": pages_par, "countryCode": a.pays, "languageCode": a.pays if a.pays in ("fr", "en", "de", "es", "it") else "en",
+              "saveHtml": False, "saveHtmlToKeyValueStore": False, "includeIcons": False}
+    items, _ = lancer(actor, entree, label=f"google-personnes ({len(requetes)} requete(s) x {pages_par} page(s))", dry_run=a.dry_run,
+                      estimation=prix(actor, len(requetes) * pages_par))
+    lignes = []
+    voulus = [norm_texte(x) for x in titres_q]
+    for it in items:
+        term = ((it.get("searchQuery") or {}).get("term") or "")
+        cible = next((n for n in noms if f'"{norm_texte(n)}"' in norm_texte(term) or norm_texte(n) in norm_texte(term)), "") if noms else ""
+        for r in it.get("organicResults") or []:
+            u = r.get("url") or ""
+            if "linkedin.com/in/" not in u:
+                continue
+            pi = r.get("personalInfo") or {}
+            prenom, nom, poste, ent = _decouper_titre_google(r.get("title") or "")
+            poste = pi.get("jobTitle") or poste
+            ent = pi.get("companyName") or ent
+            texte = norm_texte(f"{r.get('title') or ''} {r.get('description') or ''} {pi.get('rawText') or ''}")
+            ent_ok = bool(cible) and (bool(entreprise_correspondante(ent, [cible])) or norm_texte(cible) in texte)
+            titre_ok = any(v in norm_texte(poste) or v in texte for v in voulus)
+            if noms and not ent_ok:
+                continue  # sans l'entreprise confirmee, la ligne est un faux positif probable
+            if not titre_ok and not a.garder_faibles:
+                continue
+            conf = "haute" if (ent_ok and titre_ok) or (not noms and titre_ok and ent) else "moyenne"
+            lignes.append({**_base(actor), "prenom": prenom, "nom": nom, "titre": poste, "seniorite": seniorite_depuis_titre(poste),
+                           "entreprise": ent or cible, "entreprise_cible": cible, "linkedin_url": norm_linkedin_url(u.split("?")[0]),
+                           "headline": (r.get("title") or "").replace(" | LinkedIn", ""), "confiance": conf, "google_requete": term})
+    if not a.dry_run:
+        afficher(f"  [google] {len(lignes)} profil(s) retenu(s) ({sum(1 for l in lignes if l['confiance'] == 'haute')} en confiance haute)")
+    return lignes, actor
+
+
+SOURCES = {"profils": profils, "employes": employes, "salesnav": salesnav, "unipile": unipile, "crustdata": crustdata, "ocean": ocean,
+           "prospeo": prospeo, "google": google}
+
+
+def _cle(nom: str) -> bool:
+    return bool(env(nom, obligatoire=False))
+
+
+def choisir_source(a) -> tuple[str, str]:
+    """La cascade : le plus puissant de ce qui est branche, pour l'entree donnee. Rend (source, raison)."""
+    par_entreprise = bool(a.entree or a.entreprise or a.domaines or a.entreprises_urls)
+    domaines = bool(a.domaines) or (bool(a.entree) and any(domaine(l.get("domaine") or l.get("site_web") or "") for l in lire_csv(a.entree)))
+    cookies = bool(env("LINKEDIN_USER_AGENT", obligatoire=False)) and (bool(env("LINKEDIN_LI_AT", obligatoire=False)) or bool(env("LINKEDIN_COOKIES_FILE", obligatoire=False)))
+    apify = _cle("APIFY_TOKEN")
+    etapes = []
+    if _cle("PROSPEO_API_KEY"):
+        if not par_entreprise or domaines or a.entreprise:
+            return "prospeo", "outil API branche (recherche par filtres exacts, emails verifies)"
+        etapes.append("prospeo saute : il cherche par domaine, le CSV n'en a pas (ajoutez une colonne domaine, ou enrichir-entreprise)")
+    else:
+        etapes.append("prospeo non branche")
+    if _cle("CRUSTDATA_API_KEY"):
+        if not par_entreprise or domaines or a.entreprise:
+            return "crustdata", "outil API branche"
+        etapes.append("crustdata saute : il cherche par domaine ou par nom unique")
+    else:
+        etapes.append("crustdata non branche")
+    if _cle("OCEAN_API_KEY"):
+        if (par_entreprise and domaines) or a.secteur:
+            return "ocean", "outil API branche (decisionnaires par domaine)"
+        etapes.append("ocean saute : il faut des domaines ou --secteur")
+    else:
+        etapes.append("ocean non branche")
+    if apify and cookies and (a.url or not par_entreprise):
+        return "salesnav", "Apify + cookies LinkedIn du .env (Sales Navigator)"
+    if a.url and _cle("UNIPILE_API_KEY") and _cle("UNIPILE_ACCOUNT_ID"):
+        return "unipile", "URL Sales Navigator sans cookies Apify : le compte Unipile"
+    if apify:
+        if par_entreprise:
+            return "employes", "Apify LinkedIn (employes des entreprises ; URLs manquantes cherchees par Google)"
+        return "profils", "Apify LinkedIn (recherche de profils par filtres, sans cookies)"
+    etapes.append("apify non branche")
+    arret("aucune source disponible : connectez au moins Apify (connecter-outils), ou Prospeo, Crustdata, Ocean.io ; cascade : " + " ; ".join(etapes))
 
 
 def plafonner(lignes: list[dict], par: int, titres: list[str]) -> list[dict]:
@@ -561,18 +785,31 @@ def main() -> None:
     ap.add_argument("--enregistrer", action="store_true", help="ajoute ou met a jour la requete (URL ou commande, volume) dans le registre")
     ap.add_argument("--max", type=int, default=100)
     ap.add_argument("--complet", action="store_true", help="profils : mode Full (+0,004 $ par profil)")
+    ap.add_argument("--pays", default="fr", help="google : pays de la recherche (code ISO, defaut fr)")
+    ap.add_argument("--garder-faibles", action="store_true", help="google : garder aussi les profils dont le titre n'est pas confirme")
+    ap.add_argument("--sans-google", action="store_true", help="employes / profils : pas de second passage Google pour les entreprises restees sans personne")
     ap.add_argument("--out")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
     if not a.source:
-        prio = lire_outils().get("priorite", "apify")
-        a.source = "crustdata" if prio == "api" else ("employes" if a.entree else "profils")
-        afficher(f"  [source] {a.source} (d'apres OUTILS.md)")
+        a.source, raison = choisir_source(a)
+        afficher(f"  [source] {a.source} : {raison} (cascade : prospeo > crustdata > ocean > salesnav > employes ou profils > google ; --source pour forcer)")
     if a.dirigeants:
         a.titres = ",".join(DIRIGEANTS)
     a.sujet = a.sujet or ("dirigeants" if a.dirigeants else (a.titres or a.mots_cles or a.source)).split(",")[0]
     lignes, outil = SOURCES[a.source](a)
+    if a.source in ("employes", "profils") and not a.sans_google and (a.entree or a.entreprise):
+        # second passage : les entreprises demandees restees sans personne passent par Google (le dernier recours de la cascade)
+        noms = noms_entreprises(a)
+        couverts = {norm_texte(l.get("entreprise_cible") or entreprise_correspondante(l.get("entreprise", ""), noms)) for l in lignes}
+        restants = [n for n in noms if norm_texte(n) not in couverts]
+        if restants and (lignes or a.dry_run):
+            afficher(f"  [google] {len(restants)} entreprise(s) sans decisionnaire par {a.source} : second passage Google ({', '.join(restants[:8])}{'...' if len(restants) > 8 else ''})")
+            NOMS_FORCES[:] = restants
+            complement, _ = google(a)
+            NOMS_FORCES.clear()
+            lignes.extend(complement)
     if a.dry_run or (a.source == "prospeo" and (a.total_seulement or a.lister_titres or a.lister_lieux)):
         return
     if a.strict_titre and a.titres:

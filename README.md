@@ -61,7 +61,7 @@ superfounder-os/            le dossier que Claude Code ouvre
 ├── 07_Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
 ├── 08_Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
 ├── 09_Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
-├── 10_Skills/              la bibliothèque : 40 skills, une procédure par dossier (les masters GTM, linkedin et infographie ont leurs sous-skills et ressources imbriqués)
+├── 10_Skills/              la bibliothèque : 40 skills de premier niveau, une procédure par dossier ; 7 masters (4 GTM, linkedin, infographie) portent 53 sous-skills et leurs ressources
 ├── 11_Archives/            terminé ou remplacé, gardé accessible
 ├── .claude/skills          lien vers 10_Skills/ (Claude Code)      .agents/skills  lien vers 10_Skills/ (Codex)
 ├── AGENTS.md  opencode.json  .env.example  install.sh  docs/  scripts/validate_skills.py
@@ -73,16 +73,16 @@ Une fiche (département, projet, client) tient en six sections : Mission, Périm
 
 Le dépôt applique les pratiques documentées de Claude Code pour la gestion du contexte. Si vous voulez adapter l'OS, gardez ces six règles.
 
-1. **Une information vit à un seul endroit.** L'offre est dans `Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
-2. **Trois vitesses de changement, trois couches.** `About-Me/` change en années et est importé dans le contexte à chaque session. `Contexte/` change en trimestres et se charge à la demande. Le bloc ETAT d'une note de dossier change en semaines et est réécrit par `/done`.
-3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `Contexte/` et les ressources du dossier à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
-4. **Une bibliothèque de skills, trois moteurs.** Les 40 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `Skills/`, les trois le voient.
-5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Rôle, Conventions, Organisation, Roadmap, ETAT, Reprise, Historique, Liens. Vous écrivez les trois premières, `/done` écrit les autres.
+1. **Une information vit à un seul endroit.** L'offre est dans `02_Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
+2. **Trois vitesses de changement, trois couches.** `01_About-Me/` change en années et est importé dans le contexte à chaque session. `02_Contexte/` change en trimestres et se charge à la demande. La section "Où on en est" d'une note de dossier change en semaines et est réécrite par `/done`.
+3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `02_Contexte/` et les fichiers de réglage du dossier (`contexte.md` de la prospection, `strategie-contenu.md` du contenu) à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
+4. **Une bibliothèque de skills, trois moteurs.** Les 40 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `10_Skills/`, les trois le voient.
+5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Mission, Périmètre, Objectif, Cadre, Étapes, Où on en est, Key Notes. Vous écrivez les quatre premières, `/done` coche les Étapes et réécrit les deux dernières.
 6. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le journal du jour, la note du dossier et son `_log.md`. `/lint` une fois par mois vérifie que rien n'a dérivé. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 
 ## Une journée type, une fois les trois modules installés
 
-Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et les blocs ETAT, et propose. Vous travaillez dans un dossier, vous ouvrez sa note, les 40 skills sont là. Vous capturez en vrac dans `Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `Contexte/`.
+Le matin, vous ouvrez le workspace et demandez "on fait quoi aujourd'hui" : Claude lit le journal de la veille et la section "Où on en est" de chaque note, et propose. Vous travaillez dans un dossier, vous ouvrez sa note, les 40 skills sont là. Vous capturez en vrac dans `00_Inbox/`. Le soir, `/done`. Le vendredi, `/weekly-review`. Une fois par mois, `/lint`. Une fois par trimestre, vous relisez `02_Contexte/`.
 
 Le contenu nourrit la prospection (ceux qui commentent vos posts sont vos meilleurs prospects). La prospection nourrit les rendez-vous. Les rendez-vous nourrissent le contenu.
 
@@ -90,8 +90,8 @@ Le contenu nourrit la prospection (ceux qui commentent vos posts sont vos meille
 
 - Les clés API vivent dans `.env` à la racine, ignoré par git. Le dépôt ne contient que `.env.example`, vide.
 - Aucun skill n'envoie d'invitation, de message ou de campagne sans un "oui" explicite de votre part.
-- Vos fichiers personnels (`About-Me/`, `Contexte/`, `Branding/`, `Journal/`, `Meeting/`, les `ressources/`, les `_log.md`) sont à vous. Si vous versionnez votre workspace, faites-le dans un dépôt privé.
-- `scripts/validate_skills.py` tourne en CI sur chaque push : frontmatter des skills, absence de tirets cadratins, de clés API, de placeholders, taille du CLAUDE.md.
+- Vos fichiers personnels (`01_About-Me/`, `02_Contexte/`, `03_Branding/`, `09_Journal/`, `07_Meeting/`, `06_Clients/`, les fichiers de réglage de `05_Departements/`, les `_log.md`) sont à vous. Si vous versionnez votre workspace, faites-le dans un dépôt privé.
+- `scripts/validate_skills.py` et `scripts/valider_gtm.py` tournent en CI sur chaque push : frontmatter des skills, absence de tirets cadratins, de clés API, de placeholders et de noms d'outils tiers, références croisées des masters, compilation des scripts, taille du CLAUDE.md.
 
 ## Contribuer
 
