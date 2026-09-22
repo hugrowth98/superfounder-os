@@ -51,7 +51,7 @@ if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
 from gtm_common import (Crustdata, Ocean, Prospeo, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie, domaine,  # noqa: E402
-                        ecrire_csv, enregistrer_requete, env, fraicheur, lire_csv, lire_outils, norm_linkedin_url, norm_texte,
+                        cookies_linkedin, cookies_linkedin_disponibles, ecrire_csv, enregistrer_requete, env, fraicheur, lire_csv, lire_outils, norm_linkedin_url, norm_texte,
                         seniorite_depuis_titre)
 from apify_run import lancer, prix  # noqa: E402
 
@@ -273,20 +273,6 @@ def employes(a):
                     ligne[c] = src[c]
         lignes.append(ligne)
     return lignes, actor
-
-
-def cookies_linkedin():
-    ua = env("LINKEDIN_USER_AGENT", aide="Ecrivez LINKEDIN_USER_AGENT dans .env (connecter-outils, etape 8).")
-    fichier = env("LINKEDIN_COOKIES_FILE", obligatoire=False)
-    if fichier and Path(fichier).exists():
-        data = json.loads(Path(fichier).read_text(encoding="utf-8"))
-        return (data if isinstance(data, list) else data.get("cookie", [])), ua
-    li_at = env("LINKEDIN_LI_AT", aide="Ecrivez LINKEDIN_LI_AT et LINKEDIN_LI_A dans .env.")
-    cookies = [{"name": "li_at", "value": li_at, "domain": ".linkedin.com", "path": "/", "secure": True, "httpOnly": True}]
-    li_a = env("LINKEDIN_LI_A", obligatoire=False)
-    if li_a:
-        cookies.append({"name": "li_a", "value": li_a, "domain": ".linkedin.com", "path": "/", "secure": True, "httpOnly": True})
-    return cookies, ua
 
 
 def salesnav(a):
@@ -665,7 +651,7 @@ def choisir_source(a) -> tuple[str, str]:
     """La cascade : le plus puissant de ce qui est branche, pour l'entree donnee. Rend (source, raison)."""
     par_entreprise = bool(a.entree or a.entreprise or a.domaines or a.entreprises_urls)
     domaines = bool(a.domaines) or (bool(a.entree) and any(domaine(l.get("domaine") or l.get("site_web") or "") for l in lire_csv(a.entree)))
-    cookies = bool(env("LINKEDIN_USER_AGENT", obligatoire=False)) and (bool(env("LINKEDIN_LI_AT", obligatoire=False)) or bool(env("LINKEDIN_COOKIES_FILE", obligatoire=False)))
+    cookies = cookies_linkedin_disponibles()
     apify = _cle("APIFY_TOKEN")
     etapes = []
     if _cle("PROSPEO_API_KEY"):
@@ -691,7 +677,7 @@ def choisir_source(a) -> tuple[str, str]:
     if a.url and _cle("UNIPILE_API_KEY") and _cle("UNIPILE_ACCOUNT_ID"):
         return "unipile", "URL Sales Navigator sans cookies Apify : le compte Unipile"
     if a.url:
-        arret("une URL Sales Navigator s'exporte avec vos cookies (APIFY_TOKEN + LINKEDIN_LI_AT + LINKEDIN_USER_AGENT, connecter-outils etape 9) ou avec Unipile ; rien des deux dans .env")
+        arret("une URL Sales Navigator s'exporte avec vos cookies (APIFY_TOKEN + browser_cookie3 ou LINKEDIN_COOKIES_FILE, connecter-outils etape 9) ou avec Unipile ; rien des deux dans .env")
     if apify:
         if par_entreprise:
             return "employes", "Apify LinkedIn (employes des entreprises ; URLs manquantes cherchees par Google)"

@@ -86,12 +86,19 @@ Une question à la fois, dans cet ordre. Après chaque clé, testez avec un appe
    LinkedIn dans la réponse, renvoyer l'utilisateur au tableau de bord. Aucun coût par appel. Le MCP Publora
    existe aussi (docs.publora.com/guides/mcp-server) : optionnel, les scripts passent par l'API.
 9. **Cookies Sales Navigator pour Apify** (facultatif, seulement si l'utilisateur veut l'actor
-   `curious_coder/linkedin-sales-navigator-search-scraper`) : sur linkedin.com connecté, ouvrir
-   l'extension Cookie-Editor, copier la valeur du cookie `li_at` et celle de `li_a` (Sales Navigator),
-   puis le user agent du navigateur (taper "my user agent" dans Google). Écrire `LINKEDIN_LI_AT`,
-   `LINKEDIN_LI_A`, `LINKEDIN_USER_AGENT` dans `.env`. Variante : exporter tous les cookies en JSON
-   dans un fichier hors du module GTM et écrire son chemin dans `LINKEDIN_COOKIES_FILE`. Ces cookies
-   expirent en quelques semaines : à l'erreur "Cookies are expired", refaire l'étape.
+   `curious_coder/linkedin-sales-navigator-search-scraper`) : `pip3 install browser_cookie3`, puis
+   `python3 10_Skills/connecter-outils/scripts/rafraichir_cookies_linkedin.py --check`. Le script lit les
+   cookies LinkedIn de tous les profils Chrome, Arc, Brave et Edge (le trousseau du système demande une
+   autorisation la première fois : "Toujours autoriser"), retient la session Sales Navigator (cookie `li_a`)
+   et construit le user agent depuis la version réelle du navigateur. Si plusieurs comptes LinkedIn sont
+   ouverts, écrire `LINKEDIN_CHROME_ACCOUNT=<email du profil Chrome>` dans `.env`. Ensuite plus rien à
+   faire : `trouver-personnes` et `trouver-entreprises` relancent ce script avant chaque run Apify Sales
+   Navigator, et écrivent le résultat dans `.linkedin-cookies.json` à la racine (ignoré par git).
+   Sans `browser_cookie3` (Firefox, Safari, machine partagée) : exporter tous les cookies avec l'extension
+   Cookie-Editor dans un fichier hors du dépôt, écrire son chemin dans `LINKEDIN_COOKIES_FILE` et le user
+   agent exact du navigateur dans `LINKEDIN_USER_AGENT`. Un user agent qui ne correspond pas au navigateur
+   qui a émis les cookies (par exemple Chrome/145 alors que Chrome est en 153) fait renouveler la session par
+   LinkedIn : la page 1 passe, la page 2 répond "Cookies are expired". Jamais de cookie dans le chat.
 10. Demandez le canal LinkedIn voulu (Unipile avec le compte de l'utilisateur, ou Lemlist multicanal),
    puis écrivez tout : `python3 scripts/verifier_connexions.py --ecrire-outils --canal-linkedin unipile`.
 11. Résumez l'état des 7 outils (et des 3 optionnels) et proposez un seul next step : `installer-gtm` si `05_Departements/Go-to-Market/contexte.md` a

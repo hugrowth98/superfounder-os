@@ -3,6 +3,17 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [6.3.0] - 2026-09-22
+
+Les cookies Sales Navigator ne se copient plus à la main : le module les relit dans le navigateur avant chaque run, avec le bon user agent.
+
+### Ajouté
+- `connecter-outils/scripts/rafraichir_cookies_linkedin.py` : lit les cookies LinkedIn de tous les profils Chrome, Arc, Brave et Edge (via `browser_cookie3` et le trousseau du système), retient la session Sales Navigator (`li_a`) la plus fraîche ou le compte `LINKEDIN_CHROME_ACCOUNT`, construit le user agent depuis la version réelle du navigateur, écrit `.linkedin-cookies.json` à la racine (ignoré par git). `--check` montre les sessions sans écrire.
+- `gtm_common.cookies_linkedin()` : fonction partagée qui lance ce rafraîchissement avant chaque run Apify Sales Navigator (`trouver-personnes`, `trouver-entreprises`), puis lit `LINKEDIN_COOKIES_FILE` (avec son `userAgent`), puis le jeu minimal du `.env`. `LINKEDIN_COOKIES_AUTO=0` désactive la lecture du navigateur.
+
+### Modifié
+- `connecter-outils` étape 9, `exporter-salesnav` (outil, garde-fous, erreurs), `.env.example`, `verifier_connexions.py` : la procédure et les diagnostics. Cause documentée de "Cookies are expired" après la première page alors que le compte reste connecté : un user agent qui ne correspond pas au navigateur émetteur des cookies fait renouveler le `li_at` par LinkedIn. Un jeu réduit à `li_at` + `li_a` est refusé par l'actor : il faut l'export complet des domaines `.linkedin.com` et `www.linkedin.com`.
+
 ## [6.2.0] - 2026-09-21
 
 Le dépôt ne transporte plus ses propres vieilles versions, et l'export Sales Navigator a son skill.

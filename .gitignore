@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+.linkedin-cookies.json
 
 # Etat local genere par les skills de prospection
 **/scripts/compteur.json

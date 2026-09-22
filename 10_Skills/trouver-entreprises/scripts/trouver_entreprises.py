@@ -44,7 +44,7 @@ if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
 from gtm_common import (Crustdata, Ocean, Prospeo, Unipile, afficher, aujourd_hui, arret, bandeau_dry_run, chemin_sortie,  # noqa: E402
-                        domaine, ecrire_csv, enregistrer_requete, env, lire_outils, norm_linkedin_url)
+                        cookies_linkedin, domaine, ecrire_csv, enregistrer_requete, env, lire_outils, norm_linkedin_url)
 from apify_run import lancer, prix  # noqa: E402
 
 VERBE = "trouver-entreprises"
@@ -179,21 +179,6 @@ def base_large(a) -> tuple[list[dict], str]:
         if len(lignes) >= a.max:
             break
     return lignes, actor
-
-
-def cookies_linkedin() -> tuple[list[dict], str]:
-    """Cookies pour l'actor Sales Navigator, depuis le .env (jamais depuis un skill)."""
-    ua = env("LINKEDIN_USER_AGENT", aide="Ecrivez LINKEDIN_USER_AGENT dans .env (voir connecter-outils, etape 8).")
-    fichier = env("LINKEDIN_COOKIES_FILE", obligatoire=False)
-    if fichier and Path(fichier).exists():
-        data = json.loads(Path(fichier).read_text(encoding="utf-8"))
-        return (data if isinstance(data, list) else data.get("cookie", [])), ua
-    li_at = env("LINKEDIN_LI_AT", aide="Ecrivez LINKEDIN_LI_AT (et LINKEDIN_LI_A pour Sales Navigator) dans .env.")
-    cookies = [{"name": "li_at", "value": li_at, "domain": ".linkedin.com", "path": "/", "secure": True, "httpOnly": True}]
-    li_a = env("LINKEDIN_LI_A", obligatoire=False)
-    if li_a:
-        cookies.append({"name": "li_a", "value": li_a, "domain": ".linkedin.com", "path": "/", "secure": True, "httpOnly": True})
-    return cookies, ua
 
 
 def salesnav_apify(a) -> tuple[list[dict], str]:

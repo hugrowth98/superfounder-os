@@ -18,7 +18,7 @@ Le script de `trouver-personnes` (`10_Skills/trouver-personnes/scripts/trouver_p
 | Chemin | `--source` | Condition | Coût | Limite |
 |---|---|---|---|---|
 | Votre compte LinkedIn | `unipile` | `UNIPILE_API_KEY` et `UNIPILE_ACCOUNT_ID` dans `.env`, abonnement Sales Navigator sur le compte | inclus dans l'abonnement Unipile | chaque résultat est une vue depuis votre compte : 300 profils par jour au plus |
-| Vos cookies, par Apify | `salesnav` | `APIFY_TOKEN` et `LINKEDIN_LI_AT`, `LINKEDIN_LI_A`, `LINKEDIN_USER_AGENT` (ou `LINKEDIN_COOKIES_FILE`) | `curious_coder/linkedin-sales-navigator-search-scraper`, 0,005 $ par résultat | 500 profils par jour, délais de 5 à 30 s entre pages, `stopOnRateLimit` |
+| Vos cookies, par Apify | `salesnav` | `APIFY_TOKEN` et `browser_cookie3` installé (cookies et user agent relus dans votre navigateur avant chaque run), sinon `LINKEDIN_COOKIES_FILE` + `LINKEDIN_USER_AGENT` | `curious_coder/linkedin-sales-navigator-search-scraper`, 0,005 $ par résultat | 500 profils par jour, délais de 5 à 30 s entre pages, `stopOnRateLimit` |
 
 Sans `--source`, le script prend les cookies s'ils sont là, sinon Unipile. Les filtres "a consulté votre profil" et "suit votre page" ne se lisent qu'avec un compte qui est le vôtre : les deux chemins le sont.
 
@@ -43,7 +43,7 @@ Une URL `https://www.linkedin.com/sales/search/people?...` (ou `/sales/search/co
 ## Garde-fous
 
 - `--max` sous 300 avec Unipile, sous 500 avec les cookies : au-delà, le compte prend un risque ; le plafond du jour vaut pour tous les skills réunis (`GARDE-FOUS.md`).
-- Les cookies ne se collent jamais dans le chat ni dans un skill : `connecter-outils`, étape 9, les écrit dans `.env`.
+- Les cookies ne se collent jamais dans le chat ni dans un skill : `rafraichir_cookies_linkedin.py` (`connecter-outils`, étape 9) les relit dans le navigateur avant chaque run. Le user agent vient du même navigateur : un user agent périmé fait renouveler la session par LinkedIn et le run s'arrête après la première page.
 - Une URL avec `sessionId` expire : si le script rend 0 ligne, reconstruisez l'URL avec `construire-requete-salesnav` (sans `sessionId`).
 - `signal_date` est la date de l'export, pas celle de la visite ou du changement : la fenêtre se calcule à partir du run précédent (`dedoublonner --contre`).
 
@@ -52,6 +52,7 @@ Une URL `https://www.linkedin.com/sales/search/people?...` (ou `/sales/search/co
 | Symptôme | Cause | Fix |
 |---|---|---|
 | 0 résultat sur une URL qui en montre 200 dans le navigateur | URL périmée (`sessionId`) ou filtre à cocher lu avec un autre compte que le vôtre | reconstruire l'URL, vérifier que le compte Unipile ou les cookies sont ceux du profil qui a le filtre |
-| "Cookies are expired" | cookies périmés | `connecter-outils` étape 9 |
+| "Cookies are expired" dès la page 1 | jeu de cookies incomplet (seulement `li_at` + `li_a`) ou session fermée | `rafraichir_cookies_linkedin.py --check` : le profil retenu doit avoir "Sales Navigator : oui" ; sinon se reconnecter à LinkedIn dans le navigateur |
+| "Cookies are expired" après la page 1, le compte reste connecté | user agent différent du navigateur qui a émis les cookies : LinkedIn renouvelle le `li_at` | laisser le script construire le user agent (ne pas écrire `LINKEDIN_USER_AGENT` à la main), ou le recopier exactement depuis "my user agent" dans Google |
 | Unipile : `sales_navigator` refusé | pas d'abonnement Sales Navigator sur le compte | passer par une recherche classique (`--mots-cles`) ou les cookies d'un compte abonné |
 | Beaucoup de doublons d'une semaine sur l'autre | même URL rejouée sans `--contre` | `dedoublonner --contre <run précédent>` |

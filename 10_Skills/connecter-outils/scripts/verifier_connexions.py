@@ -13,6 +13,7 @@ Aucune valeur de cle n'est jamais affichee.
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from datetime import date
@@ -127,14 +128,22 @@ def tester_publora() -> tuple[bool, str]:
 
 
 def tester_salesnav() -> tuple[bool, str]:
-    li_at = env("LINKEDIN_LI_AT", obligatoire=False)
+    fichier = env("LINKEDIN_COOKIES_FILE", obligatoire=False) or str(racine() / ".linkedin-cookies.json")
+    try:
+        import browser_cookie3  # noqa: F401
+        auto = True
+    except ImportError:
+        auto = False
+    if auto:
+        return True, "browser_cookie3 installe : cookies et user agent relus dans le navigateur avant chaque run (non testes : un test = un run payant)"
     ua = env("LINKEDIN_USER_AGENT", obligatoire=False)
-    fichier = env("LINKEDIN_COOKIES_FILE", obligatoire=False)
-    if fichier and Path(fichier).exists() and ua:
-        return True, "export complet de cookies + user agent presents (non testes : un test = un run payant)"
-    if li_at and ua:
-        return True, "li_at + user agent presents" + (" + li_a" if env("LINKEDIN_LI_A", obligatoire=False) else " (li_a manquant : pas de Sales Nav)")
-    return False, "LINKEDIN_LI_AT et LINKEDIN_USER_AGENT manquants (ou LINKEDIN_COOKIES_FILE)"
+    if Path(fichier).exists():
+        data = json.loads(Path(fichier).read_text(encoding="utf-8"))
+        if isinstance(data, dict) and data.get("userAgent") or ua:
+            return True, f"export complet de cookies + user agent presents dans {Path(fichier).name} (pas de rafraichissement auto : pip3 install browser_cookie3)"
+    if env("LINKEDIN_LI_AT", obligatoire=False) and ua:
+        return True, "li_at + user agent presents" + (" + li_a" if env("LINKEDIN_LI_A", obligatoire=False) else " (li_a manquant : pas de Sales Nav)") + " ; conseil : pip3 install browser_cookie3 pour les relire automatiquement"
+    return False, "ni browser_cookie3, ni LINKEDIN_COOKIES_FILE, ni LINKEDIN_LI_AT + LINKEDIN_USER_AGENT"
 
 
 TESTS = {"apify": tester_apify, "unipile": tester_unipile, "crustdata": tester_crustdata,

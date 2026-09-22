@@ -112,6 +112,50 @@ def env(nom: str, obligatoire: bool = True, aide: str = "") -> str:
     return val
 
 
+def cookies_linkedin() -> tuple[list[dict], str]:
+    """Cookies + user agent pour les actors Apify Sales Navigator. Ordre :
+    1. rafraichissement automatique depuis le navigateur (connecter-outils/scripts/rafraichir_cookies_linkedin.py)
+       si browser_cookie3 est installe : cookies du jour et user agent aligne sur la version reelle de Chrome
+       (un user agent perime fait renouveler la session par LinkedIn : page 1 passe, page 2 "Cookies are expired")
+    2. LINKEDIN_COOKIES_FILE (export complet, avec son userAgent s'il en a un)
+    3. LINKEDIN_LI_AT + LINKEDIN_LI_A + LINKEDIN_USER_AGENT du .env (jeu minimal, souvent refuse par l'actor)."""
+    import subprocess
+    script = racine() / "10_Skills" / "connecter-outils" / "scripts" / "rafraichir_cookies_linkedin.py"
+    fichier = env("LINKEDIN_COOKIES_FILE", obligatoire=False) or str(racine() / ".linkedin-cookies.json")
+    if script.exists() and env("LINKEDIN_COOKIES_AUTO", obligatoire=False).lower() not in ("0", "non", "false"):
+        r = subprocess.run([sys.executable, str(script), "--silencieux"], capture_output=True, text=True)
+        if r.returncode == 0:
+            print(r.stdout.strip() or "cookies LinkedIn rafraichis", file=sys.stderr)
+        else:
+            print(f"rafraichissement des cookies impossible ({(r.stdout + r.stderr).strip().splitlines()[-1:] or ['?']}), "
+                  f"je prends ceux du .env", file=sys.stderr)
+    if Path(fichier).exists():
+        data = json.loads(Path(fichier).read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            return data, env("LINKEDIN_USER_AGENT", aide="Ecrivez LINKEDIN_USER_AGENT dans .env (connecter-outils, etape 9).")
+        ua = data.get("userAgent") or env("LINKEDIN_USER_AGENT", aide="Ecrivez LINKEDIN_USER_AGENT dans .env (connecter-outils, etape 9).")
+        return data.get("cookie", []), ua
+    ua = env("LINKEDIN_USER_AGENT", aide="Ecrivez LINKEDIN_USER_AGENT dans .env (connecter-outils, etape 9).")
+    li_at = env("LINKEDIN_LI_AT", aide="Ecrivez LINKEDIN_LI_AT (et LINKEDIN_LI_A pour Sales Navigator) dans .env, ou installez browser_cookie3.")
+    cookies = [{"name": "li_at", "value": li_at, "domain": ".linkedin.com", "path": "/", "secure": True, "httpOnly": True}]
+    li_a = env("LINKEDIN_LI_A", obligatoire=False)
+    if li_a:
+        cookies.append({"name": "li_a", "value": li_a, "domain": ".linkedin.com", "path": "/", "secure": True, "httpOnly": True})
+    return cookies, ua
+
+
+def cookies_linkedin_disponibles() -> bool:
+    """Vrai si un run Apify Sales Navigator a de quoi s'authentifier (fichier, .env, ou navigateur lisible)."""
+    fichier = env("LINKEDIN_COOKIES_FILE", obligatoire=False) or str(racine() / ".linkedin-cookies.json")
+    if Path(fichier).exists() or (env("LINKEDIN_USER_AGENT", obligatoire=False) and env("LINKEDIN_LI_AT", obligatoire=False)):
+        return True
+    try:
+        import browser_cookie3  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
 def lire_outils() -> dict:
     """Les quatre choix ecrits par connecter-outils dans OUTILS.md."""
     fichier = dossier_gtm() / "OUTILS.md"
