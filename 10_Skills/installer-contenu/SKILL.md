@@ -104,6 +104,8 @@ python3 10_Skills/linkedin/scripts/veille.py --jours 14 --tier tous --sans-trans
 
 Corrige les flux en erreur (URL, handle). Propose ensuite les transcripts YouTube, qui rendent le brief bien plus riche : `pip3 install youtube-transcript-api` (une commande, gratuite) ; sans elle, le script tourne sans transcripts et le dit. Termine en donnant la phrase du lundi : "fais ma veille".
 
+Une quatrième question, facultative : **les comptes LinkedIn** dont il veut voir les posts qui performent (concurrents, créateurs de sa niche, 5 à 50 URLs de profil). S'il en donne, écris `05_Departements/Marketing/LinkedIn/comptes-veille.json` (format dans le sous-skill `veille-createurs`) et donne la phrase du mois : "fais la veille créateurs". Sans réponse, rien à écrire : le sous-skill demandera les comptes au premier run.
+
 ## Phase 6 : la charte visuelle
 
 `03_Branding/` est une zone protégée : tu n'y écris que sur un oui explicite. Demande ses couleurs (fond, texte, un accent) et sa police, ou l'URL de son site pour les lire, et s'il a un logo dans `03_Branding/`. Écris `03_Branding/charte-visuelle.md` (palette par rôle, typographies, interdits, logo) et coche la case dans `03_Branding/Branding.md`. S'il ne sait pas : laisse `[à remplir]`, le master `infographie` partira sur un style neutre et le dira. Cette phase se saute en une phrase.

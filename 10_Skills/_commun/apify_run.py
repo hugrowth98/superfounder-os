@@ -41,6 +41,7 @@ PRIX = {
     "borderline/indeed-scraper": ("par offre", 0.005, 0.0),
     "harvestapi/linkedin-post-comments": ("par commentaire", 0.002, 0.0),
     "harvestapi/linkedin-post-reactions": ("par reaction", 0.002, 0.0),
+    "harvestapi/linkedin-profile-posts": ("par post (40 au plus par compte)", 0.002, 0.0),
     "scrapemint/website-tech-stack-detector": ("par domaine avec au moins une detection", 0.01, 0.0),
     "curious_coder/facebook-ads-library-scraper": ("par pub", 0.00075, 0.0),
     "s-r/linkedin-ads-library": ("par pub", 0.005, 0.0),

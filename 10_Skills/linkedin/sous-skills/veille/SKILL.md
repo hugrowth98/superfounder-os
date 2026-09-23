@@ -29,7 +29,7 @@ Le script lit les sources, Claude fait le travail éditorial. Rien dans le brief
 | `05_Departements/Marketing/LinkedIn/sources/veille_AAAA-MM-JJ.json` | le dump brut de la semaine (articles, vidéos, transcripts, scores) | `veille.py` |
 | `05_Departements/Marketing/LinkedIn/Brief-veille_AAAA-MM-JJ.md` | le brief en 6 sections | Claude, après validation |
 
-Les sources sans flux (Product Hunt, comptes X, communautés, comptes LinkedIn à surveiller) sont listées dans `strategie-contenu.md`, section Sources de veille : le script ne les lit pas ; à l'étape 3, si l'utilisateur le demande, consultez-les avec WebSearch ou Firecrawl et marquez ces lignes du brief "vu à la main". Une page entreprise LinkedIn (la vôtre ou un concurrent) se lit avec `publications-entreprise` (Unipile).
+Les sources sans flux (Product Hunt, comptes X, communautés) sont listées dans `strategie-contenu.md`, section Sources de veille : le script ne les lit pas ; à l'étape 3, si l'utilisateur le demande, consultez-les avec WebSearch ou Firecrawl et marquez ces lignes du brief "vu à la main". Les comptes LinkedIn de personnes à surveiller relèvent du sous-skill `veille-createurs` (posts qui ont performé, quatre catégories, visuels) ; une page entreprise LinkedIn (la vôtre ou un concurrent) se lit avec `publications-entreprise` (Unipile).
 
 Si `sources-veille.json` est vide ou absent : proposez d'ajouter des sources maintenant (une newsletter et une chaîne suffisent pour un premier run) ou de lancer "Installe mon contenu". Une source s'ajoute en éditant le JSON : un flux RSS (`https://<nom>.substack.com/feed`, ou le flux de n'importe quel blog) ou un identifiant de chaîne YouTube (`@handle`).
 

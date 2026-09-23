@@ -37,6 +37,7 @@ Vous n'avez pas à les nommer : les phrases suffisent.
 | Vous voulez | Vous dites | Sous-skill |
 |---|---|---|
 | Savoir ce qui se dit cette semaine chez vos sources | "fais ma veille" | `veille` : brief en 6 sections (sujet le plus discuté, top 10, lancement, 10 idées de posts, 10 de newsletter, 10 de lead magnet), chaque idée ancrée sur une source |
+| Voir ce qui a marché chez des comptes que vous suivez | "fais la veille créateurs", "qu'est-ce qui a marché chez" | `veille-createurs` : vous donnez les comptes, le skill scrape leurs posts sur la fenêtre S-6 à S-2 et rend un rapport HTML à quatre classements (20 éducatifs, 20 lead magnets, 10 hot takes, 10 storytelling) avec la vignette de chaque post |
 | Trouver quoi dire, bâtir le calendrier | "idées de posts", "quoi poster" | `ideation` |
 | Partir de votre vécu | "interviewe-moi", "page blanche" | `interview` |
 | Écrire un post | "écris un tuto sur", "raconte", "mon avis sur", "post lead magnet" | `educatif`, `storytelling`, `opinion`, `lead-magnet` |
@@ -49,6 +50,11 @@ Vous n'avez pas à les nommer : les phrases suffisent.
 | Convertir les visites du profil | "optimise mon profil" | `profil` |
 | Savoir ce qui marche chez vous | "analyse mes posts", "bilan du mois" | `performance` |
 | Un visuel | "transforme ce post en infographie", "version manuscrite" | master `infographie` |
+| Refaire à votre charte un visuel qui a marché ailleurs | "reprends cette infographie", "trois versions de ce visuel" | `infographie`, sous-skill `reprise` : trois PNG 1080x1350 dans trois structures, rendu HTML exact, sans IA d'image |
+
+## La veille créateurs, chaque mois
+
+Le sous-skill `veille-createurs` ne sait pas qui vous suivez : il vous demande les comptes LinkedIn (les URLs de profil, cinq à cinquante), annonce le coût Apify (0,002 $ par post, 40 posts par compte au plus), scrape leurs posts sur une fenêtre fermée (du lundi de S-6 au dimanche de S-2, pour que l'engagement soit stabilisé), puis classe en quatre catégories avec des quotas : 20 éducatifs, 20 lead magnets, 10 hot takes, 10 storytelling. Les motifs automatiques proposent, vous tranchez dans `verdicts.json`, le rapport HTML montre chaque post avec sa vignette, ses chiffres, son texte complet et son lien. Sur un oui, les comptes sont mémorisés dans `comptes-veille.json` pour le mois suivant. Un visuel du rapport se refait à votre charte avec le sous-skill `reprise` du master `infographie`.
 
 ## La veille, chaque lundi
 

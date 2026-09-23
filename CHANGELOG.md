@@ -3,6 +3,21 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [6.4.0] - 2026-09-23
+
+La veille regarde aussi les comptes que vous suivez, et un visuel qui a marché ailleurs se refait à votre charte en trois structures, sans IA d'image.
+
+### Ajouté
+- Sous-skill `veille-createurs` du master `linkedin`, script `veille_createurs.py` : vous donnez les comptes LinkedIn (URLs, fichier texte, ou `comptes-veille.json` mémorisé sur un oui ; aucune liste livrée), le script annonce le coût Apify (`harvestapi/linkedin-profile-posts`, 0,002 $ par post, `--dry-run`), scrape la fenêtre S-6 à S-2, classe en quatre catégories avec quotas (20 éducatifs, 20 lead magnets, 10 hot takes, 10 storytelling, trois posts par compte au plus), télécharge les visuels et écrit `rapport.html` (vignette, chiffres, multiplicateur par rapport à la médiane du compte, post entier dépliable, lien, annexe de tous les posts). Les motifs automatiques proposent des candidats, `verdicts.json` tranche, `--reconstruire` rejoue sans relancer Apify. Runs dans `05_Departements/Marketing/LinkedIn/sources/veille-createurs_<debut>_<fin>/`, ignorés par git.
+- Sous-skill `reprise` du master `infographie`, scripts `rendre_infographie.py` et `gabarits_html.py`, ressource `format-donnees.md` : une infographie existante (image, carrousel) ou un post en trois PNG 1080x1350 par rendu HTML avec Chrome headless, aux couleurs et polices lues dans `03_Branding/charte-visuelle.md` (palette par rôle, typographies, logo ; style éditorial neutre si elle est vide). Huit gabarits (grille, glossaire, système, étapes, comparatif, pyramide, funnel, tier list) qui couvrent les quinze structures de la bibliothèque ; règle des trois structures (la fidèle, la lisible, la réorganisée) ; le texte se corrige dans `data.json` et se rend à nouveau en dix secondes.
+- `apify_run.py` : prix de `harvestapi/linkedin-profile-posts`.
+
+### Modifié
+- Master `linkedin` : table de routage, logique ("qu'est-ce qui marche chez les autres"), `comptes-veille.json` dans les réglages ; `veille` renvoie les comptes LinkedIn à `veille-createurs` ; `performance` idem pour les posts des autres.
+- Master `infographie` : table de routage, exception à "une image à la fois" pour `reprise`, scripts nommés dans le repérage.
+- `installer-contenu` phase 5 : une question facultative sur les comptes à suivre, qui écrit `comptes-veille.json`.
+- `CLAUDE.md`, `AGENTS.md` (dix-sept sous-skills LinkedIn, `reprise`), `docs/contenu.md` (deux lignes de tâches, section "La veille créateurs, chaque mois"), `05_Departements/Marketing/LinkedIn/LinkedIn.md`.
+
 ## [6.3.0] - 2026-09-22
 
 Les cookies Sales Navigator ne se copient plus à la main : le module les relit dans le navigateur avant chaque run, avec le bon user agent.

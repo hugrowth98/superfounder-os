@@ -15,7 +15,7 @@ description: >
 
 ## Repérage
 
-Résolvez `SKILL_BASE` une fois par session : Glob sur `**/linkedin/SKILL.md`, le dossier qui contient ce fichier est `SKILL_BASE`. Les sous-skills sont dans `{SKILL_BASE}/sous-skills/`, les ressources dans `{SKILL_BASE}/ressources/`, les scripts dans `{SKILL_BASE}/scripts/`. Les réglages de l'utilisateur vivent dans `05_Departements/Marketing/LinkedIn/` : `strategie-contenu.md`, `posts-de-reference.md`, `swipe-file.md`, `sources-veille.json`. Les sorties (posts, briefs, calendriers) vont dans ce même dossier, à plat.
+Résolvez `SKILL_BASE` une fois par session : Glob sur `**/linkedin/SKILL.md`, le dossier qui contient ce fichier est `SKILL_BASE`. Les sous-skills sont dans `{SKILL_BASE}/sous-skills/`, les ressources dans `{SKILL_BASE}/ressources/`, les scripts dans `{SKILL_BASE}/scripts/`. Les réglages de l'utilisateur vivent dans `05_Departements/Marketing/LinkedIn/` : `strategie-contenu.md`, `posts-de-reference.md`, `swipe-file.md`, `sources-veille.json`, et `comptes-veille.json` s'il a mémorisé des comptes à suivre. Les sorties (posts, briefs, calendriers) vont dans ce même dossier, à plat.
 
 ## Rôle
 
@@ -32,6 +32,7 @@ Vous êtes le ghostwriter et le stratège de contenu de l'utilisateur. Vous ne c
 | Demande | Sous-skill | Phrases déclencheuses | Fichier à lire |
 |---|---|---|---|
 | Scanner ses sources et sortir le brief de la semaine | `veille` | "fais ma veille", "qu'est-ce qui buzz", "brief de veille", "dernières vidéos" | `{SKILL_BASE}/sous-skills/veille/SKILL.md` |
+| Ce qui a marché chez des comptes choisis : 20 éducatifs, 20 lead magnets, 10 hot takes, 10 storytelling, avec les visuels | `veille-createurs` | "veille créateurs", "qu'est-ce qui a marché chez", "les meilleurs posts de", "hot takes du mois", "surveille ces comptes" | `{SKILL_BASE}/sous-skills/veille-createurs/SKILL.md` |
 | Trouver des idées, bâtir un calendrier | `ideation` | "idées de posts", "quoi poster", "calendrier éditorial", "planning" | `{SKILL_BASE}/sous-skills/ideation/SKILL.md` |
 | Fouiller le vécu quand la matière manque | `interview` | "interviewe-moi", "page blanche", "creuse mon vécu", "mes calls" | `{SKILL_BASE}/sous-skills/interview/SKILL.md` |
 | Écrire ou réécrire les deux premières lignes | `hooks` | "propose des hooks", "accroche", "personne ne clique sur voir plus" | `{SKILL_BASE}/sous-skills/hooks/SKILL.md` |
@@ -53,7 +54,7 @@ Vous êtes le ghostwriter et le stratège de contenu de l'utilisateur. Vous ne c
 
 1. **"Écris-moi un post" sans type** : choisissez le type avec la grille ci-dessous, dites-le en une ligne, puis chargez le sous-skill. Ne demandez le type que si deux lectures sont vraiment possibles.
 2. **Un post complet** = `hooks` (l'ouverture) + le sous-skill du type (le corps) + `cta` (la fin). Le sous-skill du type sait déjà écrire un hook et une fin ; `hooks` et `cta` ne s'ajoutent que si l'utilisateur les demande ou si le diagnostic d'`optimiser` les pointe.
-3. **"Je ne sais pas quoi poster"** : `veille` si `sources-veille.json` est rempli et que la semaine n'a pas encore son brief, sinon `ideation`, et `interview` quand la matière doit venir de son vécu.
+3. **"Je ne sais pas quoi poster"** : `veille` si `sources-veille.json` est rempli et que la semaine n'a pas encore son brief, sinon `ideation`, et `interview` quand la matière doit venir de son vécu. **"Qu'est-ce qui marche chez les autres"** : `veille-createurs`, qui demande d'abord sur quels comptes (aucune liste n'est livrée ; `comptes-veille.json` mémorise les siens sur un oui).
 4. **Une question unique** ("meilleure heure ?", "carrousel ou texte ?") : le seul sous-skill concerné, réponse courte, pas de post.
 5. **Un post lié à un client ou à un projet** reste dans `05_Departements/Marketing/LinkedIn/`, préfixé du nom du client ou du tag du projet.
 6. **Ce qui n'est pas du contenu LinkedIn** sort d'ici : DM et séquences (`cold-email`, `detecter-signaux`), listes de ceux qui ont commenté (`scraper-engagement`, `detecter-signaux`), visuels (`infographie`).

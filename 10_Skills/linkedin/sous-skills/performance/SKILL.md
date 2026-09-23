@@ -7,7 +7,7 @@ description: >
   `posts-de-reference.md` avec les enseignements. Se déclenche sur : "qu'est-ce qui marche
   chez moi", "analyse mes posts", "mes meilleurs posts", "pourquoi ce post a marché", "quelle
   longueur me réussit", "bilan du mois". Ne pas utiliser pour classer les posts des autres
-  (sous-skill `veille`, ou `publications-entreprise` pour une page entreprise).
+  (sous-skill `veille-createurs`, ou `publications-entreprise` pour une page entreprise).
 ---
 
 > Sous-skill du master `linkedin`. `SKILL_BASE` est le dossier du master (Glob sur `**/linkedin/SKILL.md`) : les ressources sont dans `{SKILL_BASE}/ressources/`. Le master a déjà chargé le socle d'écriture.

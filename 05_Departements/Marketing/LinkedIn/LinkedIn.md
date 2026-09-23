@@ -21,7 +21,8 @@ Un post par fichier : `Post-Sujet_YYYY-MM-DD.md`. Le brief de veille hebdo : `Br
 Les posts qui ont bien marché remontent dans `posts-de-reference.md`. Les posts des autres qui arrêtent le scroll vont dans `swipe-file.md`. Plus l'échantillon est riche, plus la voix est juste.
 
 - à plat : les posts, les briefs, les infographies, le calendrier, plus `strategie-contenu.md`, `posts-de-reference.md`, `swipe-file.md`, `sources-veille.json`
-- `sources/` transcripts, articles, idées brutes à repurposer, et les dumps et caches de la veille (`veille_*.json`, ignorés par git)
+- `sources/` transcripts, articles, idées brutes à repurposer, les dumps et caches de la veille (`veille_*.json`) et les runs de la veille créateurs (`veille-createurs_<debut>_<fin>/` avec `rapport.html` et les visuels), tous ignorés par git
+- `comptes-veille.json` : les comptes LinkedIn à surveiller, si vous avez choisi de les mémoriser (sous-skill `veille-createurs`) ; une infographie reprise d'un visuel existant vit dans son dossier `Infographie-Sujet_YYYY-MM-DD/` (`data.json` et trois PNG, sous-skill `reprise`)
 
 ## Où on en est
 
