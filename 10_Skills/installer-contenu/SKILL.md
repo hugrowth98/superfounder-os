@@ -5,7 +5,7 @@ description: >
   second cerveau (02_Contexte/) et fait l'inventaire de ce qui existe (posts, newsletters,
   transcripts), capte la voix, range les posts de référence et leurs chiffres, construit la
   stratégie de contenu (skill `strategie-contenu` : première version, avis, interview de
-  challenge), crée le Content Brain et ses pages de piliers et de sujets, règle le cloisonnement
+  challenge), crée le Content Brain et ses pages de piliers, règle le cloisonnement
   des clients, fait une première récolte de fiches dans la base de connaissances, branche la
   veille et les comptes suivis, la charte visuelle et le profil, puis rend un bilan et programme
   le passage hebdomadaire `clean-content`. Deuxième entrée, relançable : "Nourris mon brain"
@@ -89,10 +89,10 @@ Fait quand : la section Piliers et la section Convictions ne contiennent plus `[
 ## Phase 4 : créer le Content Brain
 
 1. Vérifie que tous les dossiers du fichier de structure existent sous `Content-Brain/`. Crée ce qui manque, ne touche pas au reste.
-2. Lance `python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run`, montre les pages qui seraient créées (une par pilier, une par sujet), puis relance sans `--dry-run` sur un oui.
+2. Lance `python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run`, montre les pages qui seraient créées (une par pilier, dans `01_Strategie/Piliers/` ; pas de page par sujet), puis relance sans `--dry-run` sur un oui.
 3. Dis à l'utilisateur d'ouvrir le workspace dans Obsidian s'il veut la vue en graphe : la carte au centre, les piliers, les sujets, puis les fiches à mesure qu'elles arrivent. Obsidian n'est qu'une visionneuse, rien ne casse sans lui.
 
-Fait quand : `01_Strategie/` contient une page `Pilier-N_` par pilier de la stratégie.
+Fait quand : `01_Strategie/Piliers/` contient une page `Pilier_<Nom>.md` par pilier de la stratégie, et `01_Strategie/` rien d'autre que la stratégie, les posts de référence et ce dossier.
 
 ## Phase 5 : le cloisonnement des clients
 
@@ -127,7 +127,7 @@ Fait quand : la base contient au moins une fiche par pilier.
 ## Phase 7 : organiser par pilier
 
 1. Vérifie que chaque fiche a un `pilier` et, quand c'est possible, des `sujets`.
-2. Lance `python3 10_Skills/clean-content/scripts/reconstruire.py` : il écrit la ligne de lien en bas de chaque fiche, refait les pages de piliers et de sujets, et la section "Où on en est" de la carte.
+2. Lance `python3 10_Skills/clean-content/scripts/reconstruire.py` : il écrit la ligne de lien en bas de chaque fiche, refait les pages de piliers (chaque fiche y est liée sous son sujet), et la section "Où on en est" de la carte.
 3. Lis ses alertes (fiche sans pilier reconnu, sujet hors stratégie) et corrige les fiches concernées.
 
 Ces pages ne s'éditent jamais à la main : pour changer une page, on change le champ d'une fiche.

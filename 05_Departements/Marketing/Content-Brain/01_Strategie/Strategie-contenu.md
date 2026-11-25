@@ -76,7 +76,7 @@ Le fichier de référence est [[Tone-and-Voice]]. Ici, le résumé que les skill
 
 ## Piliers
 
-3 ou 4 grands thèmes. Un pilier tient s'il passe trois tests : vous l'avez vécu, vous avez une preuve chiffrée, il mène à votre offre. Les pages `Pilier-N_<Nom>.md` et `Sujet_<Nom>.md` de ce dossier sont reconstruites à partir de cette section : gardez la forme des titres et des listes.
+3 ou 4 grands thèmes. Un pilier tient s'il passe trois tests : vous l'avez vécu, vous avez une preuve chiffrée, il mène à votre offre. Les pages du dossier `Piliers/` (une par pilier, les sujets en sections) sont reconstruites à partir de cette section : gardez la forme des titres et des listes.
 
 ### Pilier 1 : [Nom du pilier] (XX %)
 

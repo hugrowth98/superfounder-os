@@ -22,7 +22,7 @@ description: >
 Avant d'écrire, lis `10_Skills/_commun/content-brain.md` si ce n'est pas déjà fait dans la session, puis cherche la matière dans `05_Departements/Marketing/Content-Brain/` :
 
 1. Si le post part d'une idée de `04_Idees/`, ouvre les fiches de son champ `fiches`.
-2. Sinon, trouve le pilier et le sujet du post dans `01_Strategie/` (la page `Sujet_<Nom>.md` liste les fiches du sujet), et retiens 3 à 5 fiches de `03_Base-de-connaissances/` : d'abord `Enseignements/` et la section Convictions de la stratégie, puis une fiche de `Preuves/` ou de `Histoires/` qui montre que la position vient du terrain.
+2. Sinon, trouve le pilier et le sujet du post dans `01_Strategie/` (la page du pilier, dans `01_Strategie/Piliers/`, liste les fiches de chaque sujet), et retiens 3 à 5 fiches de `03_Base-de-connaissances/` : d'abord `Enseignements/` et la section Convictions de la stratégie, puis une fiche de `Preuves/` ou de `Histoires/` qui montre que la position vient du terrain.
 3. Écarte les fiches `diffusion: interne`. Pour une fiche `anonyme`, le client reste un rôle et un secteur. Préfère les fiches dont `utilise_dans` est vide ou date de plus de 90 jours.
 4. Le post s'écrit à partir de ces fiches : les mots de l'utilisateur, ses chiffres tels quels, ses scènes. Si la base n'a rien sur le sujet, dis-le et propose "interviewe-moi" plutôt que d'écrire un post générique.
 5. Pour la construction, regarde une ou deux fiches de `02_Veille/Inspirations/` au même `format` : la structure, jamais les mots.

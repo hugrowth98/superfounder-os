@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
-"""reconstruire : refait les pages de piliers, les pages de sujets, la carte et le calendrier du Content Brain.
+"""reconstruire : refait les pages de piliers, la carte et le calendrier du Content Brain.
 
 Lit 01_Strategie/Strategie-contenu.md (les piliers et leurs sujets) et le frontmatter des fiches de
-03_Base-de-connaissances/, des idees de 04_Idees/ et des posts de 05_Calendrier-editorial/. Ecrit :
-  - 01_Strategie/Pilier-N_<Nom>.md      une page par pilier
-  - 01_Strategie/Sujet_<Nom>.md         une page par sujet
-  - la ligne de lien en bas de chaque fiche (**Sujets :** ou **Pilier :**)
+03_Base-de-connaissances/, des idees de 04_Idees/, des posts de 05_Calendrier-editorial/ et des fiches
+de 02_Veille/. Ecrit :
+  - 01_Strategie/Piliers/Pilier_<Nom>.md     une page par pilier, sans numero, et rien d'autre : ses sujets sont des
+                                             sections de la page, avec le lien vers chaque fiche, puis
+                                             ses idees, ses posts et sa veille
+  - la ligne **Pilier :** en bas de chaque fiche, qui pointe vers la page du pilier
   - la section "Ou on en est" de Content-Brain.md (entre les marqueurs carte:debut et carte:fin)
   - le tableau par semaine de 05_Calendrier-editorial/Calendrier.md (entre calendrier:debut et calendrier:fin)
 
-Ne supprime rien. Une page de pilier ou de sujet qui ne correspond plus a la strategie est signalee.
+Il n'y a pas de page par sujet. Les pages `Sujet_*.md` et les pages de piliers numerotees
+(`Pilier-N_*.md`) ecrites par une version precedente partent dans 11_Archives/ : elles sont refaites
+au nouveau nom. Rien n'est supprime. Une page de pilier qui ne correspond
+plus a la strategie est signalee.
 
 Usage :
   python3 reconstruire.py --dry-run     ce qui serait ecrit, sans rien toucher
@@ -31,6 +36,17 @@ _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md")
 TYPES = [("enseignement", "Enseignements"), ("methode", "Methodes"), ("preuve", "Preuves"), ("histoire", "Histoires")]
 LIBELLE = {"enseignement": "Enseignements", "methode": "Méthodes", "preuve": "Preuves", "histoire": "Histoires"}
 ENTETE = "> Page reconstruite par `clean-content` (script `reconstruire.py`). Ne pas modifier à la main : changez le `pilier` ou les `sujets` d'une fiche, ou la section Piliers de la stratégie.\n"
+MARQUE = "Page reconstruite par `clean-content`"
+SINGULIER = {"enseignement": "Enseignement", "methode": "Méthode", "preuve": "Preuve", "histoire": "Histoire"}
+
+
+def deplacer(source: Path, cible: Path, dry: bool, journal: list[str], verbe: str) -> None:
+    if cible.exists():
+        cible = cible.with_name(f"{cible.stem}_{datetime.now().strftime('%H%M%S')}{cible.suffix}")
+    journal.append(f"{verbe} {source} -> {cible}")
+    if not dry:
+        cible.parent.mkdir(parents=True, exist_ok=True)
+        source.rename(cible)
 
 
 def norm(s: str) -> str:
@@ -175,13 +191,27 @@ def main() -> None:
         sys.exit(f"Content Brain introuvable : {brain}. Lancez \"Installe mon contenu\".")
 
     strat, base, journal, alertes = brain / "01_Strategie", brain / "03_Base-de-connaissances", [], []
+    dossier_piliers = strat / "Piliers"
     piliers = lire_strategie(strat / "Strategie-contenu.md")
+
+    # Rangement des pages d'une version precedente : piliers a la racine de 01_Strategie/, pages de sujets.
+    parent_archives = next((d for d in brain.parents if (d / "11_Archives").is_dir()), brain)
+    archive = parent_archives / "11_Archives" / f"content-brain-anciennes-pages_{date.today().isoformat()}"
+    anciennes = sorted(strat.glob("*.md")) + (sorted(dossier_piliers.glob("*.md")) if dossier_piliers.is_dir() else [])
+    for p in anciennes:
+        if not re.match(r"^(Pilier-\d+_|Sujet_)", p.stem):
+            continue
+        if MARQUE in p.read_text(encoding="utf-8")[:600]:
+            deplacer(p, archive / p.name, a.dry_run, journal, "archivé")
+        else:
+            alertes.append(f"page écrite à la main, laissée en place : {p.name}")
+
     fiches = [f for t, d in TYPES for f in lire_dossier(base / d)]
     par_nom = {norm(p["nom"]): p for p in piliers}
     for p in piliers:
-        p["fiches"], p["page"] = [], f"Pilier-{p['n']}_{slug(p['nom'])}"
+        p["fiches"], p["page"] = [], f"Pilier_{slug(p['nom'])}"
         for s in p["sujets"]:
-            s["fiches"], s["page"] = [], f"Sujet_{slug(s['nom'])}"
+            s["fiches"] = []
 
     sans_pilier = []
     for f in fiches:
@@ -199,62 +229,59 @@ def main() -> None:
         for s in trouves:
             s["fiches"].append(f)
         f["_sujets"] = trouves
-        ligne = ("**Sujets :** " + " ".join(f"[[{s['page']}|{s['nom']}]]" for s in trouves)) if trouves else f"**Pilier :** [[{p['page']}|{p['nom']}]]"
-        maj_lien_fiche(f, ligne, a.dry_run, journal)
-
-    def compte(liste: list[dict]) -> str:
-        return ", ".join(f"{LIBELLE[t].lower()} {sum(1 for f in liste if f.get('type') == t)}" for t, _ in TYPES)
-
-    def bloc_fiches(liste: list[dict]) -> str:
-        out = []
-        for t, _ in TYPES:
-            du_type = [f for f in liste if f.get("type") == t]
-            if du_type:
-                out.append(f"### {LIBELLE[t]}\n\n" + "\n".join(f"- {lien(f)}" for f in du_type) + "\n")
-        return "\n".join(out) if out else "Aucune fiche pour l'instant.\n"
-
-    attendues = set()
-    for p in piliers:
-        trous = []
-        lignes = [f"# Pilier {p['n']} : {p['nom']}\n", ENTETE]
-        if p["portee"]:
-            lignes.append(f"**Portée :** {p['portee']}\n")
-        lignes.append(f"**Part visée :** {p['part'] or 'non précisée'}. **Fiches :** {len(p['fiches'])} ({compte(p['fiches'])}).\n")
-        lignes.append("## Sujets\n")
-        if p["sujets"]:
-            lignes.append("| Sujet | Douleur client | Fiches |\n|---|---|---|")
-            for s in p["sujets"]:
-                lignes.append(f"| [[{s['page']}|{s['nom']}]] | {s['douleur'] or 'à préciser'} | {len(s['fiches'])} |")
-                manque = [t for t in ("preuve", "histoire") if not any(f.get("type") == t for f in s["fiches"])]
-                if not s["fiches"]:
-                    trous.append(f"{s['nom']} : aucune fiche")
-                elif manque:
-                    trous.append(f"{s['nom']} : il manque {' et '.join('une ' + m for m in manque)}")
-            lignes.append("")
-        else:
-            lignes.append("Aucun sujet défini dans la stratégie.\n")
-        hors = [f for f in p["fiches"] if not f.get("_sujets")]
-        if hors:
-            lignes.append("## Fiches sans sujet\n\n" + "\n".join(f"- {lien(f)}" for f in hors) + "\n")
-        lignes.append("## Pas encore couvert\n\n" + ("\n".join(f"- {t}" for t in trous) if trous else "Tous les sujets ont au moins une preuve et une histoire.") + "\n")
-        lignes.append("Retour à la carte : [[Content-Brain]]. Stratégie : [[Strategie-contenu]].")
-        p["trous"] = trous
-        attendues.add(p["page"])
-        ecrire(strat / f"{p['page']}.md", "\n".join(lignes) + "\n", a.dry_run, journal)
-        for s in p["sujets"]:
-            attendues.add(s["page"])
-            corps = [f"# {s['nom']}\n", ENTETE, f"**Pilier :** [[{p['page']}|{p['nom']}]]",
-                     f"**Douleur client :** {s['douleur'] or 'à préciser'}", f"**Fiches :** {len(s['fiches'])} ({compte(s['fiches'])}).\n",
-                     bloc_fiches(s["fiches"])]
-            ecrire(strat / f"{s['page']}.md", "\n".join(corps), a.dry_run, journal)
-
-    for p in sorted(strat.glob("*.md")):
-        if re.match(r"^(Pilier-\d+_|Sujet_)", p.stem) and p.stem not in attendues:
-            alertes.append(f"page qui ne correspond plus à la stratégie (à archiver sur un oui) : {p.name}")
+        maj_lien_fiche(f, f"**Pilier :** [[{p['page']}|{p['nom']}]]", a.dry_run, journal)
 
     sources = lire_dossier(base / "Sources")
     idees = lire_dossier(brain / "04_Idees")
     posts = lire_dossier(brain / "05_Calendrier-editorial" / "Brouillons") + lire_dossier(brain / "05_Calendrier-editorial" / "Publies")
+    veille = lire_dossier(brain / "02_Veille" / "Marche") + lire_dossier(brain / "02_Veille" / "Inspirations")
+
+    def du_pilier(liste: list[dict], p: dict) -> list[dict]:
+        return [f for f in liste if norm(f.get("pilier", "")) == norm(p["nom"])]
+
+    def compte(liste: list[dict]) -> str:
+        return ", ".join(f"{LIBELLE[t].lower()} {sum(1 for f in liste if f.get('type') == t)}" for t, _ in TYPES)
+
+    def puces(liste: list[dict]) -> str:
+        ordre = [t for t, _ in TYPES]
+        tri = sorted(liste, key=lambda f: ordre.index(f.get("type")) if f.get("type") in ordre else len(ordre))
+        return "\n".join(f"- {SINGULIER.get(f.get('type'), 'Fiche')} : {lien(f)}" for f in tri)
+
+    attendues = set()
+    for p in piliers:
+        trous = []
+        lignes = [f"# {p['nom']}\n", ENTETE]
+        if p["portee"]:
+            lignes.append(f"**Portée :** {p['portee']}\n")
+        lignes.append(f"**Part visée :** {p['part'] or 'non précisée'}. **Fiches :** {len(p['fiches'])} ({compte(p['fiches'])}).\n")
+        lignes.append("## Sujets\n")
+        if not p["sujets"]:
+            lignes.append("Aucun sujet défini dans la stratégie.\n")
+        for s in p["sujets"]:
+            lignes.append(f"### {s['nom']}\n")
+            lignes.append(f"Douleur client : {s['douleur'] or 'à préciser'}\n")
+            lignes.append((puces(s["fiches"]) if s["fiches"] else "Aucune fiche pour l'instant.") + "\n")
+            manque = [t for t in ("preuve", "histoire") if not any(f.get("type") == t for f in s["fiches"])]
+            if not s["fiches"]:
+                trous.append(f"{s['nom']} : aucune fiche")
+            elif manque:
+                trous.append(f"{s['nom']} : il manque {' et '.join('une ' + m for m in manque)}")
+        hors = [f for f in p["fiches"] if not f.get("_sujets")]
+        if hors:
+            lignes.append("## Fiches sans sujet\n\n" + puces(hors) + "\n")
+        for titre, liste in (("Idées", du_pilier(idees, p)), ("Posts", du_pilier(posts, p)), ("Veille", du_pilier(veille, p))):
+            if liste:
+                lignes.append(f"## {titre}\n\n" + "\n".join(f"- {lien(f)}" for f in liste) + "\n")
+        lignes.append("## Pas encore couvert\n\n" + ("\n".join(f"- {t}" for t in trous) if trous else "Tous les sujets ont au moins une preuve et une histoire.") + "\n")
+        lignes.append("Retour à la carte : [[Content-Brain]]. Stratégie : [[Strategie-contenu]].")
+        p["trous"] = trous
+        attendues.add(p["page"])
+        ecrire(dossier_piliers / f"{p['page']}.md", "\n".join(lignes) + "\n", a.dry_run, journal)
+
+    connues = {p.stem for p in dossier_piliers.glob("*.md")} if dossier_piliers.is_dir() else set()
+    connues -= {Path(l.split(" -> ")[0].split(" ", 1)[1].strip()).stem for l in journal if l.startswith("archivé")}
+    for nom in sorted(connues - attendues):
+        alertes.append(f"page de pilier qui ne correspond plus à la stratégie (à archiver sur un oui) : Piliers/{nom}.md")
 
     def repartition(liste: list[dict], champ: str) -> str:
         valeurs = sorted({str(f.get(champ) or "non renseigné") for f in liste})
@@ -262,7 +289,7 @@ def main() -> None:
 
     carte = [f"Reconstruit le {date.today().isoformat()}.\n", "| Pilier | Fiches | Détail | Sujets avec un manque |", "|---|---|---|---|"]
     for p in piliers:
-        carte.append(f"| [[{p['page']}|Pilier {p['n']} : {p['nom']}]] | {len(p['fiches'])} | {compte(p['fiches'])} | {len(p['trous'])} sur {len(p['sujets'])} |")
+        carte.append(f"| [[{p['page']}|{p['nom']}]] | {len(p['fiches'])} | {compte(p['fiches'])} | {len(p['trous'])} sur {len(p['sujets'])} |")
     if not piliers:
         carte.append("| aucun pilier dans la stratégie | 0 | | |")
     carte += ["", f"- Fiches sans pilier reconnu : {len(sans_pilier)}", f"- Sources traitées : {len(sources)} ({repartition(sources, 'nature')})",

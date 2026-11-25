@@ -7,7 +7,7 @@ description: >
   (contradictions entre fichiers, pilier sans preuve, sujet que les clients réclament et qui
   n'est pas traité), puis challenge l'utilisateur en interview, une question à la fois, sur ses
   convictions, son point de vue, ses piliers et son positionnement. Écrit
-  `Content-Brain/01_Strategie/Strategie-contenu.md` et prépare les pages de piliers et de sujets.
+  `Content-Brain/01_Strategie/Strategie-contenu.md` et prépare les pages de piliers.
   Se déclenche sur "ma stratégie de contenu", "challenge ma stratégie", "revois mes piliers",
   "challenge mes convictions", "de quoi je devrais parler", "révision trimestrielle du contenu",
   et à la phase 3 de `installer-contenu`. Ne pas utiliser pour écrire un post (master `linkedin`),
@@ -98,7 +98,7 @@ Une réponse est acceptée quand elle est précise, assumée et vécue : elle no
 
 1. Écris ou mets à jour `Strategie-contenu.md`, section par section, au fil des validations. Remplis "Dernière revue" avec la date du jour.
 2. Dans la section Piliers, respecte la forme exacte : `### Pilier N : Nom (XX %)`, une ligne `Portée :`, une ligne `Test :`, puis `Sujets :` et une puce par sujet au format `- Sujet : douleur`.
-3. Lance `python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run`, montre ce qui serait créé (une page par pilier, une par sujet), puis relance sans `--dry-run` sur un oui.
+3. Lance `python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run`, montre ce qui serait créé (une page par pilier dans `01_Strategie/Piliers/`, les sujets en sections de cette page), puis relance sans `--dry-run` sur un oui.
 4. Si une réponse contredit un fichier de `02_Contexte/` (la voix, l'offre, les clients), propose le diff de ce fichier. Tu n'y écris pas sans un oui explicite.
 5. Ajoute une ligne à `Content-Brain/_log.md`.
 

@@ -13,8 +13,8 @@ Le Content Brain est un dossier du workspace, pas un second cerveau à côté. I
   01_Strategie/
     Strategie-contenu.md        écrite par strategie-contenu
     Posts-de-reference.md       vos meilleurs posts, avec leurs chiffres
-    Pilier-N_<Nom>.md           une page par pilier. Reconstruite par script.
-    Sujet_<Nom>.md              une page par sujet. Reconstruite par script.
+    Piliers/                    une page par pilier, `Pilier_<Nom>.md` (sans numéro), et rien d'autre. Reconstruite par script :
+                                ses sujets sont des sections de la page, avec le lien vers chaque fiche.
   02_Veille/
     Sources-veille.json         newsletters et chaînes suivies (sous-skill veille)
     Comptes-veille.json         comptes LinkedIn suivis (sous-skill veille-createurs)
@@ -72,7 +72,7 @@ utilise_dans: []          # liens vers les posts publiés qui s'en sont servis
 [2 à 6 lignes courtes, dans les mots de l'utilisateur.]
 
 **Preuve :** [chiffre, exemple ou résultat, ou "pas encore"]
-**Sujets :** [[Sujet_Nom-du-sujet]]
+**Pilier :** [[Pilier_Nom-du-pilier|Nom du pilier]]
 **Voir aussi :** [[Autre fiche]]
 ```
 
@@ -81,7 +81,7 @@ Règles :
 - Le titre est l'idée elle-même, pas une étiquette. "Le premier call se gagne sur les questions" plutôt que "Découverte".
 - Les chiffres restent tels que la source les donne.
 - Pas de source, pas de fiche.
-- Une fiche sans sujet renvoie à son pilier : `**Pilier :** [[Pilier-2_Nom]]`.
+- La ligne `**Pilier :**` est écrite par `reconstruire.py` à partir du champ `pilier`. Les sujets restent dans le frontmatter : il n'y a pas de page par sujet, c'est la page du pilier qui range les fiches sous chaque sujet.
 - Le dossier suit le type : `enseignement` dans `Enseignements/`, `methode` dans `Methodes/`, `preuve` dans `Preuves/`, `histoire` dans `Histoires/`.
 
 ### Fiche source (`03_Base-de-connaissances/Sources/`)
@@ -222,7 +222,9 @@ L'idéation écarte les fiches utilisées dans les 90 derniers jours, sauf deman
 - Un seul Content Brain. Si le dossier existe, on le complète.
 - Les mots de l'utilisateur ne sont pas réécrits quand ils sont bons.
 - Avant de créer une fiche, vérifier que l'idée n'existe pas déjà. Si oui, compléter la fiche et garder les deux sources.
-- Les pages de piliers, les pages de sujets et la carte ne s'éditent pas à la main : on change le `pilier` ou les `sujets` d'une fiche, puis on relance `python3 10_Skills/clean-content/scripts/reconstruire.py`.
+- Les pages de piliers et la carte ne s'éditent pas à la main : on change le `pilier` ou les `sujets` d'une fiche, puis on relance `python3 10_Skills/clean-content/scripts/reconstruire.py`.
+- `01_Strategie/` ne contient que `Strategie-contenu.md`, `Posts-de-reference.md` et le dossier `Piliers/`. Aucun skill n'y crée d'autre fichier.
+- Un rapport ou un bilan se rend dans la conversation, avec une ligne dans `_log.md`. Il ne s'écrit jamais en fichier dans le Content Brain.
 - Aucun skill ne supprime. Un fichier à retirer part dans `11_Archives/`, sur un oui.
 - Aucun fait, chiffre ni citation inventé. Ce qui manque s'écrit "à confirmer" et se demande.
 - Aucun tiret cadratin ni demi-cadratin.

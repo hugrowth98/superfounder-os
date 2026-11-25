@@ -23,7 +23,7 @@ Installe mon contenu
 1. **Voix et style** : vous collez vos posts, il en tire vos marqueurs de style et vos expressions.
 2. **Posts de référence** : rangés par format dans `Posts-de-reference.md` avec leurs chiffres.
 3. **Stratégie** : le skill `strategie-contenu` rédige une première version à partir de votre contexte, vous dit ce qu'il en pense (ce qui se contredit, le pilier fragile, le sujet que vos clients réclament), puis vous challenge une question à la fois sur vos convictions, votre positionnement et vos piliers.
-4. **Création du Content Brain** : les dossiers, la carte, une page par pilier et une page par sujet.
+4. **Création du Content Brain** : les dossiers, la carte, une page par pilier dans `01_Strategie/Piliers/`, où chaque sujet liste ses fiches.
 5. **Cloisonnement** : pour chaque client, vous dites si ses calls peuvent nourrir vos posts (`non`, `anonyme`, `nomme`). Par défaut, non.
 6. **Première récolte** : vingt sources deviennent des fiches d'une idée chacune (enseignements, méthodes, preuves, histoires). Vous validez le format sur les trois premières.
 7. **Organisation par pilier** : chaque fiche est reliée à son sujet, les pages et la carte sont reconstruites.
@@ -74,7 +74,7 @@ Le skill `planifier-post` programme un post validé sur Publora depuis le chat :
 ```
 05_Departements/Marketing/Content-Brain/
   Content-Brain.md              la carte : piliers, compteurs, ce qui manque
-  01_Strategie/                 la stratégie, les posts de référence, une page par pilier et par sujet
+  01_Strategie/                 la stratégie, les posts de référence, le dossier `Piliers/` (une page par pilier)
   02_Veille/                    sources et comptes suivis, signaux de marché, inspirations
   03_Base-de-connaissances/     Enseignements, Methodes, Preuves, Histoires, Sources
   04_Idees/                     une fiche par idée de post

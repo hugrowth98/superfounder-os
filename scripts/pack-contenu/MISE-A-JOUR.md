@@ -95,7 +95,7 @@ python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run
 python3 scripts/validate_skills.py
 ```
 
-Le premier doit lister ses piliers et créer une page par pilier et par sujet. Relance-le sans `--dry-run` sur un oui. Le second n'existe que si le workspace vient du dépôt : s'il est absent, passe.
+Le premier doit lister ses piliers et créer une page par pilier dans `01_Strategie/Piliers/` (pas de page par sujet : les sujets sont des sections de la page du pilier). Relance-le sans `--dry-run` sur un oui. Le second n'existe que si le workspace vient du dépôt : s'il est absent, passe.
 
 Vérifie aussi que les nouveaux skills sont visibles : `10_Skills/strategie-contenu/SKILL.md` et `10_Skills/clean-content/SKILL.md` existent, et `.claude/skills` pointe toujours vers `10_Skills/`.
 

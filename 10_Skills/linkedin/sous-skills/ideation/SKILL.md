@@ -32,7 +32,7 @@ Quand l'utilisateur demande des idées de posts, exécute ces étapes **dans l'o
 
 Lis `10_Skills/_commun/content-brain.md`, puis dans `05_Departements/Marketing/Content-Brain/` :
 
-1. `Content-Brain.md` et les pages `01_Strategie/Pilier-N_<Nom>.md` : le nombre de fiches par pilier, les sujets "pas encore couverts".
+1. `Content-Brain.md` et les pages `01_Strategie/Piliers/Pilier_<Nom>.md` : le nombre de fiches par pilier, les sujets "pas encore couverts".
 2. Les fiches de `03_Base-de-connaissances/` dont `utilise_dans` est vide ou date de plus de 90 jours, hors `diffusion: interne`. Ce sont les idées les plus sûres : la matière existe déjà, dans ses mots.
 3. `02_Veille/Marche/` : les signaux récents. Une idée née d'un signal doit y répondre avec une fiche de la base, sinon elle reste un commentaire d'actualité.
 4. `04_Idees/` : les idées déjà notées (`nouvelle`, `retenue`) pour ne pas les reproposer, et `05_Calendrier-editorial/` pour ce qui est déjà programmé ou publié.

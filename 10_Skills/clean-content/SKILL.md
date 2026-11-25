@@ -5,7 +5,7 @@ description: >
   nouveaux calls et les nouvelles propositions en fiches de la base de connaissances, relève les
   chiffres des posts publiés (Unipile) et les écrit dans le calendrier éditorial, relève les posts
   qui ont marché chez les comptes suivis, produit le brief de veille, reconstruit les pages de
-  piliers, de sujets et la carte, puis rend un rapport court avec les décisions à prendre. Se
+  piliers et la carte, puis rend un rapport court avec les décisions à prendre. Se
   déclenche sur "clean content", "nettoie mon contenu", "mets à jour mon brain", "passage du
   lundi", "où en est mon contenu", "relève les chiffres de mes posts", "reconstruis mes piliers",
   et par la tâche planifiée du lundi. Ne pas utiliser pour installer le Content Brain
@@ -82,13 +82,13 @@ python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run
 python3 10_Skills/clean-content/scripts/reconstruire.py
 ```
 
-Le script refait les pages de piliers et de sujets, la ligne de lien en bas de chaque fiche, la section "Où on en est" de la carte et le tableau par semaine du calendrier. Il ne supprime rien. Lis ses alertes : fiche sans pilier reconnu, sujet hors stratégie, page qui ne correspond plus à la stratégie. Corrige le champ de la fiche quand la bonne valeur est évidente, sinon mets la question dans le rapport.
+Le script refait les pages de piliers dans `01_Strategie/Piliers/` (une page par pilier, ses sujets en sections avec le lien vers chaque fiche, puis ses idées, ses posts et sa veille), la ligne `**Pilier :**` en bas de chaque fiche, la section "Où on en est" de la carte et le tableau par semaine du calendrier. Il n'y a pas de page par sujet : si une version précédente en a laissé dans `01_Strategie/`, le script les range dans `11_Archives/`, avec les anciennes pages de piliers numérotées, et refait les pages de piliers au nom `Pilier_<Nom>.md`. Il ne supprime rien. Lis ses alertes : fiche sans pilier reconnu, sujet hors stratégie, page qui ne correspond plus à la stratégie. Corrige le champ de la fiche quand la bonne valeur est évidente, sinon mets la question dans le rapport.
 
 Passe aussi le contrôle de cloisonnement : cherche les noms des dossiers de `06_Clients/` dans `03_Base-de-connaissances/` et `05_Calendrier-editorial/`. Chaque occurrence chez un client qui n'est pas `nomme` va dans le rapport.
 
 ### 8. Le rapport
 
-Dans le chat, et en une ligne dans `Content-Brain/_log.md` (`- AAAA-MM-JJ : clean-content, N fiches, N sources, N posts relevés`). Format :
+Dans le chat, jamais dans un fichier du Content Brain, et en une ligne dans `Content-Brain/_log.md` (`- AAAA-MM-JJ : clean-content, N fiches, N sources, N posts relevés`). Format :
 
 ```
 ## Cette semaine
@@ -124,7 +124,7 @@ Un rapport sans rien de neuf tient en trois lignes. Ne remplis pas les sections 
 - Rien n'est supprimé. Ce qui doit sortir part dans `11_Archives/`, sur un oui.
 - Pas de source, pas de fiche. Aucun fait, chiffre ni citation inventé.
 - Les clients sont fermés au contenu par défaut. Le nom d'un client `anonyme` devient un rôle et un secteur.
-- Les pages de piliers, de sujets et la carte ne s'éditent pas à la main : on corrige la fiche, on relance le script.
+- Les pages de piliers et la carte ne s'éditent pas à la main : on corrige la fiche, on relance le script.
 - Aucun envoi, aucune publication : ce skill lit, range et rapporte.
 - `--dry-run` avant chaque script, et le résultat montré avant l'écriture.
 - Aucun tiret cadratin ni demi-cadratin.

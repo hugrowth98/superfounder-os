@@ -3,6 +3,18 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [7.0.1] - 2026-11-25
+
+`01_Strategie/` ne se remplit plus de pages : une page par pilier, rangée dans `Piliers/`, et plus aucune page par sujet.
+
+### Modifié
+- `reconstruire.py` écrit une seule page par pilier, dans `01_Strategie/Piliers/`, nommée `Pilier_<Nom>.md` sans numéro. Les sujets sont des sections de cette page, avec le lien vers chaque fiche, suivies des idées, des posts et de la veille du pilier.
+- Chaque fiche porte une ligne `**Pilier :**` qui pointe vers la page de son pilier. Dans la vue graphique d'Obsidian, les fiches, les idées, les posts et la veille se regroupent autour des piliers.
+- Un rapport ou un bilan se rend dans la conversation, plus dans un fichier du Content Brain.
+
+### Corrigé
+- Les pages `Sujet_*.md` et `Pilier-N_*.md` créées par la 7.0.0 partent dans `11_Archives/` au premier passage du script, qui refait les pages de piliers au nouveau nom. Rien n'est supprimé.
+
 ## [7.0.0] - 2026-11-25
 
 Le contenu a maintenant sa mémoire : un Content Brain qui réunit la stratégie, la veille, une base de connaissances tirée de vos posts, de vos calls et de votre vécu, vos idées et votre calendrier éditorial. Les skills d'écriture partent de vos fiches, et un passage hebdomadaire tient le tout à jour.
