@@ -41,7 +41,7 @@ Hook ("[N] choses que j'ai apprises en [contexte]"), chaque point avec 1 ou 2 li
 
 ## Le contrepied
 
-Hook ("[croyance répandue] est faux"), reconnaître d'où vient la croyance, la preuve, le recadrage, la nuance honnête, la relance. Le cadre du sous-skill `opinion`.
+Hook ("[croyance répandue] est faux"), reconnaître d'où vient la croyance, la preuve, le recadrage, la nuance honnête, la relance. Le cadre du sous-skill `hot-take`.
 
 ## Situation, tension, bascule, leçon, "donc"
 

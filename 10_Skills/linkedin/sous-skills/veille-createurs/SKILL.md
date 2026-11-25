@@ -23,11 +23,11 @@ Le script scrape et classe, vous tranchez, le rapport montre. Aucune liste de co
 
 Demandez : "Sur quels comptes LinkedIn voulez-vous faire la veille ? Collez les URLs de profils (https://www.linkedin.com/in/...), une par ligne. Cinq à cinquante comptes, l'idéal est autour de trente."
 
-- Si `05_Departements/Marketing/LinkedIn/comptes-veille.json` existe, proposez-le : "J'ai vos N comptes mémorisés le <date>. On repart dessus, on en ajoute, ou on change ?"
+- Si `05_Departements/Marketing/Content-Brain/02_Veille/Comptes-veille.json` existe, proposez-le : "J'ai vos N comptes mémorisés le <date>. On repart dessus, on en ajoute, ou on change ?"
 - Si l'utilisateur donne des noms sans URL, trouvez les URLs avec `trouver-url-linkedin`, montrez-les, attendez le oui.
 - Un compte en double, une URL de page entreprise ou une URL sans `/in/` sont écartés et signalés.
 
-À la fin du run, proposez une fois : "Je mémorise ces comptes dans `comptes-veille.json` pour la prochaine fois ?" Sur un oui, écrivez le fichier :
+À la fin du run, proposez une fois : "Je mémorise ces comptes dans `Comptes-veille.json` pour la prochaine fois ?" Sur un oui, écrivez le fichier :
 
 ```json
 {"maj": "AAAA-MM-JJ", "comptes": [{"url": "https://www.linkedin.com/in/exemple/", "note": "concurrent direct"}]}
@@ -68,14 +68,14 @@ Hors catégorie : actualités, lancements, recrutement, posts perso sans leçon.
 
 Ouvrez `rapport.html` (le chemin s'affiche) : quatre tableaux avec la vignette, l'auteur, les interactions, le multiplicateur « x » (le rapport à la médiane du compte : à lire avec le nombre de posts du compte à côté, un compte à trois posts peut afficher x180), l'accroche, le post entier dépliable, le lien LinkedIn, et l'annexe de tous les posts de la fenêtre.
 
-Lisez les vignettes des quatre classements et rendez à l'utilisateur cinq constats au plus, chacun avec le post qui le prouve : ce qui fait le CTA (dans l'image ou dans le texte), les ratios commentaires sur réactions, les formats visuels qui gagnent, les sujets qui reviennent. Puis un seul next step : un visuel à reprendre (`infographie`, sous-skill `reprise`), un post à écrire (`educatif`, `opinion`, `storytelling`, `lead-magnet`), ou un compte à ajouter au `swipe-file.md`.
+Lisez les vignettes des quatre classements et rendez à l'utilisateur cinq constats au plus, chacun avec le post qui le prouve : ce qui fait le CTA (dans l'image ou dans le texte), les ratios commentaires sur réactions, les formats visuels qui gagnent, les sujets qui reviennent. Puis un seul next step : un visuel à reprendre (`infographie`, sous-skill `reprise`), un post à écrire (`educatif`, `hot-take`, `storytelling`, `lead-magnet`), ou un compte à ajouter au `02_Veille/Inspirations/`.
 
 ## Les fichiers
 
 | Fichier | Rôle |
 |---|---|
-| `05_Departements/Marketing/LinkedIn/comptes-veille.json` | les comptes mémorisés, écrit sur un oui |
-| `05_Departements/Marketing/LinkedIn/sources/veille-createurs_<debut>_<fin>/` | le run : `posts.raw.json` (le dump Apify), `posts.json` (classés), `verdicts.json`, `candidats.txt`, `top.json`, `images/` et `images/thumbs/`, `rapport.html` |
+| `05_Departements/Marketing/Content-Brain/02_Veille/Comptes-veille.json` | les comptes mémorisés, écrit sur un oui |
+| `05_Departements/Marketing/Content-Brain/02_Veille/sources/veille-createurs_<debut>_<fin>/` | le run : `posts.raw.json` (le dump Apify), `posts.json` (classés), `verdicts.json`, `candidats.txt`, `top.json`, `images/` et `images/thumbs/`, `rapport.html` |
 
 Le dossier `sources/` est ignoré par git : ce sont les données de l'utilisateur.
 
@@ -84,10 +84,11 @@ Le dossier `sources/` est ignoré par git : ce sont les données de l'utilisateu
 - Les compteurs LinkedIn évoluent après le scrape ; ils sont figés à la date du run, écrite dans `run.json`.
 - Une URL de profil avec un accent doit être passée décodée (`antoine-ladrière`, pas `antoine-ladri%C3%A8re`), sinon l'actor ne renvoie rien ; le script s'en charge.
 - Les vidéos n'ont pas d'image fixe, seulement la vignette quand elle existe. Un post sans visuel est marqué "texte seul".
-- Le skill ne publie rien, n'écrit ni dans le swipe file ni dans `posts-de-reference.md` sans un oui.
+- Le skill ne publie rien et n'écrit ni dans `02_Veille/Inspirations/` ni dans `Posts-de-reference.md` sans un oui.
+- Sur un oui, les posts retenus (cinq au plus par run) deviennent des fiches dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/`, une par post, au format de `10_Skills/_commun/content-brain.md` : auteur, lien, `format`, pilier concerné, la structure, pourquoi ça marche, ce qu'on en prend. Jamais le texte entier, jamais les mots.
 
 ## Exemples
 
 - "Fais la veille sur ces 12 comptes" avec les URLs : dry-run, coût annoncé (au plus 0,96 $), oui, run, arbitrage des candidats, reconstruction, rapport ; réponse attendue : le lien vers `rapport.html`, cinq constats, un next step, et la proposition de mémoriser les comptes.
-- "Qu'est-ce qui a marché chez mes concurrents ce mois-ci ?" avec `comptes-veille.json` déjà rempli : `--memorises`, même chaîne ; réponse attendue : le rapport et la comparaison avec le run précédent si le dossier existe (nouveaux entrants, formats qui montent).
+- "Qu'est-ce qui a marché chez mes concurrents ce mois-ci ?" avec `Comptes-veille.json` déjà rempli : `--memorises`, même chaîne ; réponse attendue : le rapport et la comparaison avec le run précédent si le dossier existe (nouveaux entrants, formats qui montent).
 - "Reprends le numéro 3 des lead magnets à ma charte" : passez le fichier `images/LM03_img1.jpg` et le texte du post au sous-skill `reprise` du master `infographie`.

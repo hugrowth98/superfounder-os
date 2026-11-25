@@ -31,14 +31,14 @@ Sans Publora, le skill ne programme rien : il livre le post prêt à coller et l
 
 ## Entrée
 
-- Le post validé : un fichier `05_Departements/Marketing/LinkedIn/Post-<Sujet>_<date>.md` (le script lit le bloc "POST COMPLET", sinon le corps sans frontmatter) ou le texte lui-même (`--texte`).
+- Le post validé : un fichier `05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Brouillons/Post-<Sujet>_<date>.md` (le script lit le bloc "POST COMPLET", sinon le corps sans frontmatter) ou le texte lui-même (`--texte`).
 - La date et l'heure locales (`--quand "AAAA-MM-JJ HH:MM"`, fuseau `Europe/Paris` par défaut, `--fuseau` sinon), ou `--brouillon`.
 - Facultatif : `--media` (image ou PDF de carrousel, répétable), `--premier-commentaire` (le lien ou le complément à poster après publication), `--compte` si plusieurs profils LinkedIn sont connectés, `--sujet` pour le calendrier.
 
 ## Sortie
 
 - Le post créé chez Publora (`postGroupId`), programmé ou en brouillon, avec l'heure effectivement enregistrée.
-- Une ligne dans `05_Departements/Marketing/LinkedIn/Calendrier-publication.md` (programmé pour, compte, sujet, postGroupId, statut, premier commentaire), statuts rafraîchis par `--liste`.
+- Une ligne dans `05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Calendrier.md` (programmé pour, compte, sujet, postGroupId, statut, premier commentaire), statuts rafraîchis par `--liste`.
 - Après publication : le premier commentaire (`--commenter`), les statistiques (`--stats` : impressions, personnes atteintes, réactions, commentaires, partages ; mises en cache deux heures par Publora).
 
 ## Procédure
@@ -50,14 +50,14 @@ Sans Publora, le skill ne programme rien : il livre le post prêt à coller et l
    - avertissements (à corriger, ou `--force`) : premier paragraphe de plus de 210 caractères, lien dans le corps, hashtag en ouverture, plus de 3 emojis, texte très court, créneau hors fenêtre ou week-end.
 4. Montrez le résultat, attendez le oui sur le texte, la date et le compte.
 5. Relancez sans `--dry-run`. Avec un média : brouillon, téléversement (URL présignée, PUT, vérification), puis programmation. Le script signale un autre post déjà programmé à moins de 20 heures sur le même compte.
-6. Le jour J, après la publication : `--commenter <postGroupId> --texte "..."` pour le premier commentaire (le lien), puis les 60 à 90 premières minutes en présence (sous-skill `engagement`). `--liste` met les statuts du calendrier à jour ; `--stats` lit les chiffres, à reporter dans `posts-de-reference.md` via le sous-skill `performance`.
+6. Le jour J, après la publication : `--commenter <postGroupId> --texte "..."` pour le premier commentaire (le lien), puis les 60 à 90 premières minutes en présence (sous-skill `engagement`). `--liste` met les statuts du calendrier à jour ; `--stats` lit les chiffres d'un post. Une fois le post sorti, son fichier passe de `Brouillons/` à `Publies/` (`statut: publie`, `publie_le`, `url`) ; `clean-content` relève ensuite les chiffres de tous les posts publiés chaque semaine.
 
 ## Commandes
 
 ```bash
 python3 10_Skills/planifier-post/scripts/planifier_post.py --comptes
 python3 10_Skills/planifier-post/scripts/planifier_post.py --test
-python3 10_Skills/planifier-post/scripts/planifier_post.py --post "05_Departements/Marketing/LinkedIn/Post-Signaux_2026-09-22.md" --quand "2026-09-23 08:00" --dry-run
+python3 10_Skills/planifier-post/scripts/planifier_post.py --post "05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Brouillons/Post-Signaux_2026-09-22.md" --quand "2026-09-23 08:00" --dry-run
 python3 10_Skills/planifier-post/scripts/planifier_post.py --post <fichier.md> --quand "2026-09-23 08:00" --premier-commentaire "Le guide complet : https://..."
 python3 10_Skills/planifier-post/scripts/planifier_post.py --post <fichier.md> --media carrousel.pdf --quand "2026-09-24 08:00"
 python3 10_Skills/planifier-post/scripts/planifier_post.py --texte "..." --brouillon

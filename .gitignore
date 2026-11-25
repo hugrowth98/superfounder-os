@@ -21,7 +21,7 @@ __pycache__/
 # 02_Contexte/
 # 03_Branding/
 # 05_Departements/Go-to-Market/contexte.md
-# 05_Departements/Marketing/LinkedIn/strategie-contenu.md
+# 05_Departements/Marketing/Content-Brain/
 # 06_Clients/
 # 07_Meeting/
 # 09_Journal/
@@ -32,4 +32,5 @@ __pycache__/
 10_Skills/*/scripts/historique_*.json
 
 # Caches et dumps de la veille (donnees de l'utilisateur, regenerees par les scripts)
-05_Departements/Marketing/LinkedIn/sources/veille*
+05_Departements/Marketing/Content-Brain/02_Veille/sources/veille*
+05_Departements/Marketing/Content-Brain/02_Veille/sources/*.json

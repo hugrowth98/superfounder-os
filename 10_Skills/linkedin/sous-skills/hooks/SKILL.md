@@ -14,13 +14,14 @@ description: >
 
 # Hooks
 
-Le hook a un seul travail : faire que la bonne personne s'arrête et appuie sur "voir plus". Il ne résume pas le post, il n'a pas besoin d'être malin, il ne parle pas à tout le monde. Un post moyen avec un grand hook bat un grand post avec un hook mou, à chaque fois. Le lecteur visé est l'ICP de `02_Contexte/Clients-Problems-and-Messages.md`, sauf si l'utilisateur vise son audience large (IAP de `strategie-contenu.md`).
+Le hook a un seul travail : faire que la bonne personne s'arrête et appuie sur "voir plus". Il ne résume pas le post, il n'a pas besoin d'être malin, il ne parle pas à tout le monde. Un post moyen avec un grand hook bat un grand post avec un hook mou, à chaque fois. Le lecteur visé est l'ICP de `02_Contexte/Clients-Problems-and-Messages.md`, sauf si l'utilisateur vise son audience large (IAP de `Strategie-contenu.md`).
 
 ## Ce qu'il faut en entrée
 
 1. Le sujet ou l'idée du post (ou le draft entier).
 2. Qui doit s'arrêter : l'ICP par défaut.
-3. Le type de post s'il est connu : éducatif, storytelling, opinion, lead magnet.
+3. Le format du post s'il est connu : `educatif`, `storytelling`, `hot-take`, `lead-magnet`.
+4. La matière : les fiches du post (champ `fiches` du brouillon) et, pour la construction, les hooks des fiches de `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` au même format et ceux de `Posts-de-reference.md`. Un hook cite un chiffre ou une scène seulement s'ils sont dans une fiche.
 
 ## La règle des 210 caractères
 
@@ -59,7 +60,7 @@ Deux variantes utiles : la pensée volée (dire tout haut ce que le lecteur pens
 - [ ] Aucun mot de trop : couper "je pense que", "d'expérience", "laissez-moi partager"
 - [ ] Il attire le bon lecteur (l'ICP s'arrête, le passant continue)
 - [ ] Ni appât, ni cliché LinkedIn ("Opinion impopulaire :", "Vous êtes d'accord ? 👇"), ni titres de gloire en ouverture
-- [ ] Il sonne comme l'utilisateur (comparer à `posts-de-reference.md`), pas comme un copywriter américain traduit
+- [ ] Il sonne comme l'utilisateur (comparer à `Posts-de-reference.md`), pas comme un copywriter américain traduit
 - [ ] Aucun tiret cadratin, aucune négation contrastive, aucun chiffre inventé
 
 ## Ce qui est rendu

@@ -15,7 +15,7 @@ Tu es le ghostwriter du créateur. Ton seul objectif : transformer son post en u
 
 Tu t'inspires des patterns des créateurs qu'il suit et admire :
 
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Créateurs admirés.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Créateurs admirés.
 
 Mais ces patterns sont des outils, pas des moules. La voix reste celle du créateur : les marqueurs de ton de `02_Contexte/Tone-and-Voice.md`
 
@@ -27,10 +27,12 @@ Lis ces fichiers avant d'analyser quoi que ce soit (tous dans ce système de ski
 - `{SKILL_BASE}/SKILL.md` -> la voix du créateur, les règles absolues, le système de hooks
 - `{SKILL_BASE}/ressources/voix.md` -> calibrage fin de la voix
 - `{SKILL_BASE}/ressources/formules-de-hooks.md` -> bibliothèque de hooks de référence
-- `05_Departements/Marketing/LinkedIn/swipe-file.md` -> les posts des créateurs admirés et tes posts likés
-- `05_Departements/Marketing/LinkedIn/posts-de-reference.md` -> tes propres posts, pour caler la voix
+- `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` -> les posts des créateurs admirés et tes posts likés
+- `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` -> tes propres posts, pour caler la voix
 
-Si un des fichiers n'est pas accessible, continue avec le contexte déjà chargé.
+- Si le post est un brouillon du Content Brain (`05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Brouillons/`) : les fiches de son champ `fiches`. Chaque chiffre, chaque fait et chaque citation du post doit s'y retrouver tel quel. Un chiffre arrondi ou embelli se corrige, un fait absent des fiches se signale.
+
+Si un des fichiers n'est pas accessible, continue avec le contexte déjà chargé. La version optimisée remplace le brouillon dans le même fichier, sans toucher à son frontmatter.
 
 ---
 

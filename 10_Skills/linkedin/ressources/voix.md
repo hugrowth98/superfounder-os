@@ -2,7 +2,7 @@
 
 ## Table des matieres
 1. Principes generiques d'une bonne voix LinkedIn
-2. Tes posts de reference (dans 05_Departements/Marketing/LinkedIn/)
+2. Tes posts de reference (dans 05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md)
 3. Anti-patterns a eviter
 4. Adaptation selon le type de contenu
 
@@ -63,7 +63,7 @@ Question finale    engagement CTA
 
 ## 2. Tes posts de reference (calibration voix)
 
-Le coeur de la calibration vocale, ce sont tes vrais posts. Ils vivent dans `05_Departements/Marketing/LinkedIn/posts-de-reference.md` (tes meilleurs posts par type, avec une courte analyse de ce qui marche) et dans `02_Contexte/Tone-and-Voice.md` (tes marqueurs de voix). Lis-les avant d'ecrire : l'echantillon l'emporte sur les principes generiques de ce fichier.
+Le coeur de la calibration vocale, ce sont tes vrais posts. Ils vivent dans `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` (tes meilleurs posts par type, avec une courte analyse de ce qui marche) et dans `02_Contexte/Tone-and-Voice.md` (tes marqueurs de voix). Lis-les avant d'ecrire : l'echantillon l'emporte sur les principes generiques de ce fichier.
 
 ---
 
@@ -105,7 +105,7 @@ Concret, honnete, curiosite :
 
 ## 4. Adaptation selon le type de contenu
 
-### Contenu autorite (split principal - voir le mix autorité / perso / offre de `05_Departements/Marketing/LinkedIn/strategie-contenu.md`)
+### Contenu autorite (split principal - voir le mix autorité / perso / offre de `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`)
 - Ton : expert mais accessible
 - Base sur l'experience vecue, pas sur la theorie
 - Inclut des exemples concrets, des chiffres, des noms d'outils

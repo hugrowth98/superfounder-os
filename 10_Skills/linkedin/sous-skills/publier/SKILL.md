@@ -14,7 +14,7 @@ description: >
 
 # Publier : cadence, créneaux, routine
 
-La régularité bat le volume, et la présence après publication bat les deux. La cadence et les créneaux de l'utilisateur sont dans `strategie-contenu.md` (section Objectif et cadence) ; ce sous-skill les applique, et les ajuste avec ses chiffres (sous-skill `performance`) plutôt qu'avec des moyennes. Le détail de la distribution est dans `{SKILL_BASE}/ressources/algorithme.md`.
+La régularité bat le volume, et la présence après publication bat les deux. La cadence et les créneaux de l'utilisateur sont dans `Strategie-contenu.md` (section Objectif et cadence) ; ce sous-skill les applique, et les ajuste avec ses chiffres (sous-skill `performance`) plutôt qu'avec des moyennes. Le détail de la distribution est dans `{SKILL_BASE}/ressources/algorithme.md`.
 
 ## La cadence
 
@@ -55,13 +55,14 @@ On ne programme donc pas un post à une heure où l'on ne peut pas être là. R�
 
 ## Écrire en lot, programmer, être présent
 
-1. Un créneau d'écriture par semaine (le vendredi ou le dimanche soir) : les 3 ou 4 posts de la semaine, validés, sauvegardés dans `05_Departements/Marketing/LinkedIn/`.
-2. Programmer : LinkedIn le fait nativement jusqu'à trois mois à l'avance ; avec Publora branché, le skill `planifier-post` programme depuis le chat, contrôle les bonnes pratiques (longueur, hook, lien en premier commentaire, créneau, collision) et tient `Calendrier-publication.md`.
+1. Un créneau d'écriture par semaine (le vendredi ou le dimanche soir) : les 3 ou 4 posts de la semaine, validés, enregistrés dans `05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Brouillons/`.
+2. Programmer : LinkedIn le fait nativement jusqu'à trois mois à l'avance ; avec Publora branché, le skill `planifier-post` programme depuis le chat, contrôle les bonnes pratiques (longueur, hook, lien en premier commentaire, créneau, collision) et tient `Calendrier.md`.
 3. Les jours de publication ne servent qu'à la présence : 90 minutes d'engagement, pas d'écriture.
+4. Une fois le post sorti : le fichier passe de `Brouillons/` à `Publies/`, avec `statut: publie`, `publie_le` et `url`. L'idée d'origine passe à `publiee`. Le skill `clean-content` relève ensuite les chiffres chaque semaine, les écrit dans le frontmatter et dans `Calendrier.md`, et note le post dans le champ `utilise_dans` des fiches qui ont servi.
 
 ## Méthode
 
-1. Lire la cadence et les créneaux de `strategie-contenu.md` ; s'ils sont vides, proposer 3 posts par semaine, mardi, mercredi, jeudi à 8h, et les écrire dans le fichier sur un oui.
+1. Lire la cadence et les créneaux de `Strategie-contenu.md` ; s'ils sont vides, proposer 3 posts par semaine, mardi, mercredi, jeudi à 8h, et les écrire dans le fichier sur un oui.
 2. Poser le calendrier de la semaine : jour, heure, type de post, pilier (le sous-skill `ideation` fournit les idées).
 3. Vérifier la présence : l'utilisateur peut-il être là 90 minutes après chaque créneau ? Sinon déplacer.
 4. Programmer avec `planifier-post` (Publora) ou donner les heures à saisir dans LinkedIn.

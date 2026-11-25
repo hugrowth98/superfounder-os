@@ -18,6 +18,18 @@ description: >
 
 **Prérequis** : le master `linkedin` (`{SKILL_BASE}/SKILL.md`) a été lu : voix, formatage, stratégie, système de hooks, checklist. Ce sous-skill le complète avec ses techniques propres.
 
+## D'abord, le Content Brain
+
+Avant d'écrire, lis `10_Skills/_commun/content-brain.md` si ce n'est pas déjà fait dans la session, puis cherche la matière dans `05_Departements/Marketing/Content-Brain/` :
+
+1. Si le post part d'une idée de `04_Idees/`, ouvre les fiches de son champ `fiches`.
+2. Sinon, trouve le pilier et le sujet du post dans `01_Strategie/` (la page `Sujet_<Nom>.md` liste les fiches du sujet), et retiens 3 à 5 fiches de `03_Base-de-connaissances/` : d'abord `Methodes/` (ce que la ressource contient), puis `Preuves/` (le résultat obtenu avec).
+3. Écarte les fiches `diffusion: interne`. Pour une fiche `anonyme`, le client reste un rôle et un secteur. Préfère les fiches dont `utilise_dans` est vide ou date de plus de 90 jours.
+4. Le post s'écrit à partir de ces fiches : les mots de l'utilisateur, ses chiffres tels quels, ses scènes. Si la base n'a rien sur le sujet, dis-le et propose "interviewe-moi" plutôt que d'écrire un post générique.
+5. Pour la construction, regarde une ou deux fiches de `02_Veille/Inspirations/` au même `format` : la structure, jamais les mots.
+
+Le post validé est enregistré dans `05_Calendrier-editorial/Brouillons/Post-<Sujet>_<AAAA-MM-JJ>.md`, avec le frontmatter du fichier de structure : `format: lead-magnet`, `pilier`, `idee`, et dans `fiches` la liste de celles qui ont servi. Si le post vient d'une idée, passe son `statut` à `redigee`.
+
 ## Objectif principal
 
 L'objectif d'un post lead magnet est d'obtenir un **commentaire** (+ connexion + like) en échange d'un contenu à forte valeur ajoutée. C'est le moteur principal de croissance d'audience et de génération de leads sur LinkedIn.
@@ -359,7 +371,7 @@ Justification : [pourquoi cette combinaison fonctionne le mieux]
 
 ## Règle d'or : part max du contenu total
 
-Le contenu lead magnet / vente ne doit représenter qu'une part minoritaire des publications (voir `le mix autorité / perso / offre de `05_Departements/Marketing/LinkedIn/strategie-contenu.md``, typiquement la part "Offer"). Si l'audience voit trop de posts "offre", la crédibilité s'érode. L'autorité se construit d'abord (via les skills storytelling, educational, hot-take), la conversion suit naturellement.
+Le contenu lead magnet / vente ne doit représenter qu'une part minoritaire des publications (voir `le mix autorité / perso / offre de `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md``, typiquement la part "Offer"). Si l'audience voit trop de posts "offre", la crédibilité s'érode. L'autorité se construit d'abord (via les skills storytelling, educational, hot-take), la conversion suit naturellement.
 
 ## Équilibre vente / valeur
 
@@ -379,7 +391,7 @@ Un mauvais post lead magnet :
 
 ## Erreurs à éviter
 
-- **Trop de posts lead magnet** : respecter la part "Offer" de `le mix autorité / perso / offre de `05_Departements/Marketing/LinkedIn/strategie-contenu.md``
+- **Trop de posts lead magnet** : respecter la part "Offer" de `le mix autorité / perso / offre de `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md``
 - **Vendre sans prouver** : Toujours montrer le résultat AVANT de présenter la ressource
 - **CTA flou** : Le lecteur doit savoir exactement quoi commenter
 - **Promesses irréalistes** : Rester crédible et spécifique
@@ -390,6 +402,6 @@ Un mauvais post lead magnet :
 
 ## Fichiers de référence
 
-- `{SKILL_BASE}/ressources/exemples-lead-magnet.md` - Patterns de lead magnet documentés + méta-analyse des facteurs de viralité + emplacement de ton swipe file (dans `05_Departements/Marketing/LinkedIn/`).
-- Consulte aussi `05_Departements/Marketing/LinkedIn/posts-de-reference.md` pour tes posts de conversion réels.
+- `{SKILL_BASE}/ressources/exemples-lead-magnet.md` - Patterns de lead magnet documentés + méta-analyse des facteurs de viralité + tes inspirations sont dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` (champ `format: lead-magnet`).
+- Consulte aussi `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` pour tes posts de conversion réels.
 - Consulte aussi `{SKILL_BASE}/ressources/structures-de-post.md` pour les templates Annonce de projet et Célébration.

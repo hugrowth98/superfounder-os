@@ -16,6 +16,18 @@ description: >
 
 **Prérequis** : le master `linkedin` (`{SKILL_BASE}/SKILL.md`) a été lu : voix, formatage, stratégie, système de hooks, checklist. Ce sous-skill le complète avec ses techniques propres.
 
+## D'abord, le Content Brain
+
+Avant d'écrire, lis `10_Skills/_commun/content-brain.md` si ce n'est pas déjà fait dans la session, puis cherche la matière dans `05_Departements/Marketing/Content-Brain/` :
+
+1. Si le post part d'une idée de `04_Idees/`, ouvre les fiches de son champ `fiches`.
+2. Sinon, trouve le pilier et le sujet du post dans `01_Strategie/` (la page `Sujet_<Nom>.md` liste les fiches du sujet), et retiens 3 à 5 fiches de `03_Base-de-connaissances/` : d'abord `Histoires/` (la scène), puis la fiche de `Enseignements/` qu'elle porte.
+3. Écarte les fiches `diffusion: interne`. Pour une fiche `anonyme`, le client reste un rôle et un secteur. Préfère les fiches dont `utilise_dans` est vide ou date de plus de 90 jours.
+4. Le post s'écrit à partir de ces fiches : les mots de l'utilisateur, ses chiffres tels quels, ses scènes. Si la base n'a rien sur le sujet, dis-le et propose "interviewe-moi" plutôt que d'écrire un post générique.
+5. Pour la construction, regarde une ou deux fiches de `02_Veille/Inspirations/` au même `format` : la structure, jamais les mots.
+
+Le post validé est enregistré dans `05_Calendrier-editorial/Brouillons/Post-<Sujet>_<AAAA-MM-JJ>.md`, avec le frontmatter du fichier de structure : `format: storytelling`, `pilier`, `idee`, et dans `fiches` la liste de celles qui ont servi. Si le post vient d'une idée, passe son `statut` à `redigee`.
+
 ## Quand utiliser ce skill
 
 Ce skill couvre tous les posts basés sur une narration personnelle :
@@ -36,7 +48,7 @@ Le créateur ne fait PAS du storytelling à la "LinkedIn bro". Son approche est 
 
 Ce n'est pas du storytelling hollywoodien. C'est quelqu'un qui dit : "Voilà ce que j'ai vécu, voilà ce que j'en retiens."
 
-> Adapte le ton à `les marqueurs de ton de `02_Contexte/Tone-and-Voice.md`` et garde le lien avec sa niche (voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`).
+> Adapte le ton à `les marqueurs de ton de `02_Contexte/Tone-and-Voice.md`` et garde le lien avec sa niche (voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`).
 
 ## Les 6 formats narratifs
 
@@ -52,7 +64,7 @@ LEÇONS → 3-5 apprentissages concrets
 CONCLUSION → Phrase de fermeture + question
 ```
 
-**Règle clé** : Le backstory doit toujours avoir un lien avec le contexte actuel du créateur (sa niche (voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`)). Pas d'histoire "pour l'histoire".
+**Règle clé** : Le backstory doit toujours avoir un lien avec le contexte actuel du créateur (sa niche (voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`)). Pas d'histoire "pour l'histoire".
 
 **Hooks typiques** :
 - "Il y a [X] ans, j'ai [décision]. Aujourd'hui, [résultat]."
@@ -179,12 +191,12 @@ Concrètement, voici ce que j'ai changé :"
 
 - **Trop de pathos** : le créateur ne s'apitoie pas. Il constate, il apprend, il avance.
 - **Histoire sans leçon** : Chaque histoire doit mener quelque part d'utile.
-- **Backstory déconnectée** : Si l'histoire n'a aucun lien avec sa niche (voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`), elle n'a pas sa place.
+- **Backstory déconnectée** : Si l'histoire n'a aucun lien avec sa niche (voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`), elle n'a pas sa place.
 - **Dramaturgie artificielle** : Ne pas inventer de tension là où il n'y en a pas. Rester factuel.
 - **Trop long** : Le storytelling LinkedIn n'est pas un roman. Garder la narration serrée.
 
 ## Fichiers de référence
 
-- `{SKILL_BASE}/ressources/exemples-storytelling.md` - Méta-analyse des facteurs de viralité storytelling + emplacement de ton swipe file de posts narratifs de référence (dans `05_Departements/Marketing/LinkedIn/`).
-- Consulte aussi `05_Departements/Marketing/LinkedIn/posts-de-reference.md` pour tes posts narratifs réels.
+- `{SKILL_BASE}/ressources/exemples-storytelling.md` - Méta-analyse des facteurs de viralité storytelling + tes inspirations narratives sont dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` (champ `format: storytelling`).
+- Consulte aussi `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` pour tes posts narratifs réels.
 - Consulte aussi `{SKILL_BASE}/ressources/structures-de-post.md` pour les templates Avant/Après, Célébration, Objectif, Retour d'expérience, Portrait, Leçons d'événement.

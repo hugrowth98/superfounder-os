@@ -3,6 +3,28 @@
 Toutes les évolutions notables de ce dépôt sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [7.0.0] - 2026-11-25
+
+Le contenu a maintenant sa mémoire : un Content Brain qui réunit la stratégie, la veille, une base de connaissances tirée de vos posts, de vos calls et de votre vécu, vos idées et votre calendrier éditorial. Les skills d'écriture partent de vos fiches, et un passage hebdomadaire tient le tout à jour.
+
+### Ajouté
+- Dossier `05_Departements/Marketing/Content-Brain/` : `01_Strategie/`, `02_Veille/` (Marche, Inspirations), `03_Base-de-connaissances/` (Enseignements, Methodes, Preuves, Histoires, Sources), `04_Idees/`, `05_Calendrier-editorial/` (Brouillons, Publies, Recycles). Structure, formats de fiche et cloisonnement des clients dans `10_Skills/_commun/content-brain.md`.
+- Skill `strategie-contenu` : lit tout le second cerveau, rédige une première version sourcée, donne son avis, puis challenge l'utilisateur en interview (cinq leviers, trois relances au plus par point).
+- Skill `clean-content` : le passage du lundi en huit étapes, avec `reconstruire.py` (pages de piliers et de sujets, lien en bas de chaque fiche, carte, calendrier) et `releve_posts.py` (chiffres des posts publiés par Unipile, champ `utilise_dans` des fiches).
+- Champ `contenu:` (`non`, `anonyme`, `nomme`) dans le gabarit de note client, et contrôle 11 de `/lint` (noms de clients dans le brain, fiches sans pilier).
+
+- Dossier `scripts/pack-contenu/` et script `scripts/construire_pack.py` : fabriquent le dépôt de mise à jour pour les workspaces déjà installés (`migrer.py` compare le workspace au standard par empreintes, ajoute, remplace ce qui n'a jamais été modifié, liste ce qui l'a été, déplace les données de contenu, archive le reste ; `MISE-A-JOUR.md` est la procédure que Claude suit).
+
+### Changé
+- `installer-contenu` passe de huit à dix phases (inventaire, création du brain, cloisonnement, première récolte, organisation par pilier, bilan) et gagne l'entrée "Nourris mon brain".
+- Le master `linkedin` et ses sous-skills lisent le Content Brain : `ideation` part des fiches et des sujets à couvrir, les quatre sous-skills d'écriture vont chercher leurs fiches par format, `interview` écrit une fiche par pépite, `publier`, `performance` et `recycler` travaillent sur `05_Calendrier-editorial/`, `veille` et `veille-createurs` alimentent `02_Veille/Marche/` et `Inspirations/`.
+- Le sous-skill `opinion` devient `hot-take` (et `exemples-opinion.md` devient `exemples-hot-take.md`), pour que le champ `format` d'un post porte le nom de son sous-skill : `educatif`, `storytelling`, `hot-take`, `lead-magnet`.
+- Déplacés : `LinkedIn/strategie-contenu.md` vers `Content-Brain/01_Strategie/Strategie-contenu.md`, `posts-de-reference.md` vers `01_Strategie/Posts-de-reference.md`, `sources-veille.json` et `comptes-veille.json` vers `02_Veille/`, `swipe-file.md` remplacé par une fiche par post dans `02_Veille/Inspirations/`, `Calendrier-publication.md` vers `05_Calendrier-editorial/Calendrier.md`, les posts vers `05_Calendrier-editorial/Brouillons/` puis `Publies/`. `Marketing/LinkedIn/` ne garde que les visuels.
+- `install.sh` copie le squelette du Content Brain, et le département `Marketing` (la boucle visait encore l'ancien nom `Contenu`).
+
+### Migration depuis 6.x
+- Téléchargez le dépôt de mise à jour https://github.com/hugrowth98/superfounder-os-mise-a-jour-contenu, déposez-le dans `00_Inbox/` et dites à Claude : "Voici une nouvelle version pour gérer mon contenu, intègre-la à mon second cerveau." Puis "Installe mon contenu" : il reprend à la première phase incomplète.
+
 ## [6.4.0] - 2026-09-23
 
 La veille regarde aussi les comptes que vous suivez, et un visuel qui a marché ailleurs se refait à votre charte en trois structures, sans IA d'image.

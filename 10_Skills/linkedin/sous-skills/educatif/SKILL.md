@@ -17,6 +17,18 @@ description: >
 
 **Prérequis** : le master `linkedin` (`{SKILL_BASE}/SKILL.md`) a été lu : voix, formatage, stratégie, système de hooks, checklist. Ce sous-skill le complète avec ses techniques propres.
 
+## D'abord, le Content Brain
+
+Avant d'écrire, lis `10_Skills/_commun/content-brain.md` si ce n'est pas déjà fait dans la session, puis cherche la matière dans `05_Departements/Marketing/Content-Brain/` :
+
+1. Si le post part d'une idée de `04_Idees/`, ouvre les fiches de son champ `fiches`.
+2. Sinon, trouve le pilier et le sujet du post dans `01_Strategie/` (la page `Sujet_<Nom>.md` liste les fiches du sujet), et retiens 3 à 5 fiches de `03_Base-de-connaissances/` : d'abord `Methodes/` (la méthode enseignée), puis `Preuves/` (le chiffre qui montre qu'elle marche) et une fiche de `Histoires/` pour l'ouverture.
+3. Écarte les fiches `diffusion: interne`. Pour une fiche `anonyme`, le client reste un rôle et un secteur. Préfère les fiches dont `utilise_dans` est vide ou date de plus de 90 jours.
+4. Le post s'écrit à partir de ces fiches : les mots de l'utilisateur, ses chiffres tels quels, ses scènes. Si la base n'a rien sur le sujet, dis-le et propose "interviewe-moi" plutôt que d'écrire un post générique.
+5. Pour la construction, regarde une ou deux fiches de `02_Veille/Inspirations/` au même `format` : la structure, jamais les mots.
+
+Le post validé est enregistré dans `05_Calendrier-editorial/Brouillons/Post-<Sujet>_<AAAA-MM-JJ>.md`, avec le frontmatter du fichier de structure : `format: educatif`, `pilier`, `idee`, et dans `fiches` la liste de celles qui ont servi. Si le post vient d'une idée, passe son `statut` à `redigee`.
+
 ## Quand utiliser ce skill
 
 Ce skill couvre tous les posts qui enseignent, expliquent ou partagent une expertise :
@@ -233,6 +245,6 @@ Les posts éducatifs bien structurés génèrent du dwell time élevé car le le
 
 ## Fichiers de référence
 
-- `{SKILL_BASE}/ressources/exemples-educatif.md` - Méta-analyse des facteurs de viralité éducative + emplacement de ton swipe file de posts éducatifs de référence (dans `05_Departements/Marketing/LinkedIn/`).
-- Consulte aussi `05_Departements/Marketing/LinkedIn/posts-de-reference.md` pour tes posts éducatifs réels.
+- `{SKILL_BASE}/ressources/exemples-educatif.md` - Méta-analyse des facteurs de viralité éducative + tes inspirations éducatives sont dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` (champ `format: educatif`).
+- Consulte aussi `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` pour tes posts éducatifs réels.
 - Consulte aussi `{SKILL_BASE}/ressources/structures-de-post.md` pour les templates Livre/Ressource, Liste, Leçons d'événement, Actualité.

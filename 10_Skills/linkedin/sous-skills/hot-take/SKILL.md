@@ -1,5 +1,5 @@
 ---
-name: opinion
+name: hot-take
 description: >
   Skill pour créer des posts LinkedIn d'opinion et de prise de position dans ta voix.
   Utilise ce skill quand l'utilisateur veut écrire un post LinkedIn de type : opinion tranchée,
@@ -16,6 +16,18 @@ description: >
 # LinkedIn Hot Take
 
 **Prérequis** : le master `linkedin` (`{SKILL_BASE}/SKILL.md`) a été lu : voix, formatage, stratégie, système de hooks, checklist. Ce sous-skill le complète avec ses techniques propres.
+
+## D'abord, le Content Brain
+
+Avant d'écrire, lis `10_Skills/_commun/content-brain.md` si ce n'est pas déjà fait dans la session, puis cherche la matière dans `05_Departements/Marketing/Content-Brain/` :
+
+1. Si le post part d'une idée de `04_Idees/`, ouvre les fiches de son champ `fiches`.
+2. Sinon, trouve le pilier et le sujet du post dans `01_Strategie/` (la page `Sujet_<Nom>.md` liste les fiches du sujet), et retiens 3 à 5 fiches de `03_Base-de-connaissances/` : d'abord `Enseignements/` et la section Convictions de la stratégie, puis une fiche de `Preuves/` ou de `Histoires/` qui montre que la position vient du terrain.
+3. Écarte les fiches `diffusion: interne`. Pour une fiche `anonyme`, le client reste un rôle et un secteur. Préfère les fiches dont `utilise_dans` est vide ou date de plus de 90 jours.
+4. Le post s'écrit à partir de ces fiches : les mots de l'utilisateur, ses chiffres tels quels, ses scènes. Si la base n'a rien sur le sujet, dis-le et propose "interviewe-moi" plutôt que d'écrire un post générique.
+5. Pour la construction, regarde une ou deux fiches de `02_Veille/Inspirations/` au même `format` : la structure, jamais les mots.
+
+Le post validé est enregistré dans `05_Calendrier-editorial/Brouillons/Post-<Sujet>_<AAAA-MM-JJ>.md`, avec le frontmatter du fichier de structure : `format: hot-take`, `pilier`, `idee`, et dans `fiches` la liste de celles qui ont servi. Si le post vient d'une idée, passe son `statut` à `redigee`.
 
 ## Quand utiliser ce skill
 
@@ -37,9 +49,9 @@ Le créateur n'est pas un provocateur gratuit. Ses opinions sont :
 ### Les convictions du créateur (Manifesto)
 Ces convictions irriguent tous ses posts d'opinion :
 
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Convictions.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Convictions.
 
-> Consulte `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Convictions, pour le détail des convictions et les angles de posts associés.
+> Consulte `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Convictions, pour le détail des convictions et les angles de posts associés.
 
 ## Les 5 formats d'opinion
 
@@ -217,7 +229,7 @@ Reconnaître la position adverse avant de la démonter. Ça renforce la crédibi
 
 ## Sujets d'opinion typiques du créateur
 
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Sujets d'opinion.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Sujets d'opinion.
 
 ## Erreurs spécifiques aux posts d'opinion
 
@@ -225,12 +237,12 @@ Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Sujets d
 - **Pas de preuves** : Une opinion sans argument est juste du bruit.
 - **Trop de nuances dans le hook** : Le hook est tranché. La nuance vient après.
 - **Moraliser** : le créateur partage son avis, il ne fait pas la leçon.
-- **Opinions hors scope** : Rester sur le terrain d'expertise du créateur (sa niche (voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`)). Éviter politique, religion, société si ce n'est pas son sujet.
+- **Opinions hors scope** : Rester sur le terrain d'expertise du créateur (sa niche (voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`)). Éviter politique, religion, société si ce n'est pas son sujet.
 - **Attaquer des personnes** : Toujours critiquer des idées/pratiques, jamais des individus.
 
 ## Fichiers de référence
 
-- `{SKILL_BASE}/ressources/exemples-opinion.md` - Méta-analyse des facteurs de viralité opinion + emplacement de ton swipe file de posts d'opinion de référence (dans `05_Departements/Marketing/LinkedIn/`).
-- `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Convictions : les convictions avec angles de posts associés. C'est LA référence pour ancrer chaque hot take dans une conviction authentique.
-- Consulte aussi `05_Departements/Marketing/LinkedIn/posts-de-reference.md` pour tes posts d'opinion réels.
+- `{SKILL_BASE}/ressources/exemples-hot-take.md` - Méta-analyse des facteurs de viralité opinion + tes inspirations sont dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` (champ `format: hot-take`).
+- `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Convictions : les convictions avec angles de posts associés. C'est LA référence pour ancrer chaque hot take dans une conviction authentique.
+- Consulte aussi `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` pour tes posts d'opinion réels.
 - Consulte aussi `{SKILL_BASE}/ressources/structures-de-post.md` pour les templates Actualité/Réaction et Prise de conscience.

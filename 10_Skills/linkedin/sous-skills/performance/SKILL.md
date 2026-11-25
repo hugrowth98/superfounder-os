@@ -4,7 +4,7 @@ description: >
   Lit les chiffres des posts de l'utilisateur pour trouver ce qui marche chez lui : classe ses
   posts en tiers par rapport à sa propre moyenne, sort les patterns gagnants (type de hook,
   longueur, format, appel, pilier, jour), le ratio commentaires sur réactions, et met à jour
-  `posts-de-reference.md` avec les enseignements. Se déclenche sur : "qu'est-ce qui marche
+  `Posts-de-reference.md` avec les enseignements. Se déclenche sur : "qu'est-ce qui marche
   chez moi", "analyse mes posts", "mes meilleurs posts", "pourquoi ce post a marché", "quelle
   longueur me réussit", "bilan du mois". Ne pas utiliser pour classer les posts des autres
   (sous-skill `veille-createurs`, ou `publications-entreprise` pour une page entreprise).
@@ -21,7 +21,7 @@ Les repères du master (longueurs, créneaux, multiplicateurs) valent jusqu'à c
 Trois façons de les obtenir, de la plus simple à la plus complète :
 
 1. **Collées par l'utilisateur** : pour chaque post, le texte (ou le hook), la date, les impressions, les réactions, les commentaires, les enregistrements si visibles, le format.
-2. **Depuis `posts-de-reference.md`** : les posts qui y sont déjà avec leurs résultats.
+2. **Depuis le Content Brain** : les posts de `05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Publies/`, dont le frontmatter porte déjà `format`, `support`, `pilier`, `publie_le` et les chiffres relevés par `clean-content` (`python3 10_Skills/clean-content/scripts/releve_posts.py` pour les rafraîchir). C'est la source à préférer : chaque post y est déjà étiqueté. `Posts-de-reference.md` complète pour les posts plus anciens.
 3. **Par les outils** : avec Unipile branché, `scraper-engagement --mes-posts 40` liste ses derniers posts avec réactions et commentaires ; avec Publora branché, `planifier-post --stats <postGroupId>` donne impressions, personnes atteintes, réactions, commentaires et partages d'un post programmé par lui.
 
 ## Les tiers, relatifs à sa propre moyenne
@@ -48,11 +48,11 @@ Les patterns les plus souvent observés sur des comptes B2B, à vérifier chez l
 2. Calculer la moyenne d'engagement, classer en tiers, noter le ratio commentaires sur réactions.
 3. Étiqueter chaque post (hook, type, longueur, format, fin, pilier, jour) et repérer les traits communs des S et A absents des D.
 4. Écrire cinq enseignements au plus, chacun avec les posts qui le prouvent, et trois hypothèses à tester le mois suivant.
-5. Sur un oui, mettre à jour `posts-de-reference.md` (section "Ce qui marche chez vous", les posts S et A avec leurs chiffres) et, si la cadence ou les créneaux changent, `strategie-contenu.md`.
+5. Sur un oui, mettre à jour `Posts-de-reference.md` (section "Ce qui marche chez vous", les posts S et A avec leurs chiffres) et, si la cadence, les créneaux ou la répartition par format changent, `Strategie-contenu.md`. Signalez aussi les fiches de la base qui sont derrière les posts S et A : ce sont celles à creuser en `interview` et à rejouer sous un autre format.
 6. Rejouer : les S en carrousel et en vidéo (sous-skill `recycler`), les patterns dans les prochains hooks (sous-skill `hooks`).
 
 ## Exemples
 
-- "Voilà mes 30 derniers posts avec leurs chiffres" : tiers, ratio, cinq enseignements, trois tests ; réponse attendue : un tableau court, les enseignements avec preuves, la mise à jour proposée de `posts-de-reference.md`.
+- "Voilà mes 30 derniers posts avec leurs chiffres" : tiers, ratio, cinq enseignements, trois tests ; réponse attendue : un tableau court, les enseignements avec preuves, la mise à jour proposée de `Posts-de-reference.md`.
 - "Pourquoi ce post a marché ?" : le comparer aux S et A existants sur les sept traits ; réponse attendue : les deux ou trois traits qu'il partage avec les gagnants, et la façon de le rejouer.
 - "Quelle longueur me réussit ?" : la longueur moyenne par tier ; réponse attendue : une fourchette propre à l'utilisateur, remplaçant le repère générique du master.

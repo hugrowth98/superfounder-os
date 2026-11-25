@@ -154,7 +154,7 @@ Rebondissent sur une actualite pour y apporter un angle unique.
 
 - "[Entreprise/Outil] vient de lancer [chose]. Voici ce que ca change pour toi."
 - "En [annee], [tendance] n'est plus une option. C'est une necessite."
-- "[Evenement recent]. Voici ce que ca signifie pour les entrepreneurs son audience large, l'IAP (voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`)."
+- "[Evenement recent]. Voici ce que ca signifie pour les entrepreneurs son audience large, l'IAP (voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`)."
 - "Tout le monde parle de [sujet]. Personne ne parle de [angle neglige]."
 
 ---

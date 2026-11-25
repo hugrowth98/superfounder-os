@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """planifier_post : programme un post LinkedIn (ou un brouillon) sur Publora, avec les controles de bonnes pratiques,
-puis tient le calendrier local 05_Departements/Marketing/LinkedIn/Calendrier-publication.md.
+puis tient le calendrier local 05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Calendrier.md.
 
 Cle : PUBLORA_API_KEY dans .env (connecter-outils). Le compte LinkedIn est connecte dans le tableau de bord Publora
 (OAuth), jamais par l'API. Abonnement Publora, aucun cout par appel (palier gratuit : 15 posts par mois).
@@ -8,7 +8,7 @@ Cle : PUBLORA_API_KEY dans .env (connecter-outils). Le compte LinkedIn est conne
 Exemples :
   python3 planifier_post.py --comptes                              (les comptes connectes et leur etat)
   python3 planifier_post.py --test                                 (sante de la connexion LinkedIn)
-  python3 planifier_post.py --post "05_Departements/Marketing/LinkedIn/Post-Signaux_2026-09-22.md" --quand "2026-09-23 08:00" --dry-run
+  python3 planifier_post.py --post "05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Brouillons/Post-Signaux_2026-09-22.md" --quand "2026-09-23 08:00" --dry-run
   python3 planifier_post.py --post <fichier.md> --quand "2026-09-23 08:00" --premier-commentaire "Le guide complet : https://..."
   python3 planifier_post.py --texte "..." --brouillon              (un brouillon dans Publora, sans date)
   python3 planifier_post.py --post <fichier.md> --media carrousel.pdf --quand "2026-09-24 08:00"
@@ -35,8 +35,9 @@ if _racine is None:
 sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
 from gtm_common import Publora, afficher, arret, bandeau_dry_run, racine  # noqa: E402
 
-CALENDRIER = "05_Departements/Marketing/LinkedIn/Calendrier-publication.md"
-ENTETE = ("# Calendrier de publication\n\n> Tenu par `planifier-post` : une ligne par post programme sur Publora. "
+CALENDRIER = "05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Calendrier.md"
+ENTETE = ("# Calendrier editorial\n\n## Par semaine\n\n<!-- calendrier:debut -->\nAucun post pour l'instant.\n<!-- calendrier:fin -->\n\n"
+          "## Programmation\n\n> Tenu par `planifier-post` : une ligne par post programme sur Publora. "
           "Statut mis a jour par `--liste`. Heures locales.\n\n"
           "| Programme pour | Compte | Sujet ou fichier | postGroupId | Statut | Premier commentaire |\n|---|---|---|---|---|---|\n")
 MAX_CARACTERES = 3000

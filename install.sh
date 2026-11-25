@@ -8,7 +8,7 @@
 #   ./install.sh --into ~/MonWorkspace --dry-run  montre ce qui serait copié, sans rien écrire
 #
 # Ce que le script ne touche JAMAIS dans la cible : CLAUDE.md, 01_About-Me/, 02_Contexte/, 03_Branding/,
-# et tout fichier qui existe déjà (une fiche, contexte.md, strategie-contenu.md, .env, _log.md...).
+# et tout fichier qui existe déjà (une fiche, contexte.md, Strategie-contenu.md, .env, _log.md...).
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -61,7 +61,8 @@ echo; echo "Structure (si absente) :"
 for d in "00_Inbox" "04_Projets" "05_Departements" "06_Clients" "07_Meeting" "08_Ressources" "09_Journal" "11_Archives"; do
   for f in "$HERE/$d"/*.md; do [[ -f "$f" ]] && copy_new "$f" "$TARGET/$d/$(basename "$f")"; done
 done
-for dep in Strategie Contenu Go-to-Market Vente Produit Finance-Compta; do
+copy_new "$HERE/05_Departements/Marketing/Content-Brain" "$TARGET/05_Departements/Marketing/Content-Brain"
+for dep in Strategie Marketing Go-to-Market Vente Produit Finance-Compta; do
   copy_new "$HERE/05_Departements/$dep/$dep.md" "$TARGET/05_Departements/$dep/$dep.md"
   copy_new "$HERE/05_Departements/$dep/_log.md" "$TARGET/05_Departements/$dep/_log.md"
   for sub in "$HERE/05_Departements/$dep"/*/; do
@@ -71,7 +72,6 @@ for dep in Strategie Contenu Go-to-Market Vente Produit Finance-Compta; do
   done
 done
 for f in GUIDE.md contexte.md; do copy_new "$HERE/05_Departements/Go-to-Market/$f" "$TARGET/05_Departements/Go-to-Market/$f"; done
-for f in strategie-contenu.md posts-de-reference.md swipe-file.md; do copy_new "$HERE/05_Departements/Marketing/LinkedIn/$f" "$TARGET/05_Departements/Marketing/LinkedIn/$f"; done
 for d in "00_Inbox/_import" "05_Departements/Go-to-Market/sources" "07_Meeting/Clients" "07_Meeting/Prospects" "07_Meeting/Interne" "07_Meeting/Autres" "08_Ressources/Veille/sources" "08_Ressources/Veille/wiki/concepts" "08_Ressources/Veille/wiki/patterns" "08_Ressources/Veille/wiki/people" "08_Ressources/Veille/wiki/companies"; do keep "$d"; done
 for f in "$HERE/08_Ressources/templates"/*.md; do copy_new "$f" "$TARGET/08_Ressources/templates/$(basename "$f")"; done
 for f in Veille.md INDEX.md LOG.md _log.md; do copy_new "$HERE/08_Ressources/Veille/$f" "$TARGET/08_Ressources/Veille/$f"; done

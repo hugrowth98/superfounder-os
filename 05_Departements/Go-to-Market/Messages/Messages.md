@@ -10,7 +10,7 @@ maj: AAAA-MM-JJ
 
 La copy outbound : séquences email, messages LinkedIn, icebreakers, mails de suivi, playbooks d'appel.
 
-Ne va pas ici : un post LinkedIn public (`05_Departements/Marketing/LinkedIn/`), un email à l'audience déjà inscrite (`05_Departements/Go-to-Market/Mailing/`). La différence est l'audience : ici on écrit à des gens qui ne nous connaissent pas.
+Ne va pas ici : un post LinkedIn public (`05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/`), un email à l'audience déjà inscrite (`05_Departements/Go-to-Market/Mailing/`). La différence est l'audience : ici on écrit à des gens qui ne nous connaissent pas.
 
 ## Cadre
 

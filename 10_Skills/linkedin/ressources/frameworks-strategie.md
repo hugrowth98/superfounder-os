@@ -18,7 +18,7 @@ Chaque post LinkedIn entre dans l'une de ces 4 categories. La repartition ideale
 - Posts qui analysent une tendance, un marche, des donnees
 - Formats : reactions a l'actualite, comparatifs, demontages d'idees recues
 - Exemples : "[Outil majeur] vient de lancer...", "80% des entrepreneurs font..."
-- **Skill associe** : `educatif` ou `opinion`
+- **Skill associe** : `educatif` ou `hot-take`
 
 ### Aspirational (Lecons, erreurs, reflexions, histoires)
 - Posts qui inspirent par l'experience vecue
@@ -30,9 +30,9 @@ Chaque post LinkedIn entre dans l'une de ces 4 categories. La repartition ideale
 - Posts qui touchent a l'humain, aux croyances, aux convictions profondes
 - Formats : opinions tranchees, manifesto, "ce que tout le monde pense vs la realite"
 - Exemples : "J'ai une conviction qui derange...", "Arretez de..."
-- **Skill associe** : `opinion`
+- **Skill associe** : `hot-take`
 
-### Repartition recommandee (a adapter selon la répartition éditoriale de `05_Departements/Marketing/LinkedIn/strategie-contenu.md`)
+### Repartition recommandee (a adapter selon la répartition éditoriale de `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`)
 - **40%** Actionable + Analytical (expertise metier, outils, systemes)
 - **30%** Aspirational (backstory, build in public, voyage)
 - **30%** Anthropological (convictions, opinions, manifesto)
@@ -44,19 +44,19 @@ Chaque post LinkedIn entre dans l'une de ces 4 categories. La repartition ideale
 Le Monopole Personnel est l'intersection unique de 3 elements qui rendent un createur impossible a copier.
 
 ### Curiosite (ce qui fascine)
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Monopole personnel.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Monopole personnel.
 
-> Défini dans `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : quels sujets te fascinent en dehors du travail, que tu explores naturellement ?
+> Défini dans `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` : quels sujets te fascinent en dehors du travail, que tu explores naturellement ?
 
 ### Competence (ce que tu sais faire)
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Monopole personnel.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Monopole personnel.
 
-> Défini dans `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : quelles sont tes competences distinctives, acquises par la pratique ?
+> Défini dans `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` : quelles sont tes competences distinctives, acquises par la pratique ?
 
 ### Personnalite (ce qui te rend unique)
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Monopole personnel.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Monopole personnel.
 
-> Défini dans `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : comment les gens te decrivent-ils ? Quelle est ta posture naturelle ?
+> Défini dans `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` : comment les gens te decrivent-ils ? Quelle est ta posture naturelle ?
 
 **Application** : chaque post doit toucher au moins 2 de ces 3 elements pour rester dans le Monopole Personnel.
 
@@ -97,7 +97,7 @@ Progression naturelle de tout createur de contenu :
 
 ### Etape 2 - Discipline
 - Poster regulierement meme sans inspiration
-- Etablir un rythme (la fréquence de publication définie dans `05_Departements/Marketing/LinkedIn/strategie-contenu.md`)
+- Etablir un rythme (la fréquence de publication définie dans `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`)
 - Le contenu n'est pas parfait mais la regularite prime
 
 ### Etape 3 - Habitude
@@ -138,7 +138,7 @@ Les 4 leviers pour scaler son impact sans scaler son temps :
 
 En 2025-2026, le contenu generique ne suffit plus. L'IA peut produire du contenu moyen. La difference vient de l'autorite.
 
-### Repartition le mix autorité / perso / offre de `05_Departements/Marketing/LinkedIn/strategie-contenu.md` (defaut recommande : 70/15/15)
+### Repartition le mix autorité / perso / offre de `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` (defaut recommande : 70/15/15)
 - **70% Authority content** : expertise pure, insights vecus, donnees terrain
   - Posts bases sur ce que tu as teste, mesure, observe
   - Noms d'outils specifiques, chiffres concrets, cas reels
@@ -161,14 +161,14 @@ Chaque post educatif doit repondre a cette question.
 ### ICP - Ideal Customer Profile (clients)
 Voir `02_Contexte/Clients-Problems-and-Messages.md`.
 
-> Défini dans `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : qui sont tes clients payants ? Quel probleme resout ton offre ? Quel budget sont-ils prets a investir ?
+> Défini dans `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` : qui sont tes clients payants ? Quel probleme resout ton offre ? Quel budget sont-ils prets a investir ?
 
 - **Contenu cible** : posts BOFU, lead magnets, cas clients
 
 ### IAP - Ideal Audience Profile (audience large)
-Voir `05_Departements/Marketing/LinkedIn/strategie-contenu.md`, section Audiences.
+Voir `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md`, section Audiences.
 
-> Défini dans `05_Departements/Marketing/LinkedIn/strategie-contenu.md` : qui est ton audience large ? Qui peut aimer ton contenu sans etre client ?
+> Défini dans `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` : qui est ton audience large ? Qui peut aimer ton contenu sans etre client ?
 
 - **Contenu cible** : posts TOFU, outils gratuits, opinions
 

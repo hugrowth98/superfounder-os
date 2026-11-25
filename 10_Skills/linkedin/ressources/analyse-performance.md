@@ -6,7 +6,7 @@ Une méthode pour lire ses chiffres sans se raconter d'histoires, et remplacer l
 
 Pour chaque post : la date, le hook (ou le texte), le type (éducatif, storytelling, opinion, lead magnet), le format (texte, carrousel, image, vidéo), la longueur en caractères, la fin (question, mot-clé, enregistrement, rien), le pilier, les impressions, les réactions, les commentaires, les enregistrements et partages si visibles. Vingt posts pour voir, quarante pour conclure.
 
-Sources : les chiffres collés par l'utilisateur, `posts-de-reference.md`, `scraper-engagement --mes-posts N` (Unipile), `planifier-post --stats` (Publora, pour les posts programmés par lui).
+Sources : les chiffres collés par l'utilisateur, `Posts-de-reference.md`, `scraper-engagement --mes-posts N` (Unipile), `planifier-post --stats` (Publora, pour les posts programmés par lui).
 
 ## Le score et les tiers
 
@@ -42,4 +42,4 @@ Ces cinq éléments réunis dans un même post donnent en général le meilleur 
 
 ## Le rendu
 
-Un tableau court (post, tier, score, traits), cinq enseignements au plus avec les posts qui les prouvent, trois hypothèses à tester le mois suivant, et la mise à jour proposée de `posts-de-reference.md` (section "Ce qui marche chez vous") et, si la cadence ou les créneaux bougent, de `strategie-contenu.md`. Rien n'est écrit sans un oui.
+Un tableau court (post, tier, score, traits), cinq enseignements au plus avec les posts qui les prouvent, trois hypothèses à tester le mois suivant, et la mise à jour proposée de `Posts-de-reference.md` (section "Ce qui marche chez vous") et, si la cadence ou les créneaux bougent, de `Strategie-contenu.md`. Rien n'est écrit sans un oui.

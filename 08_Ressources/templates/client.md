@@ -2,6 +2,7 @@
 type: client
 status: active
 offre: Coaching 1:1
+contenu: non        # non | anonyme | nomme : ce que le Content Brain peut tirer des calls de ce client
 debut: AAAA-MM-JJ
 date: AAAA-MM-JJ
 maj: AAAA-MM-JJ

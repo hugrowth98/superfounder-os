@@ -51,7 +51,7 @@ Les plafonds journaliers d'invitations, de messages et d'interactions, le protoc
 ## Méthode
 
 1. Diagnostic en une ligne : réactions sans commentaires (le contenu ne donne rien à dire : finir par une question précise, prendre position), commentaires sans réactions (le sujet divise, c'est bien), rien du tout (portée : cadence, commentaires chez les autres, hook).
-2. Une liste de 10 à 20 comptes à commenter (les créateurs admirés de `strategie-contenu.md`, les comptes de la cible), et un créneau quotidien de 15 à 20 minutes.
+2. Une liste de 10 à 20 comptes à commenter (les créateurs admirés de `Strategie-contenu.md`, les comptes de la cible), et un créneau quotidien de 15 à 20 minutes.
 3. Le rituel après publication (sous-skill `publier`), et les réponses préparées avec `repondre-commentaires` quand Unipile est branché.
 4. Chaque mois, regarder les commentaires reçus : ce sont les prochaines idées de posts (sous-skill `ideation`).
 

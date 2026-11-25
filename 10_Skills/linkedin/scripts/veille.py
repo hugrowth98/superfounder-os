@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """veille.py : lit les sources de veille de l'utilisateur (newsletters RSS, chaines YouTube, autres flux), recupere
 likes, vues et abonnes, calcule une velocite par item, et ecrit le dump de la semaine dans
-05_Departements/Marketing/LinkedIn/sources/veille_AAAA-MM-JJ.json (ou --format md pour un digest lisible).
+05_Departements/Marketing/Content-Brain/02_Veille/sources/veille_AAAA-MM-JJ.json (ou --format md pour un digest lisible).
 
-Sources : 05_Departements/Marketing/LinkedIn/sources-veille.json (rempli par installer-contenu, ou a la main).
-Abonnes : 05_Departements/Marketing/LinkedIn/sources/veille-abonnes.json (abonnes.py, une fois par mois).
+Sources : 05_Departements/Marketing/Content-Brain/02_Veille/Sources-veille.json (rempli par installer-contenu, ou a la main).
+Abonnes : 05_Departements/Marketing/Content-Brain/02_Veille/sources/veille-abonnes.json (abonnes.py, une fois par mois).
 Transcripts YouTube : bibliotheque youtube-transcript-api si elle est installee (pip3 install youtube-transcript-api),
 sinon le script continue sans et le dit.
 
@@ -30,8 +30,8 @@ from pathlib import Path
 _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md").exists() and (d / "10_Skills").is_dir()), None)
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
-DOSSIER = _racine / "05_Departements" / "Marketing" / "LinkedIn"
-SOURCES_FILE = DOSSIER / "sources-veille.json"
+DOSSIER = _racine / "05_Departements" / "Marketing" / "Content-Brain" / "02_Veille"
+SOURCES_FILE = DOSSIER / "Sources-veille.json"
 CACHE_DIR = DOSSIER / "sources"
 ABONNES_FILE = CACHE_DIR / "veille-abonnes.json"
 CHAINES_FILE = CACHE_DIR / "veille-chaines.json"

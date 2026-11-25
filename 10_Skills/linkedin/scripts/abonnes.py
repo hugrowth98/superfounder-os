@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """abonnes.py : lit le nombre d'abonnes de chaque source de veille (page d'archive Substack, page "a propos" d'une
-chaine YouTube) et l'ecrit dans 05_Departements/Marketing/LinkedIn/sources/veille-abonnes.json.
+chaine YouTube) et l'ecrit dans 05_Departements/Marketing/Content-Brain/02_Veille/sources/veille-abonnes.json.
 Sert a calculer la velocite dans veille.py. Cache de 30 jours : ne refait rien si le fichier est plus recent,
 sauf avec --force.
 
@@ -21,8 +21,8 @@ from pathlib import Path
 _racine = next((d for d in Path(__file__).resolve().parents if (d / "CLAUDE.md").exists() and (d / "10_Skills").is_dir()), None)
 if _racine is None:
     sys.exit("Racine du workspace introuvable (CLAUDE.md + 10_Skills/) : ce script doit vivre dans 10_Skills/ de Superfounder OS.")
-DOSSIER = _racine / "05_Departements" / "Marketing" / "LinkedIn"
-SOURCES_FILE = DOSSIER / "sources-veille.json"
+DOSSIER = _racine / "05_Departements" / "Marketing" / "Content-Brain" / "02_Veille"
+SOURCES_FILE = DOSSIER / "Sources-veille.json"
 ABONNES_FILE = DOSSIER / "sources" / "veille-abonnes.json"
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 TIMEOUT = 12
@@ -120,7 +120,7 @@ def main():
             elif manuel:
                 resultats["newsletters"][n] = {"abonnes": int(manuel), "url": r["url"], "saisi": True}
             else:
-                erreurs.append(f"{n} : {r.get('erreur', 'pas de donnee')} (ajoutez \"abonnes\": N dans sources-veille.json)")
+                erreurs.append(f"{n} : {r.get('erreur', 'pas de donnee')} (ajoutez \"abonnes\": N dans Sources-veille.json)")
     with ThreadPoolExecutor(max_workers=4) as ex:
         futs = {ex.submit(abonnes_youtube, h): h for h in chaines}
         for fut in as_completed(futs):

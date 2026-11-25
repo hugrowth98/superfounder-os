@@ -62,4 +62,4 @@ Phrases courtes en fin de post pour l'impact emotionnel. Elles donnent du rythme
 
 ## Swipe file
 
-Les posts de référence de ce format (les vôtres qui ont bien marché, et ceux des créateurs que vous admirez) vivent dans `05_Departements/Marketing/LinkedIn/swipe-file.md`, section Storytelling. Les lire avant de rédiger : ils calibrent la voix et les structures qui performent dans votre domaine.
+Les posts de référence de ce format (les vôtres qui ont bien marché, et ceux des créateurs que vous admirez) vivent dans le Content Brain : les vôtres dans `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` et `05_Calendrier-editorial/Publies/`, ceux des autres dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` (champ `format: storytelling`). Les lire avant de rédiger : ils calibrent la voix et les structures qui performent dans votre domaine.

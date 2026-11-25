@@ -68,4 +68,4 @@ Le contenu le plus sauvegarde est celui qu'on peut utiliser tel quel. Si tu donn
 
 ## Swipe file
 
-Les posts de référence de ce format (les vôtres qui ont bien marché, et ceux des créateurs que vous admirez) vivent dans `05_Departements/Marketing/LinkedIn/swipe-file.md`, section Educational. Les lire avant de rédiger : ils calibrent la voix et les structures qui performent dans votre domaine.
+Les posts de référence de ce format (les vôtres qui ont bien marché, et ceux des créateurs que vous admirez) vivent dans le Content Brain : les vôtres dans `05_Departements/Marketing/Content-Brain/01_Strategie/Posts-de-reference.md` et `05_Calendrier-editorial/Publies/`, ceux des autres dans `05_Departements/Marketing/Content-Brain/02_Veille/Inspirations/` (champ `format: educatif`). Les lire avant de rédiger : ils calibrent la voix et les structures qui performent dans votre domaine.

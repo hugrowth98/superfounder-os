@@ -16,6 +16,10 @@ description: >
 
 Un contenu de fond par semaine peut devenir six à huit publications. Les 10 pour cent de posts qui ont le mieux marché méritent cinq fois plus de recyclage que les autres (sous-skill `performance` pour les trouver).
 
+## D'où partir, où ranger
+
+Les posts à recycler se choisissent dans `05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/Publies/`, par leurs chiffres (`impressions`, `reactions`, `commentaires`), une fois `chiffres_definitifs: oui`. La version recyclée s'écrit dans `05_Calendrier-editorial/Recycles/`, avec le même frontmatter que l'original, `statut: recycle`, le nouveau `support` ou `canal`, et un lien vers le post d'origine. Les fiches de l'original restent celles de la version recyclée.
+
 ## La matrice
 
 | Source | Cible | Comment |
@@ -35,7 +39,7 @@ Un contenu de fond par semaine peut devenir six à huit publications. Les 10 pou
 1. Jamais de copier-coller d'un format à l'autre : chaque support a ses règles.
 2. Le hook change à chaque recyclage, même si l'idée est la même.
 3. Deux à quatre semaines avant de rejouer un post texte en post texte ; entre deux formats, on peut enchaîner dans la même semaine.
-4. La voix reste celle de l'utilisateur : `Tone-and-Voice.md` et `posts-de-reference.md`, relus avant d'adapter.
+4. La voix reste celle de l'utilisateur : `Tone-and-Voice.md` et `Posts-de-reference.md`, relus avant d'adapter.
 
 ## Les outils de LinkedIn
 

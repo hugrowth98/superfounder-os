@@ -4,17 +4,17 @@ sur la fenetre S-6 a S-2, classes en quatre categories (20 educationnels, 20 lea
 10 storytelling), avec les visuels telecharges et un rapport HTML ou chaque post a sa vignette.
 
 Comptes : passes sur la ligne de commande (`--comptes <url> <url>`), ou lus dans un fichier texte (une URL
-par ligne, `--fichier`), ou dans 05_Departements/Marketing/LinkedIn/comptes-veille.json si l'utilisateur a
+par ligne, `--fichier`), ou dans 05_Departements/Marketing/Content-Brain/02_Veille/Comptes-veille.json si l'utilisateur a
 choisi de les memoriser. Aucune liste n'est livree avec le skill : c'est l'utilisateur qui dit qui il suit.
 
 Usage :
   python3 veille_createurs.py --comptes URL [URL ...] [--fin AAAA-MM-JJ] [--dry-run]
   python3 veille_createurs.py --fichier comptes.txt
-  python3 veille_createurs.py --memorises                     (comptes-veille.json)
+  python3 veille_createurs.py --memorises                     (Comptes-veille.json)
   python3 veille_createurs.py --reconstruire <dossier du run>  (apres avoir edite verdicts.json)
 
 Apify : actor harvestapi/linkedin-profile-posts, 0,002 $ par post, 40 posts par compte au plus.
-Sortie : 05_Departements/Marketing/LinkedIn/sources/veille-createurs_<debut>_<fin>/ (rapport.html, top.json,
+Sortie : 05_Departements/Marketing/Content-Brain/02_Veille/sources/veille-createurs_<debut>_<fin>/ (rapport.html, top.json,
 posts.json, verdicts.json, images/). Ce dossier est ignore par git (donnees de l'utilisateur).
 """
 from __future__ import annotations
@@ -40,8 +40,8 @@ sys.path.insert(0, str(_racine / "10_Skills" / "_commun"))
 from apify_run import lancer, prix  # noqa: E402
 from gtm_common import afficher, arret  # noqa: E402
 
-DOSSIER = _racine / "05_Departements" / "Marketing" / "LinkedIn"
-COMPTES_FILE = DOSSIER / "comptes-veille.json"
+DOSSIER = _racine / "05_Departements" / "Marketing" / "Content-Brain" / "02_Veille"
+COMPTES_FILE = DOSSIER / "Comptes-veille.json"
 ACTOR = "harvestapi/linkedin-profile-posts"
 QUOTAS = {"EDU": 20, "LM": 20, "HOT": 10, "STORY": 10}
 CAP_PAR_AUTEUR = 3
@@ -375,7 +375,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--comptes", nargs="*", help="URLs de profils LinkedIn")
     ap.add_argument("--fichier", help="fichier texte, une URL par ligne")
-    ap.add_argument("--memorises", action="store_true", help="lire comptes-veille.json")
+    ap.add_argument("--memorises", action="store_true", help="lire Comptes-veille.json")
     ap.add_argument("--fin", default=datetime.date.today().isoformat(), help="date de reference (defaut : aujourd'hui)")
     ap.add_argument("--dry-run", action="store_true", help="afficher la fenetre, les comptes et le cout, ne rien lancer")
     ap.add_argument("--sans-medias", action="store_true")

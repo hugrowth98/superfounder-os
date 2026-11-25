@@ -49,7 +49,7 @@ def main():
     for p in ["10_Skills/detecter-signaux/scripts/detecter_signal.py", "10_Skills/enrichir-entreprise/scripts/detecter_techno.py",
               "10_Skills/enrichir-entreprise/scripts/scraper_pubs.py", "10_Skills/_commun/gtm_common.py",
               "10_Skills/linkedin/scripts/veille.py", "10_Skills/linkedin/scripts/abonnes.py", "10_Skills/planifier-post/scripts/planifier_post.py",
-              "10_Skills/infographie/scripts/generer_image.py", "05_Departements/Marketing/LinkedIn/sources-veille.json"]:
+              "10_Skills/infographie/scripts/generer_image.py", "05_Departements/Marketing/Content-Brain/02_Veille/Sources-veille.json"]:
         if not os.path.exists(os.path.join(R, p)):
             erreurs.append(f"[manquant] {p}")
     # 2. parcours de tous les .md et .py

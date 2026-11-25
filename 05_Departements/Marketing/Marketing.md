@@ -18,7 +18,8 @@ Ne va pas ici : un email à votre audience ou une pub ([[Go-to-Market]]), un liv
 
 - Publier à cadence fixe, dans votre voix
 - Transformer chaque contenu long (live, atelier, newsletter) en contenus courts
-- Tenir la stratégie de contenu à jour dans `LinkedIn/strategie-contenu.md`
+- Tenir la stratégie de contenu à jour dans `Content-Brain/01_Strategie/Strategie-contenu.md`, et la revoir chaque trimestre
+- Nourrir la base de connaissances avec chaque call, chaque post et chaque histoire qui mérite un contenu
 
 ## Objectif
 
@@ -26,13 +27,14 @@ Ne va pas ici : un email à votre audience ou une pub ([[Go-to-Market]]), un liv
 
 ## Cadre
 
-Vouvoiement ou tutoiement selon `02_Contexte/Tone-and-Voice.md`. Règles d'écriture : `01_About-Me/anti-ai-voice.md`. Stratégie, posts de référence et swipe file dans `LinkedIn/`, remplis par "Installe mon contenu".
+Vouvoiement ou tutoiement selon `02_Contexte/Tone-and-Voice.md`. Règles d'écriture : `01_About-Me/anti-ai-voice.md`. Tout ce qui sert à produire le contenu vit dans `Content-Brain/` : stratégie, veille, base de connaissances, idées, calendrier éditorial. Il est installé par "Installe mon contenu" et tenu à jour chaque lundi par `clean-content`.
 
-Skills : le master `linkedin` (veille, idées, interview, hooks, un sous-skill par intention de post, formats, fins de post, optimisation, cadence, engagement, recyclage, profil, performance), le master `infographie` pour les visuels, `planifier-post` pour programmer sur Publora.
+Skills : `installer-contenu` et "Nourris mon brain" pour ajouter une source, `strategie-contenu` pour construire et challenger la stratégie, `clean-content` pour le passage hebdomadaire, le master `linkedin` (veille, idées, interview, hooks, un sous-skill par format de post, supports, fins de post, optimisation, cadence, engagement, recyclage, profil, performance), le master `infographie` pour les visuels, `planifier-post` pour programmer sur Publora.
 
 Nommage `Nom-Sujet_YYYY-MM-DD.ext`. Un contenu qui appartient à un projet porte son tag en préfixe.
 
-- `LinkedIn/` : posts, carrousels, calendrier éditorial, stratégie de contenu
+- `Content-Brain/` : stratégie et piliers, veille, base de connaissances, idées, calendrier éditorial et posts
+- `LinkedIn/` : visuels, infographies, carrousels
 - `Newsletter/` : éditions publiées
 - `Video/` : vidéos publiées (fichiers lourds hors git)
 - `Slides/` : supports d'ateliers, masterclass et lives
@@ -43,4 +45,5 @@ Nommage `Nom-Sujet_YYYY-MM-DD.ext`. Un contenu qui appartient à un projet porte
 
 ## Key Notes
 
+- [[Content-Brain]]
 - [[Go-to-Market]]

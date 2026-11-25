@@ -3,11 +3,11 @@
 **Le système d'exploitation de croissance d'un dirigeant B2B, avec l'IA en bras droit.**
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-yellow.svg)](LICENSE)
-[![41 skills](https://img.shields.io/badge/skills-41-blue.svg)](#ce-que-contient-le-dépôt)
+[![43 skills](https://img.shields.io/badge/skills-43-blue.svg)](#ce-que-contient-le-dépôt)
 [![Claude Code](https://img.shields.io/badge/pour-Claude%20Code-black.svg)](https://www.anthropic.com/claude-code)
 [![validate-skills](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml/badge.svg)](https://github.com/hugrowth98/superfounder-os/actions/workflows/validate.yml)
 
-Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 41 skills utilisés chaque semaine sur un vrai business (dont sept masters et leurs cinquante-trois sous-skills) : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
+Le rôle d'un dirigeant tient en deux verbes : vendre, et construire des systèmes. Ce dépôt contient les systèmes. Un workspace Claude Code complet, prêt à ouvrir, avec 43 skills utilisés chaque semaine sur un vrai business (dont sept masters et leurs cinquante-trois sous-skills) : un second cerveau que l'IA lit avant chaque tâche, une machine de prospection, une machine de contenu.
 
 Tout est en français, pensé pour un dirigeant qui ne code pas. Vous écrivez des phrases dans le chat, Claude fait le travail technique.
 
@@ -21,7 +21,7 @@ Superfounder OS met l'IA là où elle a le plus d'impact pour un dirigeant, en t
 |---|---|---|---|
 | **Le second cerveau** | Qui vous êtes, votre offre, vos départements, vos projets, vos clients, votre voix, dans des fichiers que Claude lit avant chaque tâche. Sans ça, l'IA plafonne à 50 %. Avec, vous démarrez à 80 %. | `Installe mon second cerveau` | racine |
 | **La prospection (module GTM)** | Quatre masters de méthode (construire une liste, détecter des signaux, cold email, cold call) avec leurs sous-skills et leurs ressources (13 frameworks, 34 templates, 137 déclencheurs), et dix-sept skills d'exécution qui appellent vos outils (dont un constructeur de requêtes Sales Navigator, son export en CSV, et la recherche précise par Ocean.io ou Prospeo). Vous parlez en phrases simples, sans nommer d'outil. | `Installe ma prospection` | racine |
-| **Le contenu** | Le master `linkedin` et ses seize sous-skills (veille hebdomadaire de vos newsletters et chaînes avec brief en six sections, idées, interview du vécu, hooks, un sous-skill par intention de post, formats, fins de post, optimisation, cadence, engagement, recyclage, profil, analyse de vos performances), le master `infographie` (un post en visuel aux couleurs de votre charte, image générée par OpenAI ou fal.ai) et `planifier-post` (programmation sur Publora avec les bonnes pratiques). Tout est écrit dans votre voix. | `Installe mon contenu` | racine |
+| **Le contenu** | Le Content Brain, un dossier qui réunit votre stratégie et ses piliers, votre veille, une base de connaissances tirée de vos posts, de vos calls et de votre vécu, vos idées et votre calendrier éditorial avec les chiffres de chaque post. Trois skills le font vivre : `installer-contenu`, `strategie-contenu` (il lit votre second cerveau, propose, puis vous challenge en interview) et `clean-content` (le passage du lundi). Par-dessus, le master `linkedin` et ses dix-sept sous-skills (veille hebdomadaire de vos newsletters et chaînes avec brief en six sections, idées, interview du vécu, hooks, un sous-skill par intention de post, formats, fins de post, optimisation, cadence, engagement, recyclage, profil, analyse de vos performances), le master `infographie` (un post en visuel aux couleurs de votre charte, image générée par OpenAI ou fal.ai) et `planifier-post` (programmation sur Publora avec les bonnes pratiques). Chaque post part de vos fiches, dans votre voix. | `Installe mon contenu` | racine |
 
 Le second cerveau se fait en premier. Les deux autres le lisent et n'interviewent que sur ce qui manque, dans l'ordre que vous voulez. Le détail de chaque module est dans [docs/](docs/).
 
@@ -61,7 +61,7 @@ superfounder-os/            le dossier que Claude Code ouvre
 ├── 07_Meeting/             transcripts de calls : Clients/ Prospects/ Interne/ Autres/
 ├── 08_Ressources/          templates (projet, département, client, journal, réflexion, livrable), Veille/ (sources, wiki)
 ├── 09_Journal/             un fichier par jour écrit par /done, un par semaine par /weekly-review
-├── 10_Skills/              la bibliothèque : 41 skills de premier niveau, une procédure par dossier ; 7 masters (4 GTM, linkedin, infographie) portent 53 sous-skills et leurs ressources
+├── 10_Skills/              la bibliothèque : 43 skills de premier niveau, une procédure par dossier ; 7 masters (4 GTM, linkedin, infographie) portent 53 sous-skills et leurs ressources
 ├── 11_Archives/            terminé ou remplacé, gardé accessible
 ├── .claude/skills          lien vers 10_Skills/ (Claude Code)      .agents/skills  lien vers 10_Skills/ (Codex)
 ├── AGENTS.md  opencode.json  .env.example  install.sh  docs/  scripts/validate_skills.py
@@ -73,10 +73,10 @@ Une fiche (département, projet, client) tient en six sections : Mission, Périm
 
 Le dépôt applique les pratiques documentées de Claude Code pour la gestion du contexte. Si vous voulez adapter l'OS, gardez ces six règles.
 
-1. **Une information vit à un seul endroit.** L'offre est dans `02_Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
+1. **Une information vit à un seul endroit.** L'offre est dans `02_Contexte/Offer-Positioning.md`, nulle part ailleurs. Le `contexte.md` de la prospection et la `Strategie-contenu.md` du contenu pointent dessus et ne gardent que ce qui leur est propre. Quand l'offre change, un seul fichier change.
 2. **Trois vitesses de changement, trois couches.** `01_About-Me/` change en années et est importé dans le contexte à chaque session. `02_Contexte/` change en trimestres et se charge à la demande. La section "Où on en est" d'une note de dossier change en semaines et est réécrite par `/done`.
-3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `02_Contexte/` et les fichiers de réglage du dossier (`contexte.md` de la prospection, `strategie-contenu.md` du contenu) à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
-4. **Une bibliothèque de skills, trois moteurs.** Les 41 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `10_Skills/`, les trois le voient.
+3. **Les skills sont des procédures sans état.** Aucun skill ne contient de donnée sur vous. Ils lisent `02_Contexte/` et les fichiers de réglage du dossier (`contexte.md` de la prospection, `Strategie-contenu.md` du contenu) à chaque exécution. Pas de placeholders, pas de recompilation quand votre positionnement bouge.
+4. **Une bibliothèque de skills, trois moteurs.** Les 43 skills sont dans `10_Skills/`, un dossier par skill. Claude Code les lit par le lien `.claude/skills`, Codex par `.agents/skills`, OpenCode par `opencode.json`. Vous ajoutez un skill dans `10_Skills/`, les trois le voient.
 5. **Une note par dossier, pas un CLAUDE.md par dossier.** Le `CLAUDE.md` racine est la seule carte, sous 200 lignes. Chaque dossier de travail a une note du même nom, avec les mêmes sections partout : Mission, Périmètre, Objectif, Cadre, Étapes, Où on en est, Key Notes. Vous écrivez les quatre premières, `/done` coche les Étapes et réécrit les deux dernières.
 6. **Une boucle d'écriture, ou le graphe pourrit.** `/done` en fin de session fait ruisseler les décisions dans le journal du jour, la note du dossier et son `_log.md`. `/lint` une fois par mois vérifie que rien n'a dérivé. Un contexte construit une fois et jamais réécrit est mort en trois semaines.
 
@@ -104,3 +104,7 @@ Construit par [Hugo Dollfus](https://www.linkedin.com/in/hugo-dollfus/), fondate
 ## Licence
 
 [MIT](LICENSE). Utilisez, modifiez, redistribuez. Une mention est appréciée, pas obligatoire.
+
+## Crédits
+
+Le module contenu (une base de connaissances organisée par piliers, une interview de stratégie, un passage hebdomadaire) est inspiré du travail de Pierre Herubel sur les systèmes de contenu LinkedIn. La structure, les skills et les scripts de ce dépôt sont écrits pour Superfounder OS.

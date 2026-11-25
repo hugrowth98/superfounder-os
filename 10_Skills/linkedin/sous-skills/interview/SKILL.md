@@ -39,10 +39,10 @@ C'est ce qui sépare une interview générique d'une interview qui touche juste.
 
 Utilise Glob et Grep, pas des Read en masse. Cherche dans cet ordre :
 
-1. **Le second cerveau, en premier** : `01_About-Me/` (déjà chargé), `02_Contexte/Offer-Positioning.md`, `02_Contexte/Clients-Problems-and-Messages.md`, `02_Contexte/Tone-and-Voice.md`, puis `05_Departements/Marketing/LinkedIn/strategie-contenu.md` (convictions, piliers) et `posts-de-reference.md`. Dans Superfounder OS, c'est là que vit le positionnement : pas besoin de le chercher ailleurs.
+1. **Le second cerveau, en premier** : `01_About-Me/` (déjà chargé), `02_Contexte/Offer-Positioning.md`, `02_Contexte/Clients-Problems-and-Messages.md`, `02_Contexte/Tone-and-Voice.md`, puis `05_Departements/Marketing/Content-Brain/01_Strategie/Strategie-contenu.md` (convictions, piliers) et `Posts-de-reference.md`. Dans Superfounder OS, c'est là que vit le positionnement : pas besoin de le chercher ailleurs.
 2. **Matière de terrain (la plus précieuse)** : tout fichier contenant `transcript`, `call`, `meeting`, `réunion`, `reunion`, `notes`, `compte-rendu`, `debrief`, `granola`, `tldv`, `interview`, `entretien`, `discovery`, `demo`, `retour`, `feedback`, `témoignage`, `temoignage`.
 3. **Livrables et production passée** : dossiers `output`, `posts`, `content`, `newsletter`, `drafts`, `livrables`.
-4. **Banque existante** : `05_Departements/Marketing/LinkedIn/banque-vecu.md`, créée par une session précédente de ce skill (voir Phase 4).
+4. **La base de connaissances** : `05_Departements/Marketing/Content-Brain/03_Base-de-connaissances/`, surtout `Histoires/` et `Enseignements/`, pour ne pas re-fouiller ce qui est déjà capté. Lis aussi les pages `05_Departements/Marketing/Content-Brain/01_Strategie/Pilier-N_<Nom>.md` : leur section "Pas encore couvert" dit quels sujets manquent d'une histoire ou d'une preuve. Ce sont les veines à ouvrir en premier.
 
 Extensions à couvrir : `.md`, `.txt`, `.vtt`, `.srt`, `.docx`, `.pdf`, `.json`, `.csv`.
 
@@ -85,7 +85,7 @@ Ne restitue jamais un inventaire. Tu dis une phrase du type : "OK, j'ai lu tes d
 
 Tu peux t'arrêter à 3 si les réponses sont riches. Dès que tu as métier + cible + terrain, tu passes à la Phase 2.
 
-Note ces réponses dans la fiche de calibrage. À la fin de session, propose de les verser dans `02_Contexte/` ou `strategie-contenu.md` (Phase 4) pour ne jamais les redemander.
+Note ces réponses dans la fiche de calibrage. À la fin de session, propose de les verser dans `02_Contexte/` ou `Strategie-contenu.md` (Phase 4) pour ne jamais les redemander.
 
 ---
 
@@ -187,14 +187,14 @@ Les idées de contenu ne sont pas décoratives : chacune doit être un angle qu'
 
 ### Où ça se range
 
-Un seul fichier : `05_Departements/Marketing/LinkedIn/banque-vecu.md`, toutes les pépites, en append. Crée-le à la première session avec un en-tête qui explique le format.
+Dans le Content Brain, une fiche par pépite, au format de `10_Skills/_commun/content-brain.md` : la scène et le ressenti dans `05_Departements/Marketing/Content-Brain/03_Base-de-connaissances/Histoires/` (`type: histoire`), la leçon qu'on en tire dans `Enseignements/` si elle tient debout seule, un chiffre dans `Preuves/`. Le titre de la fiche est l'idée dite en une phrase, le corps garde le verbatim. Remplis `pilier` et `sujets` avec ceux de la stratégie, `diffusion` (`public`, `anonyme` ou `interne` dès qu'un client apparaît), et `source` avec une fiche de `Sources/` de nature `interview`, une par session, datée du jour. Les trois idées de contenu de la pépite deviennent des fiches dans `05_Departements/Marketing/Content-Brain/04_Idees/` (`statut: nouvelle`) reliées à la fiche. Puis lance `python3 10_Skills/clean-content/scripts/reconstruire.py` pour rattacher les fiches à leurs pages de sujets.
 
-La fiche de calibrage (métier, cible, voix, convictions) n'a pas de fichier à elle : elle vit déjà dans `02_Contexte/` et `strategie-contenu.md`. Si l'interview révèle une conviction ou un élément de voix qui n'y est pas encore, propose de l'ajouter au bon fichier (validation avant d'écrire), au lieu de le dupliquer.
+La fiche de calibrage (métier, cible, voix, convictions) n'a pas de fichier à elle : elle vit déjà dans `02_Contexte/` et `Strategie-contenu.md`. Si l'interview révèle une conviction ou un élément de voix qui n'y est pas encore, propose de l'ajouter au bon fichier (validation avant d'écrire), au lieu de le dupliquer.
 
-### Règles de la banque
+### Règles de la base
 
-1. **Avant** de creuser une veine, lis la banque existante pour ne pas re-fouiller une pépite déjà captée. Si le sujet est proche d'une pépite existante, dis-le et propose d'aller plus profond ou d'ouvrir un autre angle.
-2. **Après** validation, ajoute la pépite en append, sans jamais écraser l'existant.
+1. **Avant** de creuser une veine, lis la base existante pour ne pas re-fouiller une pépite déjà captée. Si le sujet est proche d'une pépite existante, dis-le et propose d'aller plus profond ou d'ouvrir un autre angle.
+2. **Après** validation, écris la fiche, sans jamais écraser une fiche existante.
 3. Pas de doublon : si une pépite recoupe une existante, enrichis l'existante.
 
 ---
@@ -210,7 +210,7 @@ La fiche de calibrage (métier, cible, voix, convictions) n'a pas de fichier à 
 ### Fin de session
 
 1. **Récap** court : les pépites captées (titres + une ligne chacune).
-2. Confirme qu'elles sont bien dans la banque, avec le lien vers le fichier.
+2. Confirme qu'elles sont bien dans la base, avec le lien vers chaque fiche.
 3. **Un seul next step proposé**, jamais trois : "Tu veux que je transforme [pépite X] en post maintenant, ou tu la gardes au chaud ?"
 4. Si oui : passe la pépite au skill de rédaction disponible dans le workspace, ou rédige directement s'il n'y en a pas.
 
@@ -228,7 +228,7 @@ La fiche de calibrage (métier, cible, voix, convictions) n'a pas de fichier à 
 - Vouloir tout couvrir en une session au lieu de creuser 2 pépites à fond.
 - Rédiger le post : ce skill s'arrête à la pépite et aux angles.
 - Oublier de sauvegarder dans la banque.
-- Redemander à l'utilisateur des infos déjà présentes dans `02_Contexte/` ou `strategie-contenu.md`.
+- Redemander à l'utilisateur des infos déjà présentes dans `02_Contexte/` ou `Strategie-contenu.md`.
 
 ---
 

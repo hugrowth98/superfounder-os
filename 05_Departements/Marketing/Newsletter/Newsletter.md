@@ -10,7 +10,7 @@ maj: AAAA-MM-JJ
 
 Les éditions de newsletter et leurs archives, un fichier par édition.
 
-Ne va pas ici : un post LinkedIn qui reprend une édition (`05_Departements/Marketing/LinkedIn/`), les sources qui ont nourri l'édition (`08_Ressources/Veille/sources/`).
+Ne va pas ici : un post LinkedIn qui reprend une édition (`05_Departements/Marketing/Content-Brain/05_Calendrier-editorial/`), les sources qui ont nourri l'édition (`08_Ressources/Veille/sources/`).
 
 ## Cadre
 

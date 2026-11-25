@@ -9,9 +9,9 @@ context: main
 
 Un contexte écrit une fois et jamais vérifié devient faux, et une IA qui lit du faux produit du faux avec assurance. `/lint` passe le workspace au crible, produit un rapport, propose un plan. **Lecture seule : tu ne corriges rien avant validation.**
 
-Argument optionnel : un dossier (`/lint "05_Departements/Vente"`). Sans argument, tout le workspace. Avec un dossier, les contrôles 1 à 9 se limitent à lui et le contrôle 10 s'ajoute.
+Argument optionnel : un dossier (`/lint "05_Departements/Vente"`). Sans argument, tout le workspace. Avec un dossier, les contrôles 1 à 9 et 11 se limitent à lui et le contrôle 10 s'ajoute.
 
-## Les dix contrôles
+## Les onze contrôles
 
 ### 1. Notes manquantes et sous-dossiers par étape
 
@@ -116,6 +116,22 @@ Le responsable d'un dossier, c'est l'utilisateur, et un contexte figé devient f
 3. **Notes obsolètes** : plus alignées avec la direction actuelle (ancienne version, projet fini, process remplacé). Propose `11_Archives/`. Le doute tranche vers l'archive.
 4. **Manques** : un projet sans Étapes, un département sans Objectif, une note client sans interlocuteur dans Cadre, une section Où on en est encore en placeholder. Propose l'ajout concret.
 5. **Mal rangées** : une info qui servirait mieux ailleurs. Propose la destination : un autre projet, un département, un client, `08_Ressources/`, ou `00_Inbox/` si un humain doit trancher.
+
+### 11. Content Brain : cloisonnement et fiches orphelines
+
+Un nom de client dans une fiche ou un post alors que sa note ne dit pas `contenu: nomme`, c'est une fuite. Une fiche sans pilier reconnu n'apparaît dans aucune page.
+
+```bash
+CB="05_Departements/Marketing/Content-Brain"
+for d in "06_Clients"/*/; do
+  n=$(basename "$d"); [ -f "$d/$n.md" ] || continue
+  grep -q "^contenu: *nomme" "$d/$n.md" && continue
+  grep -rIl --include="*.md" -F "$n" "$CB/03_Base-de-connaissances" "$CB/04_Idees" "$CB/05_Calendrier-editorial" 2>/dev/null | sed "s/^/CLIENT CITE ($n)  /"
+done
+python3 10_Skills/clean-content/scripts/reconstruire.py --dry-run | grep "^  !"
+```
+
+Client cité : proposer l'anonymisation (un rôle et un secteur) ou le passage de la fiche en `diffusion: interne`. Fiche sans pilier ou sujet hors stratégie : proposer le pilier le plus proche, ou l'ajout du sujet à la stratégie via `strategie-contenu`.
 
 ## Le rapport
 
